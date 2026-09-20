@@ -36,17 +36,41 @@
   background-color: var(--redesign-hover-wash);
 }
 
+/* Several legacy dark-theme declarations still set a solid background colour
+ * on hover. Keep their contrast colour, but let this image be the one wash. */
+[color-css-theme=dark] .hover-swipe:hover,
+[color-css-theme=dark] .hover-swipe:focus-visible,
 [color-css-theme=dark] .hp-byline a:hover,
 [color-css-theme=dark] .hp-byline a:focus-visible,
 [color-css-theme=dark] .lr-story h2 a:hover,
 [color-css-theme=dark] .lr-story h2 a:focus-visible,
 [color-css-theme=dark] .lr-story__byline a:hover,
 [color-css-theme=dark] .lr-story__byline a:focus-visible,
+[color-css-theme=dark] .au-latest .lr-tabs__links a:hover,
+[color-css-theme=dark] .au-latest .lr-tabs__links a:focus-visible,
 [color-css-theme=dark] .ar-main-byline__name:hover,
 [color-css-theme=dark] .ar-main-byline__name:focus-visible,
 [color-css-theme=dark] .ar-context-box a:hover,
 [color-css-theme=dark] .ar-context-box a:focus-visible,
+[color-css-theme=dark] .ar-body.article-content > p a:hover,
+[color-css-theme=dark] .ar-body.article-content > p a:focus-visible,
+[color-css-theme=dark] .ar-body.article-content > ul a:hover,
+[color-css-theme=dark] .ar-body.article-content > ul a:focus-visible,
+[color-css-theme=dark] .ar-body.article-content > ol a:hover,
+[color-css-theme=dark] .ar-body.article-content > ol a:focus-visible,
+[color-css-theme=dark] .ar-body.article-content .o-extra-article-info .o-extra-article-info__body a:hover,
+[color-css-theme=dark] .ar-body.article-content .o-extra-article-info .o-extra-article-info__body a:focus-visible,
+[color-css-theme=dark] .ar-body.article-content .ar-note a:hover,
+[color-css-theme=dark] .ar-body.article-content .ar-note a:focus-visible,
+[color-css-theme=dark] .ar-keep-reading__row > h2 a:hover,
+[color-css-theme=dark] .ar-keep-reading__row > h2 a:focus-visible,
+[color-css-theme=dark] .ar-keep-reading .ar-suggested-card h3 a:hover,
+[color-css-theme=dark] .ar-keep-reading .ar-suggested-card h3 a:focus-visible,
+[color-css-theme=dark] .ar-submit a:hover,
+[color-css-theme=dark] .ar-submit a:focus-visible,
 [color-css-theme=dark] .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a:hover,
-[color-css-theme=dark] .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible {
+[color-css-theme=dark] .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible,
+[color-css-theme=dark] :is(.hp-nav, .ar-nav) .hp-nav__expanded .hp-nav__links a:hover,
+[color-css-theme=dark] :is(.hp-nav, .ar-nav) .hp-nav__expanded .hp-nav__links a:focus-visible {
   background-color: transparent !important;
 }

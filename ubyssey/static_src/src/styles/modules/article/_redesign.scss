@@ -106,6 +106,12 @@
 .ar-nav__nameplate{position:relative;z-index:2}
 .ar-nav.is-compact .ar-nav__bar time{visibility:hidden!important;pointer-events:none!important}
 
+/* Match article contribution links to the nearby utility links without a
+ * dividing rule, then give the heading and actions deliberate separation. */
+.ar-submit{gap:16px 17px;margin-top:48px;padding:0 0 22px;border-top:0}
+.ar-submit a{color:inherit;font:400 16px/11px "meursault-variable",Georgia,serif;text-transform:none;text-decoration:underline;text-underline-offset:1px}
+@media(max-width:760px){.ar-submit{gap:16px 14px}}
+
 /* The hidden compact-date label must never cover the homepage link. */
 .ar-nav.is-compact .ar-nav__bar time{pointer-events:none}
 

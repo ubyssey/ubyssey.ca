@@ -724,6 +724,13 @@
   .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
 }
 
+/* The legacy nav hover used a different pseudo-element transition. Use the
+ * same smooth background-image wash as other editorial links instead. */
+.hp-nav__bar nav a[data-section]{background-color:transparent!important;background-image:linear-gradient(var(--hp-nav-section-hover),var(--hp-nav-section-hover))!important;background-repeat:no-repeat!important;background-position:0 90%!important;background-size:0 78%!important;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s cubic-bezier(.22,1,.36,1),color .22s ease!important}
+.hp-nav__bar nav a[data-section]::before{content:none!important;display:none!important}
+.hp-nav__bar nav a[data-section]:hover,.hp-nav__bar nav a[data-section]:focus-visible{background-color:transparent!important;background-size:100% 78%!important;color:#081839!important}
+[color-css-theme=dark] .hp-nav__bar nav a[data-section]:hover,[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible{background-color:transparent!important}
+
 /* The primary section links have one wash only: their own section colour.
    Earlier iterations left a pseudo-element and dark-mode fill behind it. */
 .hp-nav__bar nav a::before{content:none!important;display:none!important}

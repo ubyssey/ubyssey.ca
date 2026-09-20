@@ -111,3 +111,6 @@
 [color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible,
 [color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,
 [color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{background-color:transparent!important}
+
+/* Team and Contact use the same name-to-pronoun rhythm as author profiles. */
+.person-card h3 small,.contact-row span>small{display:inline-block;margin-left:8px;white-space:nowrap;font:400 16px/20px "drummond-variable",Georgia,serif}
