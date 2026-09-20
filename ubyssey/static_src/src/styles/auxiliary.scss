@@ -100,3 +100,14 @@
 .photo-card>a>span time,.photo-card>a>span strong{display:table;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
 .photo-card>a:hover>span time,.photo-card>a:hover>span strong,.photo-card>a:focus-visible>span time,.photo-card>a:focus-visible>span strong{background-size:100% 78%}
 [color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,[color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{color:#081839;background-color:#bce3f0}
+
+/* Keep redesigned editorial links to one shared wash, including in dark mode. */
+.aux-page h2 a,.aux-page h3 a,
+.aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image),
+.photo-card>a>span time,.photo-card>a>span strong{background-image:linear-gradient(var(--redesign-hover-wash),var(--redesign-hover-wash))!important;background-color:transparent!important}
+[color-css-theme=dark] .aux-page h2 a:hover,[color-css-theme=dark] .aux-page h2 a:focus-visible,
+[color-css-theme=dark] .aux-page h3 a:hover,[color-css-theme=dark] .aux-page h3 a:focus-visible,
+[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):hover,
+[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible,
+[color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,
+[color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{background-color:transparent!important}

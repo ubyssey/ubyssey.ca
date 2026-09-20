@@ -724,6 +724,13 @@
   .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
 }
 
+/* The primary section links have one wash only: their own section colour.
+   Earlier iterations left a pseudo-element and dark-mode fill behind it. */
+.hp-nav__bar nav a::before{content:none!important;display:none!important}
+.hp-nav__bar nav a[data-section]{background-color:transparent!important}
+[color-css-theme=dark] .hp-nav__bar nav a[data-section]:hover,
+[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible{background-color:transparent!important}
+
 /* Match each primary-nav hover treatment to its section tag colour. */
 .hp-nav__bar nav a[data-section="news"]{--hp-nav-section-hover:#77c0d2}
 .hp-nav__bar nav a[data-section="opinion"]{--hp-nav-section-hover:#7880ce}

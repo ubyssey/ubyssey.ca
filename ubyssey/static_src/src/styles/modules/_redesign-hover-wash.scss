@@ -28,6 +28,7 @@
 .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a,
 :is(.hp-nav, .ar-nav) .hp-nav__expanded .hp-nav__links a {
   background-image: linear-gradient(var(--redesign-hover-wash), var(--redesign-hover-wash)) !important;
+  background-color: transparent !important;
 }
 
 .archive-author-results a:hover,
@@ -47,5 +48,5 @@
 [color-css-theme=dark] .ar-context-box a:focus-visible,
 [color-css-theme=dark] .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a:hover,
 [color-css-theme=dark] .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--meta--author a:focus-visible {
-  background-color: var(--redesign-hover-wash);
+  background-color: transparent !important;
 }

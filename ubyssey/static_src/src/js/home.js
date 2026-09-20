@@ -135,8 +135,13 @@ function initializeGameAnalysis() {
         const visibleFixtures = fixtures.filter((item) => (
           selectedSports.size === 0 || selectedSports.has(item.dataset.sport)
         ));
+        // Keep the complete fixture queue available for filtering, but show
+        // only the five chronologically relevant fixtures in either tab.
+        // Upcoming fixtures were sorted ascending and recent fixtures
+        // descending when the panel was initialized.
+        const renderedFixtures = visibleFixtures.slice(0, 5);
         fixtures.forEach((item) => {
-          item.hidden = !visibleFixtures.includes(item);
+          item.hidden = !renderedFixtures.includes(item);
         });
         const empty = scorePanel.querySelector('[data-fixture-empty]');
         if (empty) empty.hidden = fixtures.length === 0 || visibleFixtures.length > 0;
