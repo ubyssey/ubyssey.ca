@@ -723,3 +723,11 @@
 /* The visually hidden date must never sit above the centred home link. */
 .ar-nav__nameplate{position:relative;z-index:2}
 .ar-nav.is-compact .ar-nav__bar time{visibility:hidden!important;pointer-events:none!important}
+
+/* Final contribution-block hierarchy. This follows every legacy article
+ * component declaration, so no compact uppercase rule can win the cascade. */
+.ar-submit{display:flex;flex-wrap:wrap;align-items:baseline;gap:16px 11px;margin:48px 0 0;padding:0 0 22px;border:0;border-bottom:1px solid var(--ar-rule);color:#172b63}
+.ar-submit span{width:100%;color:var(--ar-text);font:600 22px/1.05 "meursault-variable",Georgia,serif}
+.ar-submit a{color:inherit;font:400 16px/11px "meursault-variable",Georgia,serif;text-transform:none;text-decoration:underline;text-underline-offset:1px}
+[color-css-theme=dark] .ar-submit{color:#bce3f0}
+@media(max-width:760px){.ar-submit{gap:16px 10px}.ar-submit a{font-size:15px;line-height:17px}}

@@ -831,3 +831,13 @@
   .hp-nav__join-link:hover h2 span,.hp-nav__join-link:focus-visible h2 span{color:#bce3f0!important}
   .hp-nav__join-link:hover p,.hp-nav__join-link:hover p span,.hp-nav__join-link:focus-visible p,.hp-nav__join-link:focus-visible p span{color:#fff!important}
 }
+
+/* Final homepage-card alignment and primary-nav state. This follows every
+ * legacy dark-mode rule, including those using a background shorthand. */
+.hp-card--lead h2{margin-bottom:16px!important}
+.hp-live{vertical-align:top;margin:2px 0 8px!important}
+.hp-card--live .hp-beat+.hp-live{margin-top:2px!important}
+.hp-nav__bar nav a[data-section]{background:linear-gradient(var(--hp-nav-section-hover),var(--hp-nav-section-hover)) no-repeat 0 90%/0 78%!important;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s cubic-bezier(.22,1,.36,1),color .22s ease!important}
+.hp-nav__bar nav a[data-section]::before{content:none!important;display:none!important}
+.hp-nav__bar nav a[data-section]:hover,.hp-nav__bar nav a[data-section]:focus-visible{background-size:100% 78%!important;color:#081839!important}
+html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:hover,html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible{background-color:transparent!important}

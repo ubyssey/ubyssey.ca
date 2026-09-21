@@ -23,11 +23,19 @@ function ShareBar() {
 }
 
 function ReportLinks() {
-    return <p class="report">
-        <a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a>
-        <a href="https://forms.ubyssey.ca/tips">Send a tip</a>
-        <a href="https://forms.ubyssey.ca/errors">Report an error</a>
-    </p>
+    return <>
+        <p class="report">
+            <a href="https://forms.ubyssey.ca/erasure">Apply for erasure</a>
+            <a href="https://forms.ubyssey.ca/tips">Send a tip</a>
+            <a href="https://forms.ubyssey.ca/errors">Report an error</a>
+        </p>
+        <nav class="report-submit" aria-label="Contribute to The Ubyssey">
+            <span>Have something to say?</span>
+            <a href="https://forms.ubyssey.ca/opinion">Write an op-ed</a>
+            <a href="https://forms.ubyssey.ca/letters">Write a letter</a>
+            <a href="https://forms.ubyssey.ca/coverage-request">Request coverage</a>
+        </nav>
+    </>
 }
 
 export default function LiveBlog() {
