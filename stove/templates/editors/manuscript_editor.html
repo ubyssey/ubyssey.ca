@@ -299,6 +299,23 @@
   </section>
 </div>
 
+<section class="manuscript-find-replace" data-find-replace hidden>
+  <button type="button" data-find-replace-toggle>&gt;</button>
+  <div class="manuscript-find-replace__row">
+    <input type="search" data-find-replace-find placeholder="Find" autocomplete="off">
+    <span data-find-replace-count></span>
+    <label><input type="checkbox" data-find-replace-case> Match case</label>
+    <button type="button" data-find-replace-previous>↑</button>
+    <button type="button" data-find-replace-next>↓</button>
+    <button type="button" data-find-replace-close>x</button>
+  </div>
+  <div id="manuscript-find-replace-fields" class="manuscript-find-replace__row" data-find-replace-replace-row hidden>
+    <input type="text" data-find-replace-replace placeholder="Replace with" autocomplete="off">
+    <button type="button" data-find-replace-replace-current>Replace</button>
+    <button type="button" data-find-replace-all>Replace all</button>
+  </div>
+</section>
+
 <main class="manuscript nav-border">
   <div
     id="page-shadow"
