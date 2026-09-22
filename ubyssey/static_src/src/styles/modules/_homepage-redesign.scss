@@ -841,3 +841,20 @@
 .hp-nav__bar nav a[data-section]::before{content:none!important;display:none!important}
 .hp-nav__bar nav a[data-section]:hover,.hp-nav__bar nav a[data-section]:focus-visible{background-size:100% 78%!important;color:#081839!important}
 html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:hover,html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible{background-color:transparent!important}
+
+/* A background gradient can be covered by the dark navigation layer. An inset
+   shadow paints the same section colour above that layer in both themes. */
+.hp-nav__bar nav a[data-section],
+html[color-css-theme=dark] .hp-nav__bar nav a[data-section] {
+  background: none !important;
+  box-shadow: inset 0 0 0 var(--hp-nav-section-hover);
+  transition: box-shadow .22s cubic-bezier(.22,1,.36,1), color .22s ease !important;
+}
+.hp-nav__bar nav a[data-section]:hover,
+.hp-nav__bar nav a[data-section]:focus-visible,
+html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:hover,
+html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible {
+  background: none !important;
+  box-shadow: inset 0 -16px 0 var(--hp-nav-section-hover);
+  color: #081839 !important;
+}

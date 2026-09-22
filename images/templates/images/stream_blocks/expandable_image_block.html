@@ -18,9 +18,5 @@
     </dialog>
     {% endif %}
 
-    {% if imageBlock.caption or imageBlock.credit %}
-        <div class="caption">
-            <span data-article-editable-stream-field="content" data-article-editable-path="caption|block.caption" data-article-editable-mode="richtext">{% if imageBlock.caption %}{{ imageBlock.caption|stringformat:'s'|safe }}{% endif %}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit|block.credit">{% if imageBlock.credit %}{{ imageBlock.credit }}{% endif %}</span>
-        </div>
-    {% endif %}
+    {% include "article/stream_blocks/media-caption.html" with caption=imageBlock.caption credit=imageBlock.credit caption_path="caption|block.caption" credit_path="credit|block.credit" %}
 </div>

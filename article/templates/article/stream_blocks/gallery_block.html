@@ -1,43 +1,41 @@
-{% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load static %}
 
-{% image self.images.0.image width-100 as first %}
-
-  <div id="{{first.url|slugify}}" class="carousel slide {% if indicators != "false" %}indicators {% endif %}{% if nocaption %}no-caption {% endif %}{{self.images.0.style}} {{self.images.0.width}}"  style="--aspect-ratio: calc({{self.images.0.image.width}} / {{self.images.0.image.height}});">
-    
-    {% if indicators != "false" %}
-      <div class="carousel-indicators">
-        {% for image in self.images %}
-          <button type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
-        {% endfor %}
-      </div>
-    {% endif %}
-    
+{% if self.images %}
+<div id="gallery-{{ id|slugify }}" class="carousel slide ar-image-carousel" data-article-image-carousel>
     <div class="carousel-inner">
-      {% for image_block in self.images %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-
-          {% with index=forloop.counter0|stringformat:"s" %}
-            {% with article_editable_path_prefix="images."|add:index %}
-              {% include_block image_block with article_editable_path_prefix=article_editable_path_prefix %}
-            {% endwith %}
-          {% endwith %}
-
+        {% for image_block in self.images %}
+        {% image image_block.image width-1200 format-webp as slide_image %}
+        <div class="carousel-item{% if forloop.first %} active{% endif %}">
+            <figure class="ar-image-carousel__figure">
+                <div class="ar-image-carousel__stage{% if image_block.click_to_enlarge %} setup-modal image-modal{% endif %}">
+                    {% if image_block.click_to_enlarge %}<a class="open-modal" aria-label="Enlarge image">{% endif %}
+                    <img src="{{ slide_image.url }}" width="{{ slide_image.width }}" height="{{ slide_image.height }}" alt="{% if image_block.alt_text %}{{ image_block.alt_text }}{% else %}{{ image_block.caption|striptags }}{% endif %}" loading="lazy">
+                    {% if image_block.click_to_enlarge %}
+                    </a>
+                    {% image image_block.image original as full_image %}
+                    <dialog class="modal close-modal hide js-dropdown-container">
+                        <div class="u-container u-container--large modal-contents">
+                            <div class="image-modal-image" style="background-image: url('{{ full_image.url }}')"></div>
+                            <button type="button" class="close-modal focus-on" aria-label="Minimize image"><ion-icon name="close-circle"></ion-icon></button>
+                        </div>
+                    </dialog>
+                    {% endif %}
+                </div>
+                {% with index=forloop.counter0|stringformat:"s" %}
+                    {% with path_prefix="images."|add:index %}
+                        {% include "article/stream_blocks/media-caption.html" with caption=image_block.caption credit=image_block.credit caption_path=path_prefix|add:".caption" credit_path=path_prefix|add:".credit" %}
+                    {% endwith %}
+                {% endwith %}
+            </figure>
         </div>
-      {% endfor %}
+        {% endfor %}
     </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="prev" style="position: absolute;">
-      <div class="carousel-control-container">
-      <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
-      <span class="visually-hidden">Previous</span>
-      </div>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#{{first.url|slugify}}" data-bs-slide="next" style="position: absolute;">
-      <div class="carousel-control-container">
-      <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
-      <span class="visually-hidden">Next</span>
-      </div>
-    </button>
-  </div>
+    {% if self.images|length > 1 %}
+    <div class="ar-image-carousel__controls">
+        <button type="button" class="carousel-control-prev" data-article-carousel-direction="previous" aria-label="Previous image">←</button>
+        <span class="ar-image-carousel__counter" aria-live="polite"><span data-article-image-carousel-index>1</span> / {{ self.images|length }}</span>
+        <button type="button" class="carousel-control-next" data-article-carousel-direction="next" aria-label="Next image">→</button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}

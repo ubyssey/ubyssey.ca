@@ -9,14 +9,9 @@
             {% if block.value.side == "left" %}
             <div class="o-visual-essay__left-div {% if forloop.first%}o-visual-essay__left-first{% else %}o-visual-essay__left-next{% endif %}">
                 {% if block.block_type == 'image' %}
-                    {% if block.value.block.caption or block.value.block.credit %}
-                    <div class="caption">
-                        {% if block.value.block.caption %}{{ block.value.block.caption|safe }}{% endif %} 
-                        <span class="credit">{% if block.value.block.credit %}{{ block.value.block.credit }}{% endif %}</span>
-                    </div>
-                    {% endif %}
                     {% image block.value.block.image original as bg %}
                     <div class="o-visual-essay__left-image" style="background-image: url('{{bg.url}}')" aria-label="{{block.value.block.alt_text}}" ></div>
+                    {% include "article/stream_blocks/media-caption.html" with caption=block.value.block.caption credit=block.value.block.credit %}
                 {% else %}
                     {% include_block block.value.block with id=block.id %}
                 {% endif %}

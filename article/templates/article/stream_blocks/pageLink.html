@@ -4,12 +4,7 @@
 <div class="header-menu">
      <ul>
           {% for item in self.list %}
-               <style>
-                    .pageLink{{item.id|slugify}} {
-                         --linkColour: #{{item.colour}};
-                    }
-               </style>
-               <li class="menu-title pageLink{{item.id|slugify}}">
+               <li class="menu-title" style="--ar-menu-accent: #{{item.colour|default:'253273'}};">
                     <a href="#{{item.id|slugify}}"><span data-article-editable-stream-field="content" data-article-editable-path="list.{{ forloop.counter0 }}.title">{{item.title}}</span></a>
                </li>
           {% endfor %}

@@ -18,12 +18,12 @@ credit
 
 {% if url%}
 
-    <div class="o-article-embed o-article-embed--video js-video-youtube" data-id="{{ url }}">
+    <div class="o-article-embed o-article-embed--video{% if youtube_short %} o-article-embed--video--short{% endif %} js-video-youtube" data-id="{{ url }}">
 
     {% if youtube_short %}
 
         <iframe width="394" height="700" src="https://www.youtube.com/embed/{{ self.video_embed.url|youtube_embed_id }}" title="{{ self.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <div class="caption">{{self.caption|safe}} <span class="credit">{{ self.credit }}</span></div>
+        {% include "article/stream_blocks/media-caption.html" with caption=self.caption credit=self.credit %}
         
     {% else %}
         
@@ -40,20 +40,13 @@ credit
                     </div>
                     <div class="o-article-embed--video__tag">Video</div>
                     <h2 class="o-article-embed--video__title">{{ self.title }}</h2>
-                    {% if value.caption %}
-                    <p class="o-article-embed--video__caption">{{ self.caption|safe }}</p>
-                    {% endif %}
                 </div>
 
             </div>
         </div>
         <div class="o-article-embed--video__container" id="video-{{ self.video_embed.url|youtube_embed_id }}"></div>
         
-        {% if self.credit %}
-            <div class="caption">
-                <span class="credit">{{ self.credit }}</span>    
-            </div>
-        {% endif %}
+        {% include "article/stream_blocks/media-caption.html" with caption=self.caption credit=self.credit %}
 
     {% endif %}
     </div>
