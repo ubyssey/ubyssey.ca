@@ -456,34 +456,23 @@ class HomePage(Page):
                     stories_by_id[self.ams_election_story_right_id],
                 ]
 
-        panel = next((item.value for item in self.game_analysis if item.block_type == "panel"), None)
-        allowed_panel_sports = {choice[0] for choice in homeblocks.SPORT_CHOICES[1:]}
-        covered_sports = [
-            sport
-            for sport in (panel.get("active_sports") or [])
-            if sport in allowed_panel_sports
-        ] if panel else []
-        if not covered_sports:
+        has_panel = any(item.block_type == "panel" for item in self.game_analysis)
+        # A configured StreamField panel supplies its own stories and fixtures.
+        # Do not run the fallback queries as well: their results are discarded
+        # by include_block, but used to load every historical analysis here.
+        if not has_panel:
+            from home.game_analysis_queries import STORY_LIMIT, chronological_articles, fixture_queues
+
             covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
-        current_time = timezone.now()
-        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports).select_related(
-            "game_analysis_article"
-        )
-        context["panel_sports"] = covered_sports
-        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at"))
-        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at"))
-        # When the optional StreamField panel has not been configured yet,
-        # the homepage still needs a fully functional Game Analyses module.
-        # Use every public Game Analysis story rather than borrowing the
-        # general homepage queue (which led to unrelated stories appearing
-        # when a sport was filtered).
-        context["analysis_articles"] = [
-            {"article": article, "sport": article.covered_sport}
-            for article in ArticlePage.objects.live().public().filter(
-                standardarticlepage__story_form="game-analysis",
-                covered_sport__in=covered_sports,
-            ).order_by("-explicit_published_at", "-id").specific()
-        ]
+            context["panel_sports"] = covered_sports
+            context["upcoming_games"], context["recent_results"] = fixture_queues(
+                covered_sports, timezone.now()
+            )
+            context["filtered_analysis_articles"] = [
+                {"article": article, "sport": article.covered_sport}
+                for article in chronological_articles(covered_sports)
+            ]
+            context["analysis_articles"] = context["filtered_analysis_articles"][:STORY_LIMIT]
 
         context["curated_articles"] = self.get_curated_articles()
 

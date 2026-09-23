@@ -121,8 +121,8 @@ function initializeGameAnalysis() {
       }
       const cards = [...panel.querySelectorAll('[data-game-card]')];
       const visibleCards = selectedSports.size
-        ? cards.filter((item) => selectedSports.has(item.dataset.sport))
-        : cards;
+        ? cards.filter((item) => item.hasAttribute('data-filter-card') && selectedSports.has(item.dataset.sport))
+        : cards.filter((item) => item.hasAttribute('data-default-card'));
       cards.forEach((item) => {
         item.hidden = !visibleCards.slice(0, 4).includes(item);
         item.classList.remove('is-lead', 'is-secondary');
