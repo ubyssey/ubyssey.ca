@@ -12,6 +12,7 @@ class HomepageRedesignTests(SimpleTestCase):
             "home/home_page.html",
             "home/components/redesign_nav.html",
             "home/components/redesign_card.html",
+            "home/components/ams_election.html",
             "home/components/redesign_story_row.html",
             "home/stream_blocks/game_analysis.html",
         ]
@@ -43,3 +44,10 @@ class HomepageRedesignTests(SimpleTestCase):
             "redesign_hero_top_right",
             "redesign_hero_bottom_right",
         }.issubset(fields))
+
+    def test_ams_election_is_opt_in_with_default_middle_placement(self):
+        homepage = HomePage()
+        self.assertFalse(homepage.ams_election_enabled)
+        self.assertEqual(homepage.ams_election_placement, "between_hero_games")
+        self.assertEqual(homepage.ams_election_heading, "2026 AMS VP Student Life By-Election")
+        self.assertEqual(len(HomePage.AMS_ELECTION_PLACEMENTS), 3)

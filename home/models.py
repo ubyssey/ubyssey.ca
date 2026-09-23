@@ -215,6 +215,31 @@ class HomePage(Page):
         help_text="Homepage sports analysis stories and active sports. Fixtures and scores are managed in Sports Calendar.",
     )
 
+    AMS_ELECTION_PLACEMENTS = (
+        ("before_hero", "Above the top stories"),
+        ("between_hero_games", "Between the top stories and Game Analyses (default)"),
+        ("after_games", "Below Game Analyses"),
+    )
+    ams_election_enabled = models.BooleanField(
+        default=False,
+        help_text="Show the election feature only after its description and both story slots are ready.",
+    )
+    ams_election_placement = models.CharField(
+        max_length=24, choices=AMS_ELECTION_PLACEMENTS, default="between_hero_games",
+    )
+    ams_election_heading = models.CharField(
+        max_length=120, default="2026 AMS VP Student Life By-Election",
+    )
+    ams_election_description = models.TextField(blank=True, default="")
+    ams_election_story_left = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Left election story",
+    )
+    ams_election_story_right = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", verbose_name="Right election story",
+    )
+
     newsletter_action_url = models.URLField(
         blank=True,
         default="",
@@ -342,6 +367,18 @@ class HomePage(Page):
         FieldPanel("game_analysis", heading="Game Analyses: stories and active sports"),
         MultiFieldPanel(
             [
+                FieldPanel("ams_election_enabled"),
+                FieldPanel("ams_election_placement"),
+                FieldPanel("ams_election_heading"),
+                FieldPanel("ams_election_description"),
+                FieldPanel("ams_election_story_left"),
+                FieldPanel("ams_election_story_right"),
+            ],
+            heading="AMS election feature",
+            help_text="Choose two different stories and a description before enabling. Only live, public stories appear on the homepage.",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("redesign_hero_top_left"),
                 FieldPanel("redesign_hero_bottom_left"),
                 FieldPanel("redesign_hero_centre"),
@@ -393,9 +430,31 @@ class HomePage(Page):
         selected_ids = [getattr(self, f"{field}_id") for field in hero_fields if getattr(self, f"{field}_id")]
         if len(selected_ids) != len(set(selected_ids)):
             raise ValidationError("Choose a different article for each homepage hero position.")
+        if self.ams_election_enabled:
+            if not (self.ams_election_heading.strip() and self.ams_election_description.strip()):
+                raise ValidationError("Add a heading and description before enabling the AMS election feature.")
+            if not (self.ams_election_story_left_id and self.ams_election_story_right_id):
+                raise ValidationError("Choose both AMS election stories before enabling the feature.")
+            if self.ams_election_story_left_id == self.ams_election_story_right_id:
+                raise ValidationError("Choose two different AMS election stories.")
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        context["ams_election_stories"] = []
+        if (self.ams_election_enabled and self.ams_election_story_left_id
+                and self.ams_election_story_right_id
+                and self.ams_election_story_left_id != self.ams_election_story_right_id):
+            selected = ArticlePage.objects.live().public().filter(pk__in=(
+                self.ams_election_story_left_id, self.ams_election_story_right_id,
+            )).specific()
+            stories_by_id = {article.pk: article for article in selected}
+            if all(story_id in stories_by_id for story_id in (
+                    self.ams_election_story_left_id, self.ams_election_story_right_id)):
+                context["ams_election_stories"] = [
+                    stories_by_id[self.ams_election_story_left_id],
+                    stories_by_id[self.ams_election_story_right_id],
+                ]
 
         panel = next((item.value for item in self.game_analysis if item.block_type == "panel"), None)
         allowed_panel_sports = {choice[0] for choice in homeblocks.SPORT_CHOICES[1:]}

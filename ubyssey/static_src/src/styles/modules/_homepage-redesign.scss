@@ -110,6 +110,29 @@
 @media(max-width:760px){.hp-newsletter__art{left:auto;right:12px;top:248px;width:245px;height:258px}}
 
 /* Main-page final corrections */
+.hp-election{padding:17px 0 34px;color:var(--hp-text);background:var(--hp-bg)}
+.hp-election__title{display:flex;align-items:center;justify-content:center;min-height:64px;margin:0;border-top:.5px solid var(--hp-text);border-bottom:.5px solid var(--hp-text);font:400 18px/1.25 "meursault-variable",Georgia,serif;text-align:center;text-transform:uppercase}
+.hp-election__description{max-width:860px;margin:22px auto 26px!important;font:400 18px/1.4 "meursault-variable",Georgia,serif;text-align:center}
+.hp-election__stories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.hp-election .hp-card{display:grid;grid-template-columns:300px minmax(0,1fr);gap:12px;align-items:start;overflow:visible}
+.hp-election .hp-card__image{width:300px;height:200px}
+.hp-election .hp-card__copy{min-width:0;padding-top:0}
+@media(max-width:1100px){
+  .hp-election .hp-card{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .hp-election .hp-card__image{width:100%;height:auto;aspect-ratio:3/2}
+}
+@media(max-width:760px){
+  .hp-election{padding:12px 0 28px}
+  .hp-election__title{min-height:54px;padding:8px 12px;font-size:16px}
+  .hp-election__description{margin:18px auto 22px!important;font-size:18px}
+  .hp-election__stories{grid-template-columns:1fr;gap:24px}
+  .hp-election .hp-card--side-top{padding:0 0 22px;border-bottom:1px solid var(--hp-rule)}
+  .hp-election .hp-card--side-top .hp-card__image{height:auto;aspect-ratio:3/2}
+}
+@media(max-width:520px){
+  .hp-election .hp-card{grid-template-columns:1fr;gap:10px}
+  .hp-election .hp-card__image{width:100%;max-height:240px}
+}
 .section-culture .hp-beat{background:#bd821b;color:#ffde90!important}
 [color-css-theme=dark] .section-culture .hp-beat{background:#ffde90;color:#bd821b!important}
 .hp-game-image span{width:max-content;min-width:0;padding-inline:7px}

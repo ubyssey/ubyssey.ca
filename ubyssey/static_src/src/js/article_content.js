@@ -148,6 +148,62 @@ function initializeArticleImageCarousels() {
     });
 }
 
+function initializeArticleAudioPlayers() {
+    const formatTime = (seconds) => {
+        if (!Number.isFinite(seconds)) return '0:00';
+        const total = Math.floor(seconds);
+        return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+    };
+    document.querySelectorAll('.ar-page .audio').forEach((wrapper) => {
+        const audio = wrapper.querySelector('audio');
+        const player = wrapper.querySelector('.ar-audio-player');
+        if (!audio || !player) return;
+        const toggle = player.querySelector('[data-audio-toggle]');
+        const seek = player.querySelector('[data-audio-seek]');
+        const current = player.querySelector('[data-audio-current]');
+        const duration = player.querySelector('[data-audio-duration]');
+        const mute = player.querySelector('[data-audio-mute]');
+        const update = () => {
+            const length = audio.duration;
+            current.textContent = formatTime(audio.currentTime);
+            duration.textContent = formatTime(length);
+            seek.value = Number.isFinite(length) && length > 0 ? String(Math.round(audio.currentTime / length * 1000)) : '0';
+            seek.style.setProperty('--ar-audio-progress', `${Number(seek.value) / 10}%`);
+            seek.disabled = !Number.isFinite(length) || length <= 0;
+            seek.setAttribute('aria-valuetext', `${formatTime(audio.currentTime)} of ${formatTime(length)}`);
+            toggle.textContent = audio.paused ? 'Play' : 'Pause';
+            toggle.setAttribute('aria-label', audio.paused ? 'Play audio' : 'Pause audio');
+            mute.textContent = audio.muted ? 'Sound off' : 'Sound on';
+            mute.setAttribute('aria-label', audio.muted ? 'Unmute audio' : 'Mute audio');
+        };
+        toggle.addEventListener('click', () => {
+            if (audio.paused) {
+                const attempt = audio.play();
+                if (attempt?.catch) attempt.catch(() => {});
+            }
+            else audio.pause();
+        });
+        seek.addEventListener('input', () => {
+            if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                audio.currentTime = Number(seek.value) / 1000 * audio.duration;
+            }
+        });
+        mute.addEventListener('click', () => { audio.muted = !audio.muted; });
+        ['loadedmetadata', 'durationchange', 'timeupdate', 'play', 'pause', 'ended', 'volumechange'].forEach((event) => {
+            audio.addEventListener(event, update);
+        });
+        audio.addEventListener('error', () => {
+            player.hidden = true;
+            audio.hidden = false;
+            audio.controls = true;
+        });
+        audio.controls = false;
+        audio.hidden = true;
+        player.hidden = false;
+        update();
+    });
+}
+
 function alignArticleContextRail() {
     const body = document.querySelector('.ar-body');
     const rail = document.querySelector('.ar-reading__layout > .ar-context-rail');
@@ -220,6 +276,7 @@ initializeArticleNavigation();
 initializeArticleSharing();
 initializeKeepReading();
 initializeArticleImageCarousels();
+initializeArticleAudioPlayers();
 formatCaptionCredits();
 alignArticleContextRail();
 initializeAuthorGallery();

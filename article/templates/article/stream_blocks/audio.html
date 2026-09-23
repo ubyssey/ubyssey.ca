@@ -5,5 +5,12 @@
         {% endif %}
         Your browser does not support the audio element.
     </audio>
+    <div class="ar-audio-player" hidden>
+        <button type="button" class="ar-audio-player__toggle" data-audio-toggle aria-label="Play audio">Play</button>
+        <span class="ar-audio-player__time" data-audio-current>0:00</span>
+        <input type="range" min="0" max="1000" value="0" step="1" data-audio-seek aria-label="Audio position">
+        <span class="ar-audio-player__time" data-audio-duration>0:00</span>
+        <button type="button" class="ar-audio-player__mute" data-audio-mute aria-label="Mute audio">Sound on</button>
+    </div>
     {% include "article/stream_blocks/media-caption.html" with caption=self.caption caption_path="caption" %}
 </div>

@@ -114,3 +114,9 @@
 
 /* Team and Contact use the same name-to-pronoun rhythm as author profiles. */
 .person-card h3 small,.contact-row span>small{display:inline-block;margin-left:8px;white-space:nowrap;font:400 16px/20px "drummond-variable",Georgia,serif}
+
+/* Keep pronouns inside the identity column, between name and role. */
+.person-card__identity{grid-template-columns:92px minmax(0,1fr)}
+.person-card__identity>div{min-width:0}
+.person-card__pronouns{margin:3px 0 0;color:var(--aux-muted);font:400 16px/20px "drummond-variable",Georgia,serif;overflow-wrap:anywhere}
+.person-card__pronouns+.person-card__role{margin-top:7px}

@@ -546,6 +546,12 @@ class ImageCardBlock(CardBlock):
     image = ImageChooserBlock(
         required=True
     )
+    text_color = blocks.ChoiceBlock(
+        choices=[('light', 'Light text'), ('dark', 'Dark text')],
+        default='light',
+        required=False,
+        help_text='Choose the text colour that contrasts best with the image.',
+    )
 
     class Meta:
         template = 'article/stream_blocks/cards/image-card.html'
