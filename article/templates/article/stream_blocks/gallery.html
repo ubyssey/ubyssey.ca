@@ -2,14 +2,14 @@
 <div id="gallery-{{ self.pk }}" data-id="{{ self.id }}" data-title="{{ self.title }}" class="gallery-attachment attachment">
     <div class="gallery-cover">
         {% image self.gallery_images.all.0.image fill-800x600 as cover_image %}
-        <img class="gallery-thumb" data-id="{{ self.gallery_images.all.0.id }}" src="{{ cover_image.url }}" alt="Our gallery"/>
+        <img class="gallery-thumb" data-id="{{ self.gallery_images.all.0.id }}" src="{{ cover_image.url }}" alt="{{ self.gallery_images.all.0.image.alt_text|default:self.title }}"/>
         <div class="meta row">
             <div class="eight columns">
                 <h2>{{ self.title }}</h2>
                 <span>Gallery &middot; {{ self.gallery_images.all.count }} images</span>
             </div>
             <div class="four columns u-text-right">
-                <button>View Gallery</button>
+                <button type="button">View Gallery</button>
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
             {% else %}
                 <li>
                     {% image orderable.image fill-250x250 as thumb_image %}
-                    <div class="gallery-thumb" data-id="{{ orderable.pk }}" style="background-image: url('{{ thumb_image.url }}');" /></div>
+                    <div class="gallery-thumb" data-id="{{ orderable.pk }}" style="background-image: url('{{ thumb_image.url }}');"></div>
                 </li>
             {% endif %}
         {% endfor %}
@@ -28,7 +28,7 @@
     <div class="images">
         {% for orderable in self.gallery_images.all %}
             {% image orderable.image fill-800x600 as image %}
-            <div class="gallery-image" data-id="{{ orderable.pk }}" data-url="{{ image.url }}" {% if orderable.caption %}data-caption="{{ orderable.caption|safe }}"{% endif %}></div>
+            <div class="gallery-image" data-id="{{ orderable.pk }}" data-url="{{ image.url }}" {% if orderable.caption %}data-caption="{{ orderable.caption }}"{% endif %} {% if orderable.credit %}data-credit="{{ orderable.credit }}"{% endif %}></div>
         {% endfor %}
     </div>
 </div>

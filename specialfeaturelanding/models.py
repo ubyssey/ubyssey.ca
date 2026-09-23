@@ -154,7 +154,7 @@ class RedesignAuxiliaryPage(Page):
                 )
             context["redesign_all_articles"] = episodes.order_by(
                 "-explicit_published_at", "-id"
-            ).distinct()[:20]
+            ).distinct()
         return context
 
 

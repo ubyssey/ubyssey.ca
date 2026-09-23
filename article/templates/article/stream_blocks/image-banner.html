@@ -2,12 +2,15 @@
 
 {% image self.image.image original as banner_image %}
 
-<div class="o-image-banner" style="--image_url: url('{{banner_image.full_url}}')" aria-label="{{self.image.alt_text}}">
-    <div class="o-image-banner--shadow">
-        <div class="o-image-banner--shadow-content">
-            <span class="o-image-banner--shadow-content--header" data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header|safe}}</span>
-            <span data-article-editable-stream-field="content" data-article-editable-path="text">{{self.text|safe}}</span>
+<figure class="o-image-banner">
+    <div class="o-image-banner__stage">
+        <img class="o-image-banner__image" src="{{banner_image.url}}" alt="{{self.image.alt_text}}" loading="lazy">
+        <div class="o-image-banner--shadow">
+            <div class="o-image-banner--shadow-content">
+                <h2 class="o-image-banner--shadow-content--header" data-article-editable-stream-field="content" data-article-editable-path="header">{{self.header}}</h2>
+                <p data-article-editable-stream-field="content" data-article-editable-path="text">{{self.text}}</p>
+            </div>
         </div>
-        <div class="o-image-banner--shadow--credit" data-article-editable-stream-field="content" data-article-editable-path="image.credit">{{self.image.credit|safe}}</div>
     </div>
-</div>
+    {% include "article/stream_blocks/media-caption.html" with credit=self.image.credit credit_path="image.credit" %}
+</figure>

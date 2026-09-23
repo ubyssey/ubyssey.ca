@@ -237,6 +237,10 @@ a {
 
 
 html {
+  // Keep the document inside the viewport while allowing intentional
+  // horizontal scrolling inside carousels, tab lists, and menu controls.
+  overflow-x: clip;
+  overscroll-behavior: none;
   transition: background 0.5s ease, color 0.5s ease;
   --color-ubyssey_blue-classic: #{variables.$color-ubyssey-blue-classic};
   --color-ubyssey_blue: #{variables.$color-ubyssey-blue};
@@ -367,6 +371,8 @@ b {
 }
 
 body { 
+  overflow-x: clip;
+  overscroll-behavior: none;
   background-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
   min-height: 100vh;

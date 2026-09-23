@@ -391,7 +391,13 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         context["redesign_all_url"] = self.url
         context["redesign_active_beat_id"] = None
         context["redesign_topics"] = self.get_redesign_topics()
-        configured_featured = list(self.redesign_featured_articles.select_related("article").all())
+        # CMS content may be saved incrementally. A stale or unpublished
+        # chooser must not turn a newly-created section into a server error.
+        configured_featured = [
+            item
+            for item in self.redesign_featured_articles.select_related("article").all()
+            if item.article and item.article.live
+        ]
         if len(configured_featured) == 3:
             featured = [item.article.specific for item in configured_featured]
             feed = self.get_section_articles().exclude(pk__in=[article.pk for article in featured])

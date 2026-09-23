@@ -1597,6 +1597,21 @@ class StandardArticlePage(ArticlePage):
         default="",
         help_text="Optional. Select a story form to show its approved statement. Leave blank for legacy articles unless it is reviewed and intentionally classified.",
     )
+    game_fixture = models.OneToOneField(
+        "home.ThunderbirdFixture",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="game_analysis_article",
+        help_text="For Game Analysis stories only: link the Thunderbird fixture this story covers. A completed fixture will show a Read analysis link in Game Analyses.",
+    )
+
+    def clean(self):
+        super().clean()
+        if self.game_fixture_id and self.story_form != "game-analysis":
+            raise ValidationError({
+                "game_fixture": "A fixture can only be linked when Story form is Game Analysis."
+            })
     full_bleed_nav_color = models.CharField(
         max_length=5,
         choices=(("white", "White"), ("black", "Black")),
@@ -1844,6 +1859,7 @@ class StandardArticlePage(ArticlePage):
                 FieldPanel("standpoint_disclosure"),
                 FieldPanel("extended_byline_override"),
                 FieldPanel("story_form"),
+                FieldPanel("game_fixture"),
                 FieldPanel("full_bleed_nav_color"),
             ],
             heading="Article Content",
@@ -1970,7 +1986,7 @@ class StandardArticlePage(ArticlePage):
 
     @property
     def extended_contributors(self):
-        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor", "illustrator", "graphics_editor"])
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor", "illustrator", "graphics_editor", "videographer", "designer"])
 
     promote_panels = ArticlePage.promote_panels
 

@@ -7,6 +7,7 @@
 @use 'modules/article/redesign';
 @use 'modules/listing-redesign';
 @use 'modules/expanded-menu-canonical';
+@use 'modules/redesign-hover-wash';
 
 .aux-theme{--aux-bg:#fff;--aux-text:#0b0e13;--aux-muted:#666f80;--aux-blue:#21356f;--aux-rule:#d6deed;--aux-soft:#f2f6fc;background:var(--aux-bg);color:var(--aux-text)}
 [color-css-theme=dark] .aux-theme{--aux-bg:#091221;--aux-text:#f5f7fb;--aux-muted:#bac7db;--aux-blue:#7893df;--aux-rule:#46536b;--aux-soft:#172136}
@@ -93,8 +94,29 @@
 .aux-page .aux-tabs a,.aux-page .aux-tabs a:hover,.aux-page .aux-tabs a:focus-visible{background-image:none!important;background-color:transparent!important;background-size:0!important;color:inherit!important;text-decoration:none!important}
 .archive-pills a,.archive-pills a:hover,.archive-pills a:focus-visible{background-image:none!important;text-decoration:none!important}.archive-pills a{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease}.archive-pills a:hover,.archive-pills a:focus-visible{background-color:var(--aux-blue)!important;border-color:var(--aux-blue)!important;color:#fff!important;box-shadow:0 3px 8px rgba(20,31,55,.24)}.archive-pills a.is-current:hover,.archive-pills a.is-current:focus-visible{background-color:#314b91!important;border-color:#314b91!important}
 .archive-result .hp-byline{font:400 10px/15px "articulat-cf",sans-serif;color:var(--aux-text);text-transform:none}.archive-result .hp-byline__prefix{font-style:italic}.archive-result .hp-byline a{font-weight:700;text-transform:uppercase;color:inherit}
+.archive-author-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:0 0 28px}.archive-author-results h2{grid-column:1/-1;margin:0 0 2px;font:700 14px/20px "articulat-cf",sans-serif;text-transform:uppercase}.archive-author-results a{display:block;min-width:0;padding:14px 16px;border:1px solid var(--aux-rule);background:var(--aux-soft);color:inherit;text-decoration:none}.archive-author-results a:hover,.archive-author-results a:focus-visible{background:#bce3f0}.archive-author-results strong,.archive-author-results span,.archive-author-results small{display:block}.archive-author-results strong{font:600 21px/24px "meursault-variable",Georgia,serif}.archive-author-results span,.archive-author-results small{margin-top:3px;font:400 13px/18px "drummond-variable",Georgia,serif}
 .photo-card>a{background-image:none!important}
 .photo-card>a>span{background:none!important}
 .photo-card>a>span time,.photo-card>a>span strong{display:table;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
 .photo-card>a:hover>span time,.photo-card>a:hover>span strong,.photo-card>a:focus-visible>span time,.photo-card>a:focus-visible>span strong{background-size:100% 78%}
 [color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,[color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{color:#081839;background-color:#bce3f0}
+
+/* Keep redesigned editorial links to one shared wash, including in dark mode. */
+.aux-page h2 a,.aux-page h3 a,
+.aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image),
+.photo-card>a>span time,.photo-card>a>span strong{background-image:linear-gradient(var(--redesign-hover-wash),var(--redesign-hover-wash))!important;background-color:transparent!important}
+[color-css-theme=dark] .aux-page h2 a:hover,[color-css-theme=dark] .aux-page h2 a:focus-visible,
+[color-css-theme=dark] .aux-page h3 a:hover,[color-css-theme=dark] .aux-page h3 a:focus-visible,
+[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):hover,
+[color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible,
+[color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,
+[color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{background-color:transparent!important}
+
+/* Team and Contact use the same name-to-pronoun rhythm as author profiles. */
+.person-card h3 small,.contact-row span>small{display:inline-block;margin-left:8px;white-space:nowrap;font:400 16px/20px "drummond-variable",Georgia,serif}
+
+/* Keep pronouns inside the identity column, between name and role. */
+.person-card__identity{grid-template-columns:92px minmax(0,1fr)}
+.person-card__identity>div{min-width:0}
+.person-card__pronouns{margin:3px 0 0;color:var(--aux-muted);font:400 16px/20px "drummond-variable",Georgia,serif;overflow-wrap:anywhere}
+.person-card__pronouns+.person-card__role{margin-top:7px}

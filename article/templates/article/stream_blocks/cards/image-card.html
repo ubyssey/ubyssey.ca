@@ -15,7 +15,8 @@
 </div>
 {% else %}
 {% image self.image width-600 as card_image %}
-<div class="o-card o-card--image" style="background-image: url('{{card_image.url}}')" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
+<div class="o-card o-card--image o-card--image--text-{{ self.text_color|default:'light' }}" {% if article_editable_path_prefix %}data-article-editable-path-prefix="{{ article_editable_path_prefix }}"{% endif %}>
+    <img src="{{card_image.url}}" alt="" loading="lazy">
     {% if self.text %}
     <div data-article-editable-stream-field="content" data-article-editable-path="text" data-article-editable-mode="richtext">{{self.text|safe}}</div>
     {% endif %}

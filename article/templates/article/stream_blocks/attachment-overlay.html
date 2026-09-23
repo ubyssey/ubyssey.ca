@@ -6,7 +6,5 @@
         {% include_block attachment %}
     {% endfor %}
     </div>
-    <div class="caption">
-        {% if self.caption %}{{ self.caption|safe }}{% endif %} <span class="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
-    </div>
+    {% include "article/stream_blocks/media-caption.html" with caption=self.caption credit=self.credit caption_path="caption" credit_path="credit" %}
 </div>

@@ -13,7 +13,8 @@
             <a href="{% pageurl self.article %}">{{self.article.title|safe}}</a>
             {% endif %}
         </h3>
-        <div class="o-article-promo--meta--pubtime"><time datetime="{{self.article.published_at}}">{{self.article.published_at}}</time></div>
+        <div class="o-article-promo--meta--pubtime"><time datetime="{{self.article.published_at|date:'c'}}">{{self.article.published_at|date:'F j, Y'}}</time></div>
+        {% with authors=self.article.primary_author_orderables %}{% if authors %}<p class="o-article-promo--meta--byline"><em>By</em> {% for contributor in authors %}<a href="{{contributor.author.url}}">{{contributor.author_alias|default:contributor.author.full_name}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}{% endwith %}
         <p class="o-article-promo--meta--lede">{{self.article.lede|safe}}</p>
     </div>
 </div>

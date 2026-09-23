@@ -1,0 +1,11 @@
+<section class="hp-election" aria-labelledby="hp-election-title">
+  <div class="page-shell">
+    <h2 id="hp-election-title" class="hp-election__title">{{ self.ams_election_heading }}</h2>
+    <p class="hp-election__description">{{ self.ams_election_description|linebreaksbr }}</p>
+    <div class="hp-election__stories">
+      {% for article in ams_election_stories %}
+        {% include "home/components/redesign_card.html" with article=article variant="side-top" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

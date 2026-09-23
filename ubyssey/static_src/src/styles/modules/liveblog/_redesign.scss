@@ -356,8 +356,8 @@
   .c-liveblog__share { position: absolute; right:calc(100% + 44px); top:109px; display:flex; flex-direction:column; gap:9px; margin:0; }
   .c-liveblog__share button,.c-liveblog__share a { display:grid; width:21px; height:21px; place-items:center; padding:0; border:0; background:none; color:var(--live-text); font-size:20px; cursor:pointer; }
   .c-liveblog__share img { display:block; width:21px; height:21px; object-fit:contain; }
-  .report { display:flex; justify-content:flex-start; gap:11px; margin:70px auto 32px; width:650px; max-width:calc(100% - 36px); color:#172b63; font:400 16px/19px "drummond-variable", Georgia, serif; }
-  .report a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
+  .report { display:flex; justify-content:flex-start; gap:11px; margin:70px auto 32px; width:650px; max-width:calc(100% - 36px); color:#172b63; font:400 16px/11px "meursault-variable", Georgia, serif; }
+  .report a { color:inherit; text-decoration:underline; text-underline-offset:1px; }
 }
 
 [color-css-theme=dark] .c-liveblog-redesign {
@@ -420,3 +420,33 @@
   .c-liveblog-redesign .live-signal::before { animation: none; }
   .c-liveblog-redesign #liveblog-feed { transition: none; }
 }
+
+/* Match the regular article's contribution block while preserving the live
+ * page's width, colour tokens, and responsive layout. */
+.c-liveblog-redesign .report-submit{display:flex;flex-wrap:wrap;align-items:baseline;gap:16px 11px;width:650px;max-width:calc(100% - 36px);margin:0 auto 32px;padding:0 0 22px;border-bottom:1px solid var(--live-rule);color:#172b63}
+.c-liveblog-redesign .report-submit span{width:100%;color:var(--live-text);font:600 22px/1.05 "meursault-variable",Georgia,serif}
+.c-liveblog-redesign .report-submit a{color:inherit;font:400 16px/11px "meursault-variable",Georgia,serif;text-decoration:underline;text-underline-offset:1px}
+[color-css-theme=dark] .c-liveblog-redesign .report-submit{color:#bce3f0}
+@media(max-width:800px){.c-liveblog-redesign .report-submit{gap:16px 10px}.c-liveblog-redesign .report-submit a{font-size:15px;line-height:17px}}
+
+/* Keep the contribution links consistent with ordinary articles: one text
+ * underline, a hover-only wash, and no closing rule. */
+.c-liveblog-redesign .report{margin-bottom:0}
+.c-liveblog-redesign .report-submit{margin-top:24px;padding-bottom:0;border-bottom:0}
+.c-liveblog-redesign .report a,.c-liveblog-redesign .report-submit a{
+  padding:0 3px;
+  border-bottom:0;
+  color:#172e6a;
+  font:600 16px/1.35 "meursault-variable",Georgia,serif;
+  text-decoration:underline;
+  text-underline-offset:1px;
+  background:linear-gradient(var(--redesign-hover-wash),var(--redesign-hover-wash)) no-repeat 0 0 / 0 100%;
+  background-color:transparent;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  transition:background-size .22s ease,color .22s ease;
+}
+.c-liveblog-redesign .report a:hover,.c-liveblog-redesign .report a:focus-visible,.c-liveblog-redesign .report-submit a:hover,.c-liveblog-redesign .report-submit a:focus-visible{background-size:100% 100%}
+[color-css-theme=dark] .c-liveblog-redesign .report a,[color-css-theme=dark] .c-liveblog-redesign .report-submit a{color:#bce3f0}
+[color-css-theme=dark] .c-liveblog-redesign .report a:hover,[color-css-theme=dark] .c-liveblog-redesign .report a:focus-visible,[color-css-theme=dark] .c-liveblog-redesign .report-submit a:hover,[color-css-theme=dark] .c-liveblog-redesign .report-submit a:focus-visible{color:#081839}
+@media(max-width:800px){.c-liveblog-redesign .report a,.c-liveblog-redesign .report-submit a{font-size:15px}}

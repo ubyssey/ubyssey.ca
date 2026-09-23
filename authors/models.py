@@ -158,6 +158,12 @@ class AuthorPage(RoutablePageMixin, Page):
         default="",
         help_text="Primary public email used in the redesigned author and section-editor panels.",
     )
+    pronouns = models.CharField(
+        max_length=80,
+        blank=True,
+        default="",
+        help_text="Optional public pronouns, shown on this author profile and in Our Team and Contact.",
+    )
 
     CHOICES = [("articles", "Articles"), ("photos", "Gallery"), ("videos", "Videos"), ('visuals', "Visual Bylines")]
     main_media_type = models.CharField(
@@ -215,6 +221,7 @@ class AuthorPage(RoutablePageMixin, Page):
                 FieldPanel("main_media_type"),
                 FieldPanel("links"),
                 FieldPanel("contact_email"),
+                FieldPanel("pronouns"),
                 InlinePanel("contact_options", label="Contact option"),
                 InlinePanel("pinned_articles", label="Pinned articles")
             ],
@@ -258,11 +265,35 @@ class AuthorPage(RoutablePageMixin, Page):
                 # Get articles distinct articles where author is credited with video
                 orderables = ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True, author_role="videographer").order_by(article_order+'article_page__explicit_published_at')
             elif media_type == "visuals":
-                # Get articles where this author is credited with something other than "author", "org_role", video
-                orderables = ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).exclude(Q(author_role="author") | Q(author_role="org_role") | Q(author_role="videographer")).order_by(article_order+'article_page__explicit_published_at')
+                # Visual work is an explicit editorial-role set, not a
+                # catch-all for every non-writing contribution.
+                orderables = ArticleAuthorsOrderable.objects.filter(
+                    author=self,
+                    article_page__live=True,
+                    author_role__in=(
+                        "illustrator", "photographer", "photo_editor",
+                        "videographer", "designer", "graphics_editor",
+                    ),
+                ).order_by(article_order+'article_page__explicit_published_at')
+            elif media_type == "margins":
+                orderables = ArticleAuthorsOrderable.objects.filter(
+                    author=self,
+                    article_page__live=True,
+                    author_role__in=("author", "org_role"),
+                    article_page__current_section="margins",
+                ).order_by(article_order+'article_page__explicit_published_at')
+            elif media_type == "edited":
+                orderables = ArticleAuthorsOrderable.objects.filter(
+                    author=self,
+                    article_page__live=True,
+                    author_role__in=("backfield_editor", "copy_editor"),
+                ).order_by(article_order+'article_page__explicit_published_at')
             else:
                 # Get articles where this author is creditted with either "author" or "org_role"
-                orderables = ArticleAuthorsOrderable.objects.filter(Q(author=self, author_role="author", article_page__live=True) | Q(author=self, author_role="org_role", article_page__live=True)).order_by(article_order+'article_page__explicit_published_at')
+                orderables = ArticleAuthorsOrderable.objects.filter(
+                    Q(author=self, author_role="author", article_page__live=True)
+                    | Q(author=self, author_role="org_role", article_page__live=True)
+                ).exclude(article_page__current_section="margins").order_by(article_order+'article_page__explicit_published_at')
                 #authors_media = ArticlePage.objects.live().public().filter(article_authors__author=self).distinct().order_by(article_order)
 
             keys = set([a.article_page_id for a in orderables])
@@ -299,14 +330,23 @@ class AuthorPage(RoutablePageMixin, Page):
 
         media_types = []
         
-        if ArticleAuthorsOrderable.objects.filter(author=self, author_role="author").exists():
+        primary_roles = Q(author_role="author") | Q(author_role="org_role")
+        if ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).filter(primary_roles).exclude(article_page__current_section="margins").exists():
             media_types.append(("articles", "articles"))
-        if ArticleAuthorsOrderable.objects.filter(author=self).exclude(author_role="author").exists():
+        if ArticleAuthorsOrderable.objects.filter(
+            author=self,
+            article_page__live=True,
+            author_role__in=("illustrator", "photographer", "photo_editor", "videographer", "designer", "graphics_editor"),
+        ).exists():
             media_types.append(("visuals", "visuals"))
         if UbysseyImage.objects.filter(author=self).exists():
             media_types.append(("photos", "gallery"))
         if VideoAuthorsOrderable.objects.filter(author=self).exists():
             media_types.append(("videos", "videos"))
+        if ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True).filter(primary_roles, article_page__current_section="margins").exists():
+            media_types.append(("margins", "margins"))
+        if ArticleAuthorsOrderable.objects.filter(author=self, article_page__live=True, author_role__in=("backfield_editor", "copy_editor")).exists():
+            media_types.append(("edited", "edited"))
 
         context["q"] = request.GET.get("q")
         context["media_types"] = media_types
@@ -452,3 +492,15 @@ class AuthorPage(RoutablePageMixin, Page):
         context = self.organize_media("videos", request, context)
 
         return render(request, self.template, context)
+
+    @route(r'^margins/$')
+    def margins_page(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        context["media_type"] = "margins"
+        return render(request, self.template, self.organize_media("margins", request, context))
+
+    @route(r'^edited/$')
+    def edited_page(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        context["media_type"] = "edited"
+        return render(request, self.template, self.organize_media("edited", request, context))

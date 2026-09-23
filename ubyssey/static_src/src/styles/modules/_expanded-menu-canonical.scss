@@ -6,6 +6,34 @@
  * search control, typography and responsive grid so they cannot drift.
  */
 
+/* The supporting Join copy is separate from the /join/ heading link, so its
+ * homepage link can have the same hover wash as the other menu links. */
+:is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__join-site{
+  display:inline!important;
+  width:auto!important;
+  padding:0!important;
+  font:inherit!important;
+  font-variation-settings:inherit!important;
+  letter-spacing:inherit!important;
+  line-height:inherit!important;
+  color:#fff!important;
+  background-image:linear-gradient(#bce3f0,#bce3f0)!important;
+  background-repeat:no-repeat!important;
+  background-position:0 90%!important;
+  background-size:0 78%!important;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  text-decoration:underline!important;
+  text-underline-offset:3px;
+  transition:background-size .2s ease,color .2s ease!important;
+}
+:is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__join-site:hover,
+:is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__join-site:focus-visible{
+  color:#253377!important;
+  background-size:100% 78%!important;
+  text-decoration:none!important;
+}
+
 @media (min-width:801px){
   :is(.hp-nav,.ar-nav) .hp-nav__expanded,
   :is(.hp-nav,.ar-nav).is-compact .hp-nav__expanded{

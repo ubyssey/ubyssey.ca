@@ -3,5 +3,6 @@
 @use 'modules/liveblog/liveblog-admin';
 @use 'modules/liveblog/liveblog-article-page';
 @use 'modules/liveblog/redesign';
+@use 'modules/redesign-hover-wash';
 
 @use 'objects/article_storystream_views';

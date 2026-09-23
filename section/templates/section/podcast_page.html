@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags articletags support_tags %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=aux-redesign-6"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/auxiliary.css' %}?v=redesign-page-edges-2"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block page_wrapper %}listing-redesign aux-theme{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}
@@ -13,7 +13,7 @@
   </section>
   <nav class="aux-tabs page-shell"><div><a class="is-active" href="#episodes">Episodes</a></div><form action="/archive/" method="get"><input type="search" name="q" placeholder="Search"><button class="aux-search-button"><img src="{% static 'ubyssey/images/redesign/search.svg' %}" alt="">Search</button></form></nav>
   <section id="episodes" class="aux-section page-shell"><h2>Episodes</h2><div class="episode-list">
-    {% for article in redesign_all_articles|slice:':3' %}{% auxiliary_url article as article_url %}<article class="episode-card"><a class="episode-card__image" href="{{ article_url }}">{% include 'section/objects/aux_story_image.html' with article=article %}</a><div class="episode-card__body"><p class="aux-kicker">{{ article.explicit_published_at|date:'F j' }}{% if article.reading_time %} &nbsp;•&nbsp; {{ article.reading_time }} min{% endif %}</p><h3><a href="{{ article_url }}">{{ article.title|safe }}</a></h3><p>{{ article.lede|striptags|truncatewords:32 }}</p></div><div class="episode-card__action"><p>{{ article.authors_string|normalize_redesign_byline|safe }}</p><a class="aux-button" href="{{ article_url }}">Play</a></div></article>{% empty %}<p>No episodes are available yet.</p>{% endfor %}
+    {% for article in redesign_all_articles %}{% auxiliary_url article as article_url %}<article class="episode-card"><a class="episode-card__image" href="{{ article_url }}">{% include 'section/objects/aux_story_image.html' with article=article %}</a><div class="episode-card__body"><p class="aux-kicker">{{ article.explicit_published_at|date:'F j' }}{% if article.reading_time %} &nbsp;•&nbsp; {{ article.reading_time }} min{% endif %}</p><h3><a href="{{ article_url }}">{{ article.title|safe }}</a></h3><p>{{ article.lede|striptags|truncatewords:32 }}</p></div><div class="episode-card__action"><p>{{ article|redesign_card_byline|normalize_redesign_byline|safe }}</p><a class="aux-button" href="{{ article_url }}">Play</a></div></article>{% empty %}<p>No episodes are available yet.</p>{% endfor %}
   </div></section>
 </main>
 {% endblock %}

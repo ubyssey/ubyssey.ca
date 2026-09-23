@@ -72,6 +72,21 @@ class ArticleRedesignMappingTests(SimpleTestCase):
         self.assertIn("Aleah Kippan</a> took the photos, which were edited by <a href=\"/authors/sophia-clearwater/\">Sophia Clearwater</a>.", rendered)
         self.assertIn("Skye Shen</a> created the graphics, which were edited by <a href=\"/authors/quyen-schroeder/\">Quyen Schroeder</a>.", rendered)
 
+    def test_extended_byline_includes_videographers_and_designers(self):
+        def contributor(name, role):
+            return SimpleNamespace(
+                author=SimpleNamespace(full_name=name, url=f"/authors/{name.lower().replace(' ', '-')}/"),
+                author_alias="",
+                author_role=role,
+            )
+
+        rendered = str(format_redesign_extended_byline([
+            contributor("Ari Video", "videographer"),
+            contributor("Dee Sign", "designer"),
+        ]))
+        self.assertIn("Ari Video</a> was the videographer.", rendered)
+        self.assertIn("Dee Sign</a> designed this article.", rendered)
+
     def test_legacy_visual_byline_excludes_photo_and_graphics_editors(self):
         class Contributors:
             def __init__(self, contributors):

@@ -1,0 +1,7 @@
+{% if caption or credit %}
+<div class="caption ar-media-caption">
+    {% if caption %}<div class="ar-media-caption__text"{% if caption_path %} data-article-editable-stream-field="content" data-article-editable-path="{{ caption_path }}" data-article-editable-mode="richtext"{% endif %}>{{ caption|safe }}</div>{% endif %}
+    {% if caption and credit %}<span class="ar-media-caption__divider" aria-hidden="true">//</span>{% endif %}
+    {% if credit %}<span class="credit ar-media-caption__source"{% if credit_path %} data-article-editable-stream-field="content" data-article-editable-path="{{ credit_path }}"{% endif %}>{{ credit }}</span>{% endif %}
+</div>
+{% endif %}

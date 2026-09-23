@@ -1,8 +1,5 @@
 <div class="attachment">
-    <iframe class="pdf" src="{{self.pdf.url}}" width="800" height="500"></iframe>
-    {% if self.caption or self.credit %}
-    <div class="caption">
-        <span data-article-editable-stream-field="content" data-article-editable-path="caption" data-article-editable-mode="richtext">{{ self.caption|safe }}</span> <span class="credit" data-article-editable-stream-field="content" data-article-editable-path="credit">{% if self.credit %}{{ self.credit }}{% endif %}</span>
-    </div>
-{% endif %}
+    <div class="ar-pdf__actions"><a href="{{self.pdf.url}}" target="_blank" rel="noopener">Open PDF</a><a href="{{self.pdf.url}}" download>Download PDF</a></div>
+    <iframe class="pdf" src="{{self.pdf.url}}" title="{{ self.pdf.title|default:'Embedded PDF' }}" loading="lazy"></iframe>
+    {% include "article/stream_blocks/media-caption.html" with caption=self.caption credit=self.credit caption_path="caption" credit_path="credit" %}
 </div>

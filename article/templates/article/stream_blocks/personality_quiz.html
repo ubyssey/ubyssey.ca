@@ -28,11 +28,7 @@
                 {% if personality.personality_image.image %}
                     {% image personality.personality_image.image width-1000 format-webp as image %}
                     <img class="article-attachment" width="{{image.width}}" height="{{image.height}}" decoding="async" data-id="{{ image.id }}" data-caption="{{ personality.personality_image.caption }}" data-credit="{{ personality.personality_image.credit }}" data-url="{{ image.url }}" src="{{ image.url }}" alt="{% if personality.personality_image.alt_text %}{{ personality.personality_image.alt_text }}{% else %}{{personality.personality_image.caption}}{% endif %}" />
-                    {% if personality.personality_image.caption or personality.personality_image.credit %}
-                    <div class="caption">
-                        {% if personality.personality_image.caption %}{{ personality.personality_image.caption|safe }}{% endif %} <span class="credit">{% if personality.personality_image.credit %}{{ personality.personality_image.credit }}{% endif %}</span>
-                    </div>
-                    {% endif %}
+                    {% include "article/stream_blocks/media-caption.html" with caption=personality.personality_image.caption credit=personality.personality_image.credit %}
                 {% endif %}
             </div>
         {% endfor %}
