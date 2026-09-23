@@ -752,14 +752,15 @@
 /* The legacy direct-paragraph link rule makes the report links heavier than
  * the submission links. Give both rows the same treatment and spacing. */
 .ar-page .ar-body.article-content>.ar-report{margin-bottom:0!important}
-.ar-page .ar-body.article-content>.ar-submit{margin-top:24px}
+.ar-page .ar-body.article-content>.ar-submit{margin-top:24px;padding-bottom:0;border-bottom:0}
 .ar-page .ar-body.article-content .ar-report a,.ar-page .ar-body.article-content .ar-submit a{
   padding:0 3px;
-  border-bottom:1px solid currentColor;
+  border-bottom:0;
   color:#172e6a;
   font:600 16px/1.35 "meursault-variable",Georgia,serif;
   text-decoration:underline;
   text-underline-offset:1px;
 }
 [color-css-theme=dark] .ar-page .ar-body.article-content .ar-report a,[color-css-theme=dark] .ar-page .ar-body.article-content .ar-submit a{color:#bce3f0}
+[color-css-theme=dark] .ar-page .ar-body.article-content .ar-report a:hover,[color-css-theme=dark] .ar-page .ar-body.article-content .ar-report a:focus-visible,[color-css-theme=dark] .ar-page .ar-body.article-content .ar-submit a:hover,[color-css-theme=dark] .ar-page .ar-body.article-content .ar-submit a:focus-visible{color:#081839}
 @media(max-width:760px){.ar-page .ar-body.article-content .ar-report a,.ar-page .ar-body.article-content .ar-submit a{font-size:15px}}
