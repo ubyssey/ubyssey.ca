@@ -112,7 +112,7 @@
 /* Main-page final corrections */
 .hp-election{padding:17px 0 34px;color:var(--hp-text);background:var(--hp-bg)}
 .hp-election__title{display:flex;align-items:center;justify-content:center;min-height:64px;margin:0;border-top:.5px solid var(--hp-text);border-bottom:.5px solid var(--hp-text);font:400 18px/1.25 "meursault-variable",Georgia,serif;text-align:center;text-transform:uppercase}
-.hp-election__description{max-width:860px;margin:22px auto 26px!important;font:400 18px/1.4 "meursault-variable",Georgia,serif;text-align:center}
+.hp-election__description{max-width:860px;margin:11px auto 26px!important;font:400 18px/1.4 "meursault-variable",Georgia,serif;text-align:center}
 .hp-election__stories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .hp-election .hp-card{display:grid;grid-template-columns:300px minmax(0,1fr);gap:12px;align-items:start;overflow:visible}
 .hp-election .hp-card__image{width:300px;height:200px}
@@ -124,7 +124,7 @@
 @media(max-width:760px){
   .hp-election{padding:12px 0 28px}
   .hp-election__title{min-height:54px;padding:8px 12px;font-size:16px}
-  .hp-election__description{margin:18px auto 22px!important;font-size:18px}
+  .hp-election__description{margin:9px auto 22px!important;font-size:18px}
   .hp-election__stories{grid-template-columns:1fr;gap:24px}
   .hp-election .hp-card--side-top{padding:0 0 22px;border-bottom:1px solid var(--hp-rule)}
   .hp-election .hp-card--side-top .hp-card__image{height:auto;aspect-ratio:3/2}
@@ -594,7 +594,7 @@
 /* Only the small supporting text receives the divider hover treatment. */
 .hp-podcast .hp-promo__copy>span,.hp-podcast .hp-promo__copy h2>span,.hp-margins .hp-promo__copy h2>span{background-image:none!important}
 .hp-podcast:hover .hp-promo__copy>span,.hp-podcast:focus-visible .hp-promo__copy>span,.hp-podcast:hover .hp-promo__copy h2>span,.hp-podcast:focus-visible .hp-promo__copy h2>span,.hp-margins:hover .hp-promo__copy h2>span,.hp-margins:focus-visible .hp-promo__copy h2>span{color:#fff!important;background-color:transparent!important}
-.site-footer__brand{width:440px!important}.site-footer__brand>a.site-footer__nameplate{width:440px!important;height:76px!important;padding-top:3px!important;font-size:56px!important;line-height:67px!important}
+@media(min-width:901px){.site-footer__brand{width:440px!important}.site-footer__brand>a.site-footer__nameplate{width:440px!important;height:76px!important;padding-top:3px!important;font-size:56px!important;line-height:67px!important}}
 
 /* Final alignment of the shared expanded menu and desktop homepage header. */
 @media (min-width:761px){

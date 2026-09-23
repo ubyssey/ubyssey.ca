@@ -9,6 +9,13 @@
 /* The supporting Join copy is separate from the /join/ heading link, so its
  * homepage link can have the same hover wash as the other menu links. */
 :is(.hp-nav,.ar-nav) .hp-nav__expanded .hp-nav__join-site{
+  display:inline!important;
+  width:auto!important;
+  padding:0!important;
+  font:inherit!important;
+  font-variation-settings:inherit!important;
+  letter-spacing:inherit!important;
+  line-height:inherit!important;
   color:#fff!important;
   background-image:linear-gradient(#bce3f0,#bce3f0)!important;
   background-repeat:no-repeat!important;
