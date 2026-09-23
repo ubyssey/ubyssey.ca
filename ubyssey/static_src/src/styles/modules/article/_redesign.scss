@@ -731,3 +731,20 @@
 .ar-submit a{color:inherit;font:400 16px/11px "meursault-variable",Georgia,serif;text-transform:none;text-decoration:underline;text-underline-offset:1px}
 [color-css-theme=dark] .ar-submit{color:#bce3f0}
 @media(max-width:760px){.ar-submit{gap:16px 10px}.ar-submit a{font-size:15px;line-height:17px}}
+
+/* Keep article-specific typography and link states ahead of legacy article rules. */
+.ar-main-byline__pronouns{font:400 16px/20px "drummond-variable",Georgia,serif;white-space:nowrap}
+.ar-page .ar-body.article-content>h2.header{width:auto;margin-left:0;padding-inline:0;background:none}
+.ar-page .ar-body.article-content>h1,.ar-page .ar-body.article-content>h2,.ar-page .ar-body.article-content>h3{padding-inline:0;text-indent:0}
+.ar-page .ar-body.article-content .ar-report a,.ar-page .ar-body.article-content .ar-submit a{
+  line-height:1.35;
+  background-image:linear-gradient(var(--redesign-hover-wash),var(--redesign-hover-wash))!important;
+  background-repeat:no-repeat!important;
+  background-position:0 0!important;
+  background-size:0 100%!important;
+  background-color:transparent!important;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  transition:background-size .22s ease,color .22s ease;
+}
+.ar-page .ar-body.article-content .ar-report a:hover,.ar-page .ar-body.article-content .ar-report a:focus-visible,.ar-page .ar-body.article-content .ar-submit a:hover,.ar-page .ar-body.article-content .ar-submit a:focus-visible{background-size:100% 100%!important}

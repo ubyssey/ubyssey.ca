@@ -240,7 +240,7 @@
   .ar-audio-player input[type=range]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--ar-block-accent); }
   .ar-audio-player input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--ar-block-accent); }
   .ar-audio-player__time { font-variant-numeric: tabular-nums; }
-  .ar-pdf__actions { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; font: 400 16px/1.25 "drummond-variable", Georgia, serif; }
+  .ar-pdf__actions { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; font: 600 14px/1.35 "articulat-cf", sans-serif; }
   .ar-pdf__actions a { color: var(--ar-block-accent); text-decoration: underline; }
   iframe.pdf { display: block; width: 100%; max-width: 600px; min-height: 540px; border: 1px solid var(--ar-block-rule); }
   .o-article-embed--video { width: 100%; max-width: 800px; }
