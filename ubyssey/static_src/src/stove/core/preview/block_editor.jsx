@@ -525,6 +525,16 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     },
   };
 
+  const closeOnEscape = (event) => {
+    if (event.key !== "Escape" || !state.blockEditorModalOpen) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (ui.blockEditorOpen) UIactions.done();
+    else if (ui.insertOpen) UIactions.cancelInsert();
+    else UIactions.closeDialogs();
+  };
+  document.addEventListener("keydown", closeOnEscape, true);
+
   const api = {
     ...UIactions,
     getState() {
@@ -540,6 +550,7 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
     cleanup() {
       if (!mounted) return;
       root.removeEventListener("click", selectClickedBlock, true);
+      document.removeEventListener("keydown", closeOnEscape, true);
       removePendingAdd();
       restoreBlockEditorHome();
       mounted = false;
