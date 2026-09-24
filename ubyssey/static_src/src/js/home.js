@@ -112,9 +112,25 @@ function initializeGameAnalysis() {
     let requestToken = 0;
     let controller;
     let debounceTimer;
+    let storyAnimation;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const emptyMessage = '<p class="hp-games__empty">Nothing here yet, check back later!</p>';
-    const showContent = (content) => {
-      stories.innerHTML = content.stories || emptyMessage;
+    const swapStories = async (html, token) => {
+      storyAnimation?.cancel();
+      if (!reduceMotion.matches && stories.animate && stories.querySelector('[data-game-card]')) {
+        storyAnimation = stories.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 110, easing: 'ease-in' });
+        try { await storyAnimation.finished; } catch (_) { /* Superseded by another selection. */ }
+      }
+      if (token !== requestToken) return;
+      stories.innerHTML = html || emptyMessage;
+      stories.classList.toggle('has-cards', Boolean(stories.querySelector('[data-game-card]')));
+      if (!reduceMotion.matches && stories.animate) {
+        storyAnimation = stories.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 170, easing: 'ease-out' });
+      }
+    };
+    const showContent = async (content, token) => {
+      await swapStories(content.stories, token);
+      if (token !== requestToken) return;
       upcoming.innerHTML = content.upcoming || emptyMessage;
       recent.innerHTML = content.recent || emptyMessage;
       panel.setAttribute('aria-busy', 'false');
@@ -138,18 +154,18 @@ function initializeGameAnalysis() {
       controller = undefined;
       updateControls();
       if (!selectedSports.size) {
-        showContent(initial);
+        showContent(initial, token);
         return;
       }
       const sports = [...selectedSports].sort();
       const key = sports.join(',');
       const cached = responseCache.get(key);
       if (cached && cached.expiresAt > Date.now()) {
-        showContent(cached.content);
+        showContent(cached.content, token);
         return;
       }
       panel.setAttribute('aria-busy', 'true');
-      stories.innerHTML = '<p class="hp-games__empty" role="status">Loading stories…</p>';
+      swapStories('<p class="hp-games__empty" role="status">Loading stories…</p>', token);
       upcoming.innerHTML = '<p class="hp-games__empty" role="status">Loading games…</p>';
       recent.innerHTML = '<p class="hp-games__empty" role="status">Loading games…</p>';
       debounceTimer = window.setTimeout(async () => {
@@ -166,10 +182,11 @@ function initializeGameAnalysis() {
           const content = await response.json();
           if (token !== requestToken) return;
           responseCache.set(key, { content, expiresAt: Date.now() + 60000 });
-          showContent(content);
+          await showContent(content, token);
         } catch (error) {
           if (token !== requestToken || error.name === 'AbortError') return;
-          stories.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load stories. <button type="button" data-game-retry>Try again</button></p>';
+          await swapStories('<p class="hp-games__empty" role="alert">Couldn’t load stories. <button type="button" data-game-retry>Try again</button></p>', token);
+          if (token !== requestToken) return;
           upcoming.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load games. Please try again.</p>';
           recent.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load games. Please try again.</p>';
           stories.querySelector('[data-game-retry]')?.addEventListener('click', loadSelection);
