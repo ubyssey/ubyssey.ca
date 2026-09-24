@@ -228,6 +228,14 @@ class SectionPage(RoutablePageMixin, SectionablePage):
     redesign_editor = models.ForeignKey(
         "authors.AuthorPage", null=True, blank=True, on_delete=models.SET_NULL, related_name="edited_redesign_sections"
     )
+    redesign_editor_email_override = models.EmailField(
+        blank=True,
+        default="",
+        help_text=(
+            "Optional public email for this section's Contact the editor box only. "
+            "Leave blank to use the editor's author-profile contact email."
+        ),
+    )
     redesign_editor_description = models.CharField(
         max_length=120,
         blank=True,
@@ -292,6 +300,7 @@ class SectionPage(RoutablePageMixin, SectionablePage):
                 FieldPanel("redesign_tip_title"), FieldPanel("redesign_tip_body"),
                 FieldPanel("redesign_tip_link_text"), FieldPanel("redesign_tip_link_url"),
                 FieldPanel("redesign_editor"),
+                FieldPanel("redesign_editor_email_override"),
                 FieldPanel("redesign_editor_description", widget=forms.TextInput(attrs={"maxlength": 120})),
                 InlinePanel("redesign_featured_articles", max_num=3, label="Story"),
             ],
@@ -329,6 +338,14 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             heading="Sidebar"
         )
     ]
+
+    @property
+    def redesign_editor_public_email(self):
+        return (
+            self.redesign_editor_email_override
+            or (self.redesign_editor.public_contact_email if self.redesign_editor else "")
+            or "news@ubyssey.ca"
+        )
 
     def get_filter(self):
         filters = {"section": self.current_section}

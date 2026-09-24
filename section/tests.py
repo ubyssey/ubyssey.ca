@@ -1,9 +1,27 @@
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from wagtail.models import Page, Site
 
 from article.models import StandardArticlePage
+from authors.models import AuthorPage
 from home.models import HomePage
 from section.models import CategoryMenuItem, CategoryPage, SectionPage
+
+
+class SectionEditorEmailTests(SimpleTestCase):
+    def test_override_is_limited_to_the_section_contact_box(self):
+        editor = AuthorPage(full_name="Test Editor", contact_email="author@ubyssey.ca")
+        section = SectionPage(
+            redesign_editor=editor,
+            redesign_editor_email_override="section@ubyssey.ca",
+        )
+        self.assertEqual(section.redesign_editor_public_email, "section@ubyssey.ca")
+        self.assertEqual(editor.public_contact_email, "author@ubyssey.ca")
+
+        section.redesign_editor_email_override = ""
+        self.assertEqual(section.redesign_editor_public_email, "author@ubyssey.ca")
+
+    def test_missing_editor_keeps_existing_fallback(self):
+        self.assertEqual(SectionPage().redesign_editor_public_email, "news@ubyssey.ca")
 
 
 class RedesignBeatPageTests(TestCase):
