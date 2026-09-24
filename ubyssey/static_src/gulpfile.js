@@ -68,6 +68,23 @@ function webpackBuildDevTask(callback) {
   });
 }
 
+function webpackWatchDevTask(callback) {
+  let initial = true;
+  webpack(webpackDevConfig).watch({}, (err, stats) => {
+    if (err) {
+      if(initial) {
+        callback(err);
+      } else {
+        log.error(err);
+      }
+    } else {
+      log("[webpackWatchDevTask]", stats.toString({ colors: true }));
+      if (initial) callback();
+    }
+    initial = false;
+  });
+}
+
 function jasmineTask() {
   return src('./src/**/*.spec.js')
     .pipe(jasmine({verbose: true}));
@@ -127,13 +144,11 @@ function copyFontsTask() {
 }
 
 function watchTask() { 
-  watch('./src/js/**/*', series(cleanJsTask, webpackBuildDevTask));
   watch('./src/styles/**/*', series(cleanCssTask, sassBuildDevTask));
   watch('./src/images/**/*', series(cleanImagesTask, copyImagesTask));
   watch('./src/videos/**/*', series(cleanVideosTask, copyVideosTask));
   watch('./src/fonts/**/*',  series(cleanFontsTask, copyFontsTask));
   watch('./src/stove/styles/*.scss', series(cleanCssTask, sassBuildDevTask));  
-  watch('./src/stove/**/*.{js,jsx}', series(cleanJsTask, webpackBuildDevTask));
 }
 
 exports.jasmine = jasmineTask
@@ -152,9 +167,9 @@ exports.buildDev = series(
   parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask))
 exports.watch = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
-  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask),
+  parallel(webpackWatchDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask),
   watchTask)
 exports.default = series(
   parallel(cleanJsTask, cleanCssTask, cleanImagesTask, cleanVideosTask, cleanFontsTask),
-  parallel(webpackBuildDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask),
+  parallel(webpackWatchDevTask, sassBuildDevTask, copyImagesTask, copyVideosTask, copyFontsTask),
   watchTask)
