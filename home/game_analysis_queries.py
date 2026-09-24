@@ -1,75 +1,44 @@
-"""Bound the homepage Game Analyses data without changing client-side filters."""
-
-from django.db.models import F, Window
-from django.db.models.functions import RowNumber
+"""Small, selection-scoped queries for the homepage Game Analyses panel."""
 
 from article.models import ArticlePage
+from ubyssey.sports import GAME_ANALYSIS_ACTIVE_SPORT_CHOICES
 
 
-# A selection of several sports can draw its first N entries from any one
-# sport. Keeping the first N *per sport* therefore preserves the first N for
-# every possible selection while avoiding the full historical fixture queue.
 STORY_LIMIT = 4
 FIXTURE_LIMIT = 5
+ACTIVE_SPORTS = tuple(sport for sport, _label in GAME_ANALYSIS_ACTIVE_SPORT_CHOICES)
+
+
+def panel_active_sports(panel_value=None):
+    """Return the CMS-enabled sports, or all current sports without a panel."""
+    configured = panel_value.get("active_sports", []) if panel_value else []
+    return [sport for sport in configured if sport in ACTIVE_SPORTS] or list(ACTIVE_SPORTS)
 
 
 def fixture_queues(sports, now):
     from home.models import ThunderbirdFixture
 
-    fixtures = ThunderbirdFixture.objects.filter(sport__in=sports)
-    upcoming_ids = list(
-        fixtures.filter(starts_at__gte=now)
-        .annotate(
-            sport_rank=Window(
-                expression=RowNumber(),
-                partition_by=[F("sport")],
-                order_by=[F("starts_at").asc(), F("pk").asc()],
-            )
-        )
-        .filter(sport_rank__lte=FIXTURE_LIMIT)
-        .order_by("starts_at", "pk")
-        .values_list("pk", flat=True)
+    fixtures = ThunderbirdFixture.objects.filter(sport__in=sports).select_related(
+        "game_analysis_article"
     )
-    recent_ids = list(
-        fixtures.filter(starts_at__lt=now)
-        .annotate(
-            sport_rank=Window(
-                expression=RowNumber(),
-                partition_by=[F("sport")],
-                order_by=[F("starts_at").desc(), F("pk").desc()],
-            )
-        )
-        .filter(sport_rank__lte=FIXTURE_LIMIT)
-        .order_by("-starts_at", "-pk")
-        .values_list("pk", flat=True)
+    upcoming = list(
+        fixtures.filter(starts_at__gte=now).order_by("starts_at", "pk")[:FIXTURE_LIMIT]
     )
-    # Rank only fixture IDs; load the selected rows and linked stories after
-    # the window query so MySQL does not sort the joined article records.
-    selected = ThunderbirdFixture.objects.select_related("game_analysis_article").in_bulk(
-        set(upcoming_ids + recent_ids)
+    recent = list(
+        fixtures.filter(starts_at__lt=now).order_by("-starts_at", "-pk")[:FIXTURE_LIMIT]
     )
-    return [selected[pk] for pk in upcoming_ids], [selected[pk] for pk in recent_ids]
+    return upcoming, recent
 
 
 def chronological_articles(sports):
-    """Return the newest four live Game Analysis stories per active sport."""
-    ranked_ids = list(
+    """Return only the newest four live Game Analysis stories for this selection."""
+    return list(
         ArticlePage.objects.live()
         .public()
         .filter(
             standardarticlepage__story_form="game-analysis",
             covered_sport__in=sports,
         )
-        .annotate(
-            sport_rank=Window(
-                expression=RowNumber(),
-                partition_by=[F("covered_sport")],
-                order_by=[F("explicit_published_at").desc(), F("pk").desc()],
-            )
-        )
-        .filter(sport_rank__lte=STORY_LIMIT)
-        .values_list("pk", flat=True)
+        .order_by("-explicit_published_at", "-pk")
+        .specific()[:STORY_LIMIT]
     )
-    return ArticlePage.objects.live().public().filter(pk__in=ranked_ids).order_by(
-        "-explicit_published_at", "-pk"
-    ).specific()

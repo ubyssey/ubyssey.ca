@@ -1,14 +1,17 @@
 from datetime import timedelta
 from itertools import combinations
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from django import forms
 from django.template.loader import get_template
-from django.test import SimpleTestCase, TestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.utils import timezone
 
 from home.blocks import GameAnalysisPanel, SPORT_CHOICES
-from home.game_analysis_queries import FIXTURE_LIMIT, fixture_queues
+from home.game_analysis_queries import FIXTURE_LIMIT, fixture_queues, panel_active_sports
 from home.models import HomePage, ThunderbirdFixture
+from home.views import game_analysis_filter
 
 
 class HomepageRedesignTests(SimpleTestCase):
@@ -41,6 +44,10 @@ class HomepageRedesignTests(SimpleTestCase):
         active_sport_choices = GameAnalysisPanel().child_blocks["active_sports"].field.choices
         self.assertNotIn("rugby-w", dict(active_sport_choices))
 
+    def test_active_sports_follow_cms_configuration(self):
+        self.assertEqual(panel_active_sports({"active_sports": ["hockey-w", "soccer-m"]}), ["hockey-w", "soccer-m"])
+        self.assertNotIn("rugby-w", panel_active_sports())
+
     def test_homepage_has_named_hero_positions(self):
         fields = {field.name for field in HomePage._meta.get_fields()}
         self.assertTrue({
@@ -60,7 +67,7 @@ class HomepageRedesignTests(SimpleTestCase):
 
 
 class GameAnalysisFixtureQueryTests(TestCase):
-    def test_five_per_sport_preserves_first_five_for_every_filter_combination(self):
+    def test_each_selection_returns_only_its_first_five_chronological_fixtures(self):
         now = timezone.now()
         sports = ["soccer-m", "hockey-w", "basketball-m"]
         for sport_index, sport in enumerate(sports):
@@ -77,8 +84,8 @@ class GameAnalysisFixtureQueryTests(TestCase):
                     )
 
         upcoming, recent = fixture_queues(sports, now)
-        self.assertEqual(len(upcoming), len(sports) * FIXTURE_LIMIT)
-        self.assertEqual(len(recent), len(sports) * FIXTURE_LIMIT)
+        self.assertEqual(len(upcoming), FIXTURE_LIMIT)
+        self.assertEqual(len(recent), FIXTURE_LIMIT)
 
         for count in range(1, len(sports) + 1):
             for selection in combinations(sports, count):
@@ -92,11 +99,44 @@ class GameAnalysisFixtureQueryTests(TestCase):
                     .order_by("-starts_at", "-pk")
                     .values_list("pk", flat=True)[:FIXTURE_LIMIT]
                 )
+                selected_upcoming, selected_recent = fixture_queues(selection, now)
                 self.assertEqual(
-                    [game.pk for game in upcoming if game.sport in selection][:FIXTURE_LIMIT],
+                    [game.pk for game in selected_upcoming],
                     expected_upcoming,
                 )
                 self.assertEqual(
-                    [game.pk for game in recent if game.sport in selection][:FIXTURE_LIMIT],
+                    [game.pk for game in selected_recent],
                     expected_recent,
                 )
+
+
+class GameAnalysisFilterViewTests(SimpleTestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.site = SimpleNamespace(root_page_id=42)
+        self.home = SimpleNamespace(pk=42, game_analysis=[])
+
+    def test_rejects_inactive_sport_before_querying_content(self):
+        request = self.factory.get("/game-analysis/filter/?sport=rugby-w")
+        with patch("home.views.Site.find_for_request", return_value=self.site), \
+                patch("home.views.HomePage") as homepage_model, \
+                patch("home.views.chronological_articles") as stories:
+            homepage_model.objects.live.return_value.public.return_value.filter.return_value.first.return_value = self.home
+            response = game_analysis_filter(request)
+        self.assertEqual(response.status_code, 400)
+        stories.assert_not_called()
+
+    def test_fetches_only_selected_sports_and_returns_empty_states(self):
+        request = self.factory.get("/game-analysis/filter/?sport=soccer-m&sport=hockey-w")
+        with patch("home.views.Site.find_for_request", return_value=self.site), \
+                patch("home.views.HomePage") as homepage_model, \
+                patch("home.views.cache") as response_cache, \
+                patch("home.views.chronological_articles", return_value=[]) as stories, \
+                patch("home.views.fixture_queues", return_value=([], [])) as fixtures:
+            homepage_model.objects.live.return_value.public.return_value.filter.return_value.first.return_value = self.home
+            response_cache.get.return_value = None
+            response = game_analysis_filter(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"stories": "", "upcoming": "", "recent": ""})
+        stories.assert_called_once_with(["hockey-w", "soccer-m"])
+        self.assertEqual(fixtures.call_args.args[0], ["hockey-w", "soccer-m"])

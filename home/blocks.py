@@ -77,7 +77,7 @@ class GameAnalysisPanel(blocks.StructBlock):
         # advertises unpublished Game Analysis stories.
         allowed_sports = {choice[0] for choice in SPORT_CHOICES[1:]}
         entries = [item for item in value["articles"] if item.get("article")]
-        from home.game_analysis_queries import STORY_LIMIT, chronological_articles, fixture_queues
+        from home.game_analysis_queries import STORY_LIMIT, fixture_queues, panel_active_sports
 
         live_articles = ArticlePage.objects.live().public().filter(
             standardarticlepage__story_form="game-analysis"
@@ -94,14 +94,8 @@ class GameAnalysisPanel(blocks.StructBlock):
         # schedule can progress automatically while editors add only scores.
         # The panel's scope is editorially defined, rather than being limited
         # by whichever story filters happen to be selected in the CMS.
-        active_sports = [
-            sport for sport in value.get("active_sports", []) if sport in allowed_sports
-        ] or [choice[0] for choice in SPORT_CHOICES[1:]]
+        active_sports = panel_active_sports(value)
         context["panel_sports"] = active_sports
-        context["filtered_analysis_articles"] = [
-            {"article": article, "sport": article.covered_sport}
-            for article in chronological_articles(active_sports)
-        ]
         now = timezone.now()
         context["upcoming_games"], context["recent_results"] = fixture_queues(
             active_sports, now

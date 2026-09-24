@@ -1,4 +1,3 @@
-{# The empty StreamField state is intentional: HomePage.get_context supplies
-   all public Game Analysis stories and fixtures, so this remains the same
-   functional, filterable panel used by the configured CMS block. #}
+{# Without a CMS panel, the homepage supplies four live default stories and
+   five fixtures per tab. Sport selections use the same on-demand endpoint. #}
 {% include "home/stream_blocks/game_analysis.html" %}

@@ -100,16 +100,26 @@ function initializeRedesignNavigation() {
 }
 function initializeGameAnalysis() {
   document.querySelectorAll('[data-game-analysis]').forEach((panel) => {
-    panel.querySelectorAll('[data-score-panel]').forEach((scorePanel) => {
-      const direction = scorePanel.dataset.scorePanel === 'recent' ? -1 : 1;
-      const datedFixtures = [...scorePanel.querySelectorAll('.hp-fixture[data-starts-at]')];
-      datedFixtures.sort((first, second) => direction * (new Date(first.dataset.startsAt) - new Date(second.dataset.startsAt)));
-      datedFixtures.forEach((fixture) => scorePanel.appendChild(fixture));
-    });
+    const stories = panel.querySelector('[data-game-stories]');
+    const upcoming = panel.querySelector('[data-score-panel="upcoming"]');
+    const recent = panel.querySelector('[data-score-panel="recent"]');
+    if (!stories || !upcoming || !recent) return;
+    const initial = { stories: stories.innerHTML, upcoming: upcoming.innerHTML, recent: recent.innerHTML };
+    const responseCache = new Map();
     const buttons = panel.querySelectorAll('button[data-sport]');
     const resetButton = panel.querySelector('[data-game-analysis-reset]');
     const selectedSports = new Set();
-    const applySportFilter = () => {
+    let requestToken = 0;
+    let controller;
+    let debounceTimer;
+    const emptyMessage = '<p class="hp-games__empty">Nothing here yet, check back later!</p>';
+    const showContent = (content) => {
+      stories.innerHTML = content.stories || emptyMessage;
+      upcoming.innerHTML = content.upcoming || emptyMessage;
+      recent.innerHTML = content.recent || emptyMessage;
+      panel.setAttribute('aria-busy', 'false');
+    };
+    const updateControls = () => {
       buttons.forEach((item) => {
         const selected = selectedSports.has(item.dataset.sport);
         item.classList.toggle('is-active', selected);
@@ -119,45 +129,65 @@ function initializeGameAnalysis() {
         resetButton.disabled = selectedSports.size === 0;
         resetButton.setAttribute('aria-disabled', String(selectedSports.size === 0));
       }
-      const cards = [...panel.querySelectorAll('[data-game-card]')];
-      const visibleCards = selectedSports.size
-        ? cards.filter((item) => item.hasAttribute('data-filter-card') && selectedSports.has(item.dataset.sport))
-        : cards.filter((item) => item.hasAttribute('data-default-card'));
-      cards.forEach((item) => {
-        item.hidden = !visibleCards.slice(0, 4).includes(item);
-        item.classList.remove('is-lead', 'is-secondary');
-      });
-      visibleCards.slice(0, 4).forEach((item, index) => item.classList.add(index === 0 ? 'is-lead' : 'is-secondary'));
-      const storyEmpty = panel.querySelector('[data-story-empty]');
-      if (storyEmpty) storyEmpty.hidden = visibleCards.length > 0;
-      panel.querySelectorAll('[data-score-panel]').forEach((scorePanel) => {
-        const fixtures = [...scorePanel.querySelectorAll('.hp-fixture[data-sport]')];
-        const visibleFixtures = fixtures.filter((item) => (
-          selectedSports.size === 0 || selectedSports.has(item.dataset.sport)
-        ));
-        // Keep the complete fixture queue available for filtering, but show
-        // only the five chronologically relevant fixtures in either tab.
-        // Upcoming fixtures were sorted ascending and recent fixtures
-        // descending when the panel was initialized.
-        const renderedFixtures = visibleFixtures.slice(0, 5);
-        fixtures.forEach((item) => {
-          item.hidden = !renderedFixtures.includes(item);
-        });
-        const empty = scorePanel.querySelector('[data-fixture-empty]');
-        if (empty) empty.hidden = fixtures.length === 0 || visibleFixtures.length > 0;
-      });
+    };
+    const loadSelection = () => {
+      requestToken += 1;
+      const token = requestToken;
+      window.clearTimeout(debounceTimer);
+      controller?.abort();
+      controller = undefined;
+      updateControls();
+      if (!selectedSports.size) {
+        showContent(initial);
+        return;
+      }
+      const sports = [...selectedSports].sort();
+      const key = sports.join(',');
+      const cached = responseCache.get(key);
+      if (cached && cached.expiresAt > Date.now()) {
+        showContent(cached.content);
+        return;
+      }
+      panel.setAttribute('aria-busy', 'true');
+      stories.innerHTML = '<p class="hp-games__empty" role="status">Loading stories…</p>';
+      upcoming.innerHTML = '<p class="hp-games__empty" role="status">Loading games…</p>';
+      recent.innerHTML = '<p class="hp-games__empty" role="status">Loading games…</p>';
+      debounceTimer = window.setTimeout(async () => {
+        controller = new AbortController();
+        const params = new URLSearchParams();
+        sports.forEach((sport) => params.append('sport', sport));
+        try {
+          const response = await fetch(`${panel.dataset.filterUrl}?${params}`, {
+            signal: controller.signal,
+            headers: { Accept: 'application/json' },
+            credentials: 'same-origin',
+          });
+          if (!response.ok) throw new Error(`Game Analyses request failed: ${response.status}`);
+          const content = await response.json();
+          if (token !== requestToken) return;
+          responseCache.set(key, { content, expiresAt: Date.now() + 60000 });
+          showContent(content);
+        } catch (error) {
+          if (token !== requestToken || error.name === 'AbortError') return;
+          stories.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load stories. <button type="button" data-game-retry>Try again</button></p>';
+          upcoming.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load games. Please try again.</p>';
+          recent.innerHTML = '<p class="hp-games__empty" role="alert">Couldn’t load games. Please try again.</p>';
+          stories.querySelector('[data-game-retry]')?.addEventListener('click', loadSelection);
+          panel.setAttribute('aria-busy', 'false');
+        }
+      }, 150);
     };
     buttons.forEach((button) => button.addEventListener('click', () => {
       if (selectedSports.has(button.dataset.sport)) selectedSports.delete(button.dataset.sport);
       else selectedSports.add(button.dataset.sport);
-      applySportFilter();
+      loadSelection();
     }));
     resetButton?.addEventListener('click', () => {
       if (selectedSports.size === 0) return;
       selectedSports.clear();
-      applySportFilter();
+      loadSelection();
     });
-    applySportFilter();
+    updateControls();
     panel.querySelectorAll('[data-score-tab]').forEach((button) => {
       button.addEventListener('click', () => {
         const selected = button.dataset.scoreTab;

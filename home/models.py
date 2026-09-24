@@ -461,18 +461,17 @@ class HomePage(Page):
         # Do not run the fallback queries as well: their results are discarded
         # by include_block, but used to load every historical analysis here.
         if not has_panel:
-            from home.game_analysis_queries import STORY_LIMIT, chronological_articles, fixture_queues
+            from home.game_analysis_queries import chronological_articles, fixture_queues, panel_active_sports
 
-            covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
+            covered_sports = panel_active_sports()
             context["panel_sports"] = covered_sports
             context["upcoming_games"], context["recent_results"] = fixture_queues(
                 covered_sports, timezone.now()
             )
-            context["filtered_analysis_articles"] = [
+            context["analysis_articles"] = [
                 {"article": article, "sport": article.covered_sport}
                 for article in chronological_articles(covered_sports)
             ]
-            context["analysis_articles"] = context["filtered_analysis_articles"][:STORY_LIMIT]
 
         context["curated_articles"] = self.get_curated_articles()
 
