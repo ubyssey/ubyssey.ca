@@ -64,9 +64,9 @@ class GameAnalysisPanel(blocks.StructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
 
-        # ListBlock is deliberately ordered in the CMS: first is the lead, the
-        # following three are the stacked cards, and later entries are filter
-        # fallbacks. Never reorder it by publication date.
+        # ListBlock is deliberately ordered in the CMS: first is the lead and
+        # the following three are the stacked cards in the unfiltered state.
+        # Sport selections use a separate chronological live-story queue.
         # A historic StreamField revision can retain a chooser reference to a
         # page that has since been deleted. Wagtail resolves that reference to
         # ``None`` in draft preview, and ``pageurl`` cannot render it. Skip
@@ -77,6 +77,8 @@ class GameAnalysisPanel(blocks.StructBlock):
         # advertises unpublished Game Analysis stories.
         allowed_sports = {choice[0] for choice in SPORT_CHOICES[1:]}
         entries = [item for item in value["articles"] if item.get("article")]
+        from home.game_analysis_queries import STORY_LIMIT, fixture_queues, panel_active_sports
+
         live_articles = ArticlePage.objects.live().public().filter(
             standardarticlepage__story_form="game-analysis"
         ).in_bulk([item["article"].pk for item in entries])
@@ -86,23 +88,18 @@ class GameAnalysisPanel(blocks.StructBlock):
             sport = getattr(article, "covered_sport", "") or item.get("sport", "")
             if article and sport in allowed_sports:
                 context["analysis_articles"].append({**item, "article": article, "sport": sport})
+                if len(context["analysis_articles"]) == STORY_LIMIT:
+                    break
         # Fixtures live outside the homepage StreamField so the imported term
         # schedule can progress automatically while editors add only scores.
-        from home.models import ThunderbirdFixture
         # The panel's scope is editorially defined, rather than being limited
         # by whichever story filters happen to be selected in the CMS.
-        active_sports = [
-            sport for sport in value.get("active_sports", []) if sport in allowed_sports
-        ] or [choice[0] for choice in SPORT_CHOICES[1:]]
+        active_sports = panel_active_sports(value)
         context["panel_sports"] = active_sports
         now = timezone.now()
-        scheduled = ThunderbirdFixture.objects.filter(sport__in=active_sports).select_related(
-            "game_analysis_article"
+        context["upcoming_games"], context["recent_results"] = fixture_queues(
+            active_sports, now
         )
-        # Fixtures are intentionally not globally capped. The client-side
-        # sport filters operate over this full, chronologically ordered set.
-        context["upcoming_games"] = list(scheduled.filter(starts_at__gte=now).order_by("starts_at"))
-        context["recent_results"] = list(scheduled.filter(starts_at__lt=now).order_by("-starts_at"))
         return context
 
     class Meta:

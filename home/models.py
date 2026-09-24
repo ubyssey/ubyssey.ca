@@ -391,7 +391,7 @@ class HomePage(Page):
             help_text=(
                 "Set all five named hero positions. The Centre hero story uses the headline placement "
                 "and Meursault controls below. Every story below the hero fills automatically in newest-first "
-                "order, excluding these five stories."
+                "order, excluding these five stories and Game Analysis stories."
             ),
         ),
         MultiFieldPanel(
@@ -456,34 +456,22 @@ class HomePage(Page):
                     stories_by_id[self.ams_election_story_right_id],
                 ]
 
-        panel = next((item.value for item in self.game_analysis if item.block_type == "panel"), None)
-        allowed_panel_sports = {choice[0] for choice in homeblocks.SPORT_CHOICES[1:]}
-        covered_sports = [
-            sport
-            for sport in (panel.get("active_sports") or [])
-            if sport in allowed_panel_sports
-        ] if panel else []
-        if not covered_sports:
-            covered_sports = [choice[0] for choice in homeblocks.SPORT_CHOICES[1:]]
-        current_time = timezone.now()
-        fixtures = ThunderbirdFixture.objects.filter(sport__in=covered_sports).select_related(
-            "game_analysis_article"
-        )
-        context["panel_sports"] = covered_sports
-        context["upcoming_games"] = list(fixtures.filter(starts_at__gte=current_time).order_by("starts_at"))
-        context["recent_results"] = list(fixtures.filter(starts_at__lt=current_time).order_by("-starts_at"))
-        # When the optional StreamField panel has not been configured yet,
-        # the homepage still needs a fully functional Game Analyses module.
-        # Use every public Game Analysis story rather than borrowing the
-        # general homepage queue (which led to unrelated stories appearing
-        # when a sport was filtered).
-        context["analysis_articles"] = [
-            {"article": article, "sport": article.covered_sport}
-            for article in ArticlePage.objects.live().public().filter(
-                standardarticlepage__story_form="game-analysis",
-                covered_sport__in=covered_sports,
-            ).order_by("-explicit_published_at", "-id").specific()
-        ]
+        has_panel = any(item.block_type == "panel" for item in self.game_analysis)
+        # A configured StreamField panel supplies its own stories and fixtures.
+        # Do not run the fallback queries as well: their results are discarded
+        # by include_block, but used to load every historical analysis here.
+        if not has_panel:
+            from home.game_analysis_queries import chronological_articles, fixture_queues, panel_active_sports
+
+            covered_sports = panel_active_sports()
+            context["panel_sports"] = covered_sports
+            context["upcoming_games"], context["recent_results"] = fixture_queues(
+                covered_sports, timezone.now()
+            )
+            context["analysis_articles"] = [
+                {"article": article, "sport": article.covered_sport}
+                for article in chronological_articles(covered_sports)
+            ]
 
         context["curated_articles"] = self.get_curated_articles()
 
@@ -505,10 +493,27 @@ class HomePage(Page):
                 ordered_articles.append(article.specific)
                 seen.add(article.pk)
 
+        # The top fold keeps its editorial choices (or the usual recent-story
+        # fallback), including Game Analysis stories. Only the twelve rows
+        # below it should exclude that story form.
+        if len(ordered_articles) < 5:
+            recent = (ArticlePage.objects.live().public()
+                      .descendant_of(self)
+                      .exclude(pk__in=seen)
+                      .order_by("-explicit_published_at")[:5 - len(ordered_articles)])
+            for article in recent:
+                ordered_articles.append(article.specific)
+                seen.add(article.pk)
+
+        ordered_articles = ordered_articles[:5] + [
+            article for article in ordered_articles[5:]
+            if getattr(article, "story_form", "") != "game-analysis"
+        ]
         if len(ordered_articles) < 17:
             recent = (ArticlePage.objects.live().public()
                       .descendant_of(self)
                       .exclude(pk__in=seen)
+                      .exclude(standardarticlepage__story_form="game-analysis")
                       .order_by("-explicit_published_at")[:17 - len(ordered_articles)])
             ordered_articles.extend(article.specific for article in recent)
 
@@ -584,6 +589,7 @@ class HomePage(Page):
             chronological_articles = list(
                 ArticlePage.objects.live().public().descendant_of(self)
                 .exclude(pk__in=hero_ids)
+                .exclude(standardarticlepage__story_form="game-analysis")
                 .order_by("-explicit_published_at", "-id")[:12]
             )
             context["redesign_articles"] = hero_articles + [article.specific for article in chronological_articles]

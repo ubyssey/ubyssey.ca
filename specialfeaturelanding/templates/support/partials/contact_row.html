@@ -1,3 +1,3 @@
-{% with email=person.public_contact_email|default:person.redesign_contact_email %}
+{% with email=override_email|default:person.public_contact_email|default:person.redesign_contact_email %}
 <div class="contact-row"><strong>{{ person.ubyssey_role }}</strong><span>{{ person.full_name }}{% if person.pronouns %}<small>{{ person.pronouns }}</small>{% endif %}{% if email %}<a href="mailto:{{ email }}">{{ email }}</a>{% endif %}</span></div>
 {% endwith %}

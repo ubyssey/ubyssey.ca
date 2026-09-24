@@ -183,6 +183,14 @@ class RedesignTeamMember(Orderable):
         related_name="+",
     )
     department = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES)
+    email_override = models.EmailField(
+        blank=True,
+        default="",
+        help_text=(
+            "Optional public email for this Our Team member and their Contact directory entry. "
+            "Leave blank to use the author's contact email; the author profile is unchanged."
+        ),
+    )
     description_override = models.TextField(
         blank=True,
         default="",
@@ -195,8 +203,13 @@ class RedesignTeamMember(Orderable):
     panels = [
         FieldPanel("department"),
         FieldPanel("author"),
+        FieldPanel("email_override"),
         FieldPanel("description_override"),
     ]
+
+    @property
+    def public_email(self):
+        return self.email_override or self.author.public_contact_email
 
     class Meta:
         verbose_name = "Our Team member"
