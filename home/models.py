@@ -391,7 +391,7 @@ class HomePage(Page):
             help_text=(
                 "Set all five named hero positions. The Centre hero story uses the headline placement "
                 "and Meursault controls below. Every story below the hero fills automatically in newest-first "
-                "order, excluding these five stories."
+                "order, excluding these five stories and Game Analysis stories."
             ),
         ),
         MultiFieldPanel(
@@ -493,10 +493,27 @@ class HomePage(Page):
                 ordered_articles.append(article.specific)
                 seen.add(article.pk)
 
+        # The top fold keeps its editorial choices (or the usual recent-story
+        # fallback), including Game Analysis stories. Only the twelve rows
+        # below it should exclude that story form.
+        if len(ordered_articles) < 5:
+            recent = (ArticlePage.objects.live().public()
+                      .descendant_of(self)
+                      .exclude(pk__in=seen)
+                      .order_by("-explicit_published_at")[:5 - len(ordered_articles)])
+            for article in recent:
+                ordered_articles.append(article.specific)
+                seen.add(article.pk)
+
+        ordered_articles = ordered_articles[:5] + [
+            article for article in ordered_articles[5:]
+            if getattr(article, "story_form", "") != "game-analysis"
+        ]
         if len(ordered_articles) < 17:
             recent = (ArticlePage.objects.live().public()
                       .descendant_of(self)
                       .exclude(pk__in=seen)
+                      .exclude(standardarticlepage__story_form="game-analysis")
                       .order_by("-explicit_published_at")[:17 - len(ordered_articles)])
             ordered_articles.extend(article.specific for article in recent)
 
@@ -572,6 +589,7 @@ class HomePage(Page):
             chronological_articles = list(
                 ArticlePage.objects.live().public().descendant_of(self)
                 .exclude(pk__in=hero_ids)
+                .exclude(standardarticlepage__story_form="game-analysis")
                 .order_by("-explicit_published_at", "-id")[:12]
             )
             context["redesign_articles"] = hero_articles + [article.specific for article in chronological_articles]
