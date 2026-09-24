@@ -8,6 +8,16 @@ from article.views import _author_fixture, _fixture_credit_contributors, _sample
 
 
 class ArticleRedesignMappingTests(SimpleTestCase):
+    def test_standard_article_editor_exposes_covered_sport(self):
+        front_page = next(
+            panel for panel in StandardArticlePage.content_panels
+            if getattr(panel, "heading", None) == "Front Page Stuff"
+        )
+        self.assertIn(
+            "covered_sport",
+            [panel.field_name for panel in front_page.children if hasattr(panel, "field_name")],
+        )
+
     def test_legacy_header_layouts_map_to_redesign_variants(self):
         expected = {
             "bottom-image": "big-centered",

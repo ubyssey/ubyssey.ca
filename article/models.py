@@ -1912,6 +1912,7 @@ class StandardArticlePage(ArticlePage):
         MultiFieldPanel(
             [
                 FieldPanel("lede"),
+                FieldPanel("covered_sport"),
                 HelpPanel(content='''
                     <h1>About storystream views</h1>
                     <p>Storystream views are used to control the presentation of articles in the homepage storystream and in topic pages.</p>
