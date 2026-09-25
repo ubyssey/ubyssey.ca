@@ -214,6 +214,10 @@ class HomePage(Page):
         use_json_field=True,
         help_text="Homepage sports analysis stories and active sports. Fixtures and scores are managed in Sports Calendar.",
     )
+    game_analysis_enabled = models.BooleanField(
+        default=True,
+        help_text="Show Game Analyses on the homepage. Turn off to skip the panel and its story and fixture queries.",
+    )
 
     AMS_ELECTION_PLACEMENTS = (
         ("before_hero", "Above the top stories"),
@@ -364,7 +368,10 @@ class HomePage(Page):
         FieldPanel("middle_stream", heading="Middle Stream"),
         FieldPanel("sidebar_stream", heading="Sidebar"),
         FieldPanel("sections_stream", heading="Sections"),
-        FieldPanel("game_analysis", heading="Game Analyses: stories and active sports"),
+        MultiFieldPanel(
+            [FieldPanel("game_analysis_enabled"), FieldPanel("game_analysis")],
+            heading="Game Analyses: visibility, stories and active sports",
+        ),
         MultiFieldPanel(
             [
                 FieldPanel("ams_election_enabled"),
@@ -456,11 +463,12 @@ class HomePage(Page):
                     stories_by_id[self.ams_election_story_right_id],
                 ]
 
-        has_panel = any(item.block_type == "panel" for item in self.game_analysis)
         # A configured StreamField panel supplies its own stories and fixtures.
         # Do not run the fallback queries as well: their results are discarded
         # by include_block, but used to load every historical analysis here.
-        if not has_panel:
+        if self.game_analysis_enabled and not any(
+            item.block_type == "panel" for item in self.game_analysis
+        ):
             from home.game_analysis_queries import chronological_articles, fixture_queues, panel_active_sports
 
             covered_sports = panel_active_sports()
