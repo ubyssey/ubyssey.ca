@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Q
 from django_user_agents.utils import get_user_agent
@@ -19,6 +20,10 @@ from wagtail.admin.panels import MultiFieldPanel, InlinePanel, HelpPanel, PageCh
 from wagtail.search.query import Phrase, PlainText
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route 
 from videos.models import VideosPage, VideoSnippet
+
+
+PUBLISHED_YEARS_CACHE_KEY = "archive:published-years:v1"
+PUBLISHED_YEARS_CACHE_TIMEOUT = 60 * 60
 
 class SectionPageOrderables(Orderable):
     page = ParentalKey("archive.ArchivePage", on_delete=models.CASCADE, related_name="sections_filters")
@@ -124,15 +129,19 @@ class ArchivePage(RoutablePageMixin, Page):
     def __get_years(self):
         """
         Returns:
-            Hits DB to find list of years such that there is an article published at that year
+            Years with a published article, shared across archive requests.
         """
-        publish_dates = ArticlePage.objects.live().dates('explicit_published_at','year',order='DESC')
-        years = []
+        def published_years():
+            publish_dates = ArticlePage.objects.live().dates(
+                'explicit_published_at', 'year', order='DESC'
+            )
+            return [publish_date.year for publish_date in publish_dates]
 
-        for publish_date in publish_dates:
-            years.append(publish_date.year)
-
-        return years
+        return cache.get_or_set(
+            PUBLISHED_YEARS_CACHE_KEY,
+            published_years,
+            timeout=PUBLISHED_YEARS_CACHE_TIMEOUT,
+        )
 
     def __parse_int_or_none(self, maybe_int):
         """
