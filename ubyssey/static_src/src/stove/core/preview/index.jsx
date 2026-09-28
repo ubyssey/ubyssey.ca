@@ -8,8 +8,8 @@ import { setupHistoryPreviewButtons } from "./refresh.js";
 export { setupPageShadow };
 
 // The manuscript editor interacts with the preview through this object.
-export function createPagePreview({ form, pageRoot, blockTypeLabel, createBlockEditor, createStreamBlockDraft }) {
-  const controller = createPreviewController({ form, pageRoot });
+export function createPagePreview({ form, pageRoot, blockTypeLabel, createBlockEditor, createStreamBlockDraft, collaboration = null }) {
+  const controller = createPreviewController({ form, pageRoot, collaboration });
   let blockActions = null;
   let removeKeyboard = null;
   let mounted = false;
