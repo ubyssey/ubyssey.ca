@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   pageEditorState.awareness = collaboration.awareness;
   pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
-  const preview = createPagePreview({ form, pageRoot, blockTypeLabel, createBlockEditor, createStreamBlockDraft });
+  const preview = createPagePreview({ form, pageRoot, blockTypeLabel, createBlockEditor, createStreamBlockDraft, collaboration });
   Object.entries(streamEditors).forEach(([fieldName, streamEditor]) => {
     pageEditorState.registerStreamEditor(createStreamEditor(fieldName, streamEditor, {
       fragment: collaboration.ydoc.getXmlFragment(fieldName),

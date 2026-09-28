@@ -6,8 +6,8 @@ import { reconcilePreviewBlocks } from "./dom.js";
 import { createPreviewRefresh, MODAL_PREVIEW_DEBOUNCE_MS } from "./refresh.js";
 
 // Decides how stream change affects preview
-export function createPreviewController({ form, pageRoot }) {
-  const refresh = createPreviewRefresh(form, pageRoot);
+export function createPreviewController({ form, pageRoot, collaboration = null }) {
+  const refresh = createPreviewRefresh(form, pageRoot, collaboration);
 
   return {
     ...refresh,

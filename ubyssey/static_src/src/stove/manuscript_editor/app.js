@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     blockTypeLabel,
     createBlockEditor,
     createStreamBlockDraft,
+    collaboration,
   });
   
   for (const [fieldName, streamEditor] of Object.entries(streamEditors)) {
