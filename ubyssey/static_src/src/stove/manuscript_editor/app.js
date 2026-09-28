@@ -16,6 +16,7 @@ import { createPageHistory } from "../core/collaboration/history.js";
 import { createArticleInfoSidebar } from "./chrome/article_info_sidebar.jsx";
 import { setupSidebarAccordion } from "./chrome/sidebar_accordian.js";
 import { setupPageSaveStatus } from "../core/collaboration/save_status.js";
+import { setupFindReplace } from "./stream/find_replace.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -117,6 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     history: pageEditorState.history,
     onViewChange: (view) => pageEditorState.articleInfoSidebar?.setView(view),
   });
+
+  setupFindReplace({ state: pageEditorState });
 
   document.addEventListener("keydown", (event) => {
     if (event.defaultPrevented || pageEditorState.blockEditorModalOpen || event.altKey || (!event.ctrlKey && !event.metaKey)) return;

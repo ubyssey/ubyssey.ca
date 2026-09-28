@@ -1,7 +1,7 @@
 // Preview editor setup, and direct edit sync
 
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
-import { EditorState } from "prosemirror-state";
+import { EditorState, TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
@@ -123,7 +123,15 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       return handleStreamRichTextKeyDown(activeView, event, streamSource);
     },
   });
-  const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType) : null;
+  const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType, {
+    source: streamSource,
+    getSelection() {
+      if (view.isDestroyed || !view.hasFocus()) return null;
+      const selection = view.state.selection;
+      if (!(selection instanceof TextSelection)) return null;
+      return { anchor: selection.anchor, head: selection.head };
+    },
+  }) : null;
 
   view.streamSource = streamSource;
   view.annotationsEnabled = allowAnnotations;
@@ -142,6 +150,54 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       view.destroy();
     },
   };
+}
+
+function sameStreamSource(left, right) {
+  return Boolean(
+    left
+    && right
+    && left.instance === right.instance
+    && left.blockId === right.blockId
+    && samePath(left.path, right.path),
+  );
+}
+
+// Restores selections after RichText actions like split or merge which span blocks
+export function restorePageRichTextSelections(restorations = []) {
+  if (!restorations.length) return;
+
+  window.queueMicrotask(() => {
+    const activeEditor = pageEditorState.pageRichTextEditors.find((editor) => (
+      !editor.view.isDestroyed && editor.view.hasFocus()
+    ));
+
+    for (const restoration of restorations) {
+      const { source, fromSource, selection } = restoration;
+      if (activeEditor && !sameStreamSource(activeEditor.streamSource, fromSource) && !sameStreamSource(activeEditor.streamSource, source)) continue;
+
+      const editor = pageEditorState.pageRichTextEditors.find((item) => (
+        !item.view.isDestroyed && sameStreamSource(item.streamSource, source)
+      ));
+
+      if (!editor || !selection) continue;
+
+      const doc = editor.view.state.doc;
+      const anchor = Math.max(1, Math.min(selection.anchor, Math.max(1, doc.content.size - 1)));
+      const head = Math.max(1, Math.min(selection.head, Math.max(1, doc.content.size - 1)));
+      
+      editor.view.dispatch(editor.view.state.tr.setSelection(TextSelection.between(
+        doc.resolve(anchor),
+        doc.resolve(head),
+      )));
+      editor.view.focus();
+      selectPageBlock({
+        fieldName: source.instance.fieldName,
+        blockId: source.blockId,
+      }, editor.view.dom.getRootNode());
+
+      break;
+    }
+  });
 }
 
 // Turned into helper now that there are sidebar plain text editors

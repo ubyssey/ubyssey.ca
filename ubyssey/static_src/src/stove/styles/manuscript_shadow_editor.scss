@@ -145,6 +145,14 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
+:host(.footnotes-frozen) span[data-footnote-id] {
+    color: #888;
+}
+
+:host(.footnotes-frozen) span[data-footnote-id]::before {
+    color: #888;
+}
+
 .page-shadow-preview [data-article-block][data-stream-field="content"]:hover:not(.pm-page-block--selected) {
     outline: 1px dashed #000;
     outline-offset: 8px;
