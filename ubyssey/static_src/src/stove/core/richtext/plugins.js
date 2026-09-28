@@ -282,7 +282,21 @@ function suggestionPlugin(schema) {
       { preferBefore: true },
     );
 
-    return applyDeletion(tr, existingMark || nearbyMark, rangesToMark);
+    const mergeMark = existingMark || nearbyMark;
+    if (
+      mergeMark
+      && suggestionPart(mergeMark) === "add"
+      && commentSuggestion(mergeMark.attrs.comments) === "add"
+    ) {
+      return applyReplacement(
+        tr,
+        mergeMark,
+        rangesToMark,
+        mapRanges(tr, threadRanges(state, mergeMark.attrs.threadId, "add")),
+      );
+    }
+
+    return applyDeletion(tr, mergeMark, rangesToMark);
   };
 
   const mergeAdjacentDeletionThreads = (tr, activeThreadId) => {

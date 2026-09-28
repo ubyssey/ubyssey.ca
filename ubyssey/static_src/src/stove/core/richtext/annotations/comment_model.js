@@ -272,8 +272,6 @@ export function removeAnnotationThread(thread) {
 }
 
 export function acceptSuggestion(thread, suggestion) {
-  if (suggestion === "add") return removeAnnotationThread(thread);
-
   let changed = false;
   for (const view of thread.views) {
     const fragment = findAnnotationThread(view, "suggestion", thread.threadId);
@@ -281,7 +279,8 @@ export function acceptSuggestion(thread, suggestion) {
 
     let tr = view.state.tr;
     for (const range of [...fragment.ranges].reverse()) {
-      tr = suggestion === "delete" || range.suggestionPart === "delete"
+      const part = range.suggestionPart || suggestion;
+      tr = part === "delete"
         ? tr.delete(range.from, range.to)
         : tr.removeMark(range.from, range.to, fragment.markType);
     }
@@ -300,7 +299,8 @@ export function rejectSuggestion(thread, suggestion) {
 
     let tr = view.state.tr;
     for (const range of [...fragment.ranges].reverse()) {
-      tr = suggestion === "add" || range.suggestionPart === "add"
+      const part = range.suggestionPart || suggestion;
+      tr = part === "add"
         ? tr.delete(range.from, range.to)
         : tr.removeMark(range.from, range.to, fragment.markType);
     }
