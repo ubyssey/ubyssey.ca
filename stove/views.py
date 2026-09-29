@@ -48,6 +48,7 @@ from stove.editors.collaboration.revisions import (
     restore_page_revision,
     save_page_revision,
     autosave_page_revision,
+    save_manual_page_revision,
     STALE_AUTOSAVE,
 )
 
@@ -601,6 +602,24 @@ def editor_page_revisions(request, page_id):
         }
         for revision in revisions
     ]})
+
+
+@login_required
+@require_POST
+def editor_page_save_revision(request, page_id):
+    saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
+    if saved_revision is STALE_AUTOSAVE:
+        return JsonResponse({"errors": errors}, status=409)
+    if errors or saved_revision is None:
+        return JsonResponse({"errors": errors or {"__all__": ["Failed to save revision."]}}, status=422)
+
+    return JsonResponse({
+        "ok": True,
+        "revision": {
+            "id": str(saved_revision.id),
+            "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+        },
+    })
 
 
 @login_required

@@ -32,3 +32,22 @@ export async function restoreRevision(url, formData) {
 
   return payload;
 }
+
+export async function saveRevision(url, formData) {
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    credentials: "same-origin",
+    headers: {
+      Accept: "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  });
+  const payload = await response.json();
+
+  if (!response.ok && !payload.errors) {
+    return { errors: { __all__: ["Failed to save revision"] } };
+  }
+
+  return payload;
+}
