@@ -300,6 +300,11 @@ span[data-footnote-id]::before {
     color: #fff;
 }
 
+.pm-editor-toolbar__selection {
+    color: var(--text_color-200, #555);
+    white-space: nowrap;
+}
+
 // Each editor overrides with their assigned color.
 .pm-page-block--selected {
     outline-color: var(--current-editor-color, #f28c00) !important;

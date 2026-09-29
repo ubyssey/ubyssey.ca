@@ -1,11 +1,23 @@
 import { createEditorToolbar as createRichTextToolbar } from "../../core/richtext/toolbar.jsx";
 import { pageEditorState } from "../../core/state.js";
+import { topLevelBlockInfoByIdOrIndex } from "../../core/prosemirror/blocks.js";
+import { blockTypeLabel } from "../../core/prosemirror/stream_node_views.jsx";
 
 export function createManuscriptToolbar(root, options = {}) {
   return createRichTextToolbar(root, {
     ...options,
     renderExtraControls: () => <BlockControls actions={pageEditorState.blockActions} />,
+    renderRightControls: () => <SelectedBlockLabel/>,
   });
+}
+
+function SelectedBlockLabel() {
+  const selected = pageEditorState.selectedBlock;
+  const instance = selected && pageEditorState.streamEditors.find((item) => item.fieldName === selected.fieldName);
+  const block = instance && topLevelBlockInfoByIdOrIndex(instance.doc, selected.blockId, selected.blockIndex);
+  if (!block) return null;
+
+  return <span>{blockTypeLabel(block.node.attrs?.blockType)}</span>;
 }
 
 // This is the worst place for it, but I'll leave it for now
