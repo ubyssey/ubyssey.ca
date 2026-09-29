@@ -44,10 +44,18 @@ def _merge_collaboration_snapshot(session, data):
     if session.document:
         document.apply_update(bytes(session.document))
 
-    is_stale = (
-        state_vector is not None
-        and document.get_update(state_vector) != EMPTY_YJS_UPDATE
-    )
+    is_stale = False
+    if state_vector is not None:
+        missing_update = document.get_update(state_vector)
+        if missing_update != EMPTY_YJS_UPDATE:
+            if submitted_update is None:
+                is_stale = True
+            else:
+                submitted_document = Doc()
+                submitted_document.apply_update(submitted_update)
+                submitted_state = submitted_document.get_update()
+                submitted_document.apply_update(missing_update)
+                is_stale = submitted_document.get_update() != submitted_state
 
     if submitted_update is not None:
         previous_state = document.get_state()
@@ -110,6 +118,25 @@ def autosave_page_revision(page_id, data, user):
             previous_autosave.delete()
 
         return revision
+
+
+# Merge caller's state then create revision
+def save_manual_page_revision(page_id, data, user):
+    with transaction.atomic():
+        page_record = Page.objects.select_for_update().get(pk=page_id)
+        session, _ = PageCollaboration.objects.get_or_create(page=page_record)
+        session = PageCollaboration.objects.select_for_update().get(pk=session.pk)
+
+        if _merge_collaboration_snapshot(session, data):
+            return STALE_AUTOSAVE, {"__all__": ["The document is still syncing. Please try saving again."]}
+
+        page = page_record.specific.get_latest_revision_as_object()
+        editor_errors, _, _, _ = process_editor_forms(page, data)
+        if editor_errors:
+            return None, editor_errors
+
+        _, revision, save_errors = save_page_revision(page, "draft", user)
+        return revision, save_errors
 
 
 def save_page_revision(page, action, user):

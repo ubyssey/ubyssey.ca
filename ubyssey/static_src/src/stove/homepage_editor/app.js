@@ -1,7 +1,7 @@
 import { setupPageShadow } from "../core/preview/index.jsx";
 import { setupPageCollaboration } from "../core/collaboration/page.js";
 import { setupPresence } from "../core/collaboration/presence.js";
-import { setupRevisionHistory } from "../core/revisions/revision_history.js";
+import { setupManualRevisionSave, setupRevisionHistory } from "../core/revisions/revision_history.js";
 import { fetchPreviewHtml } from "../core/preview/requests.js";
 import { replacePagePreviewHtml } from "../core/preview/dom.js";
 import { setupPageSaveStatus } from "../core/collaboration/save_status.js";
@@ -9,6 +9,7 @@ import { createStreamEditor, createStreamBlockDraft, createBlockEditor, createEm
 import { createPagePreview } from "../core/preview/index.jsx";
 import { pageEditorState } from "../core/state.js";
 import { createPageHistory } from "../core/collaboration/history.js";
+import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent);
@@ -58,6 +59,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const html = await fetchPreviewHtml(form.dataset.previewUrl, formData);
       if (html) replacePagePreviewHtml(pageRoot, html);
     },
+  });
+
+  setupManualRevisionSave(form, {
+    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
   });
 
   preview.mount();
