@@ -3,7 +3,7 @@
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState, TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
+import { yCursorPlugin, ySyncPlugin, ySyncPluginKey } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
 import { markRangeAtCursor } from "../richtext/marks.js";
@@ -98,7 +98,14 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
-      const activateThread = activeSuggestionThreadId || (transaction.selectionSet ? annotationThreadAtSelection(nextState) : null);
+
+      // Thread selection
+      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
+      const activateThread = activeSuggestionThreadId || (
+        activeView.hasFocus() && !isYjsSyncTransaction && transaction.selectionSet
+          ? annotationThreadAtSelection(nextState)
+          : null
+      );
       if (activateThread) window.queueMicrotask(() => {
         if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(activateThread);
       });
