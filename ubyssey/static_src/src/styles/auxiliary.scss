@@ -95,6 +95,13 @@
 .archive-pills a,.archive-pills a:hover,.archive-pills a:focus-visible{background-image:none!important;text-decoration:none!important}.archive-pills a{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease}.archive-pills a:hover,.archive-pills a:focus-visible{background-color:var(--aux-blue)!important;border-color:var(--aux-blue)!important;color:#fff!important;box-shadow:0 3px 8px rgba(20,31,55,.24)}.archive-pills a.is-current:hover,.archive-pills a.is-current:focus-visible{background-color:#314b91!important;border-color:#314b91!important}
 .archive-result .hp-byline{font:400 10px/15px "articulat-cf",sans-serif;color:var(--aux-text);text-transform:none}.archive-result .hp-byline__prefix{font-style:italic}.archive-result .hp-byline a{font-weight:700;text-transform:uppercase;color:inherit}
 .archive-author-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:0 0 28px}.archive-author-results h2{grid-column:1/-1;margin:0 0 2px;font:700 14px/20px "articulat-cf",sans-serif;text-transform:uppercase}.archive-author-results a{display:block;min-width:0;padding:14px 16px;border:1px solid var(--aux-rule);background:var(--aux-soft);color:inherit;text-decoration:none}.archive-author-results a:hover,.archive-author-results a:focus-visible{background:#bce3f0}.archive-author-results strong,.archive-author-results span,.archive-author-results small{display:block}.archive-author-results strong{font:600 21px/24px "meursault-variable",Georgia,serif}.archive-author-results span,.archive-author-results small{margin-top:3px;font:400 13px/18px "drummond-variable",Georgia,serif}
+.archive-author-results{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.archive-author-results .archive-person-card{display:flex;align-items:center;gap:14px;min-height:96px;background-image:none!important;background-color:var(--aux-soft)!important;transition:background-color .18s ease,color .18s ease}
+.archive-author-results .archive-person-card:hover,.archive-author-results .archive-person-card:focus-visible{background-image:none!important;background-color:var(--redesign-hover-wash)!important;color:#081839!important}
+.archive-person-card img{display:block;width:56px;height:56px;flex:none;border-radius:50%;object-fit:cover}
+.archive-person-card__copy{display:block;min-width:0}.archive-person-card__copy strong,.archive-person-card__copy span,.archive-person-card__copy small{color:inherit!important}
+.aux-page .archive-pills a,.aux-page .archive-pills a:hover,.aux-page .archive-pills a:focus-visible{background-image:none!important;background-size:0!important}
+.aux-page .archive-pills a:hover,.aux-page .archive-pills a:focus-visible{background-color:var(--redesign-hover-wash)!important;border-color:#7893df!important;color:#081839!important}
 .photo-card>a{background-image:none!important}
 .photo-card>a>span{background:none!important}
 .photo-card>a>span time,.photo-card>a>span strong{display:table;background-image:linear-gradient(#bce3f0,#bce3f0);background-repeat:no-repeat;background-position:0 90%;background-size:0 78%;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background-size .22s ease,color .22s ease}
@@ -111,6 +118,14 @@
 [color-css-theme=dark] .aux-page a:not(.aux-button):not(.photo-card__image):not(.video-hero__media):not(.video-card__media):not(.episode-card__image):not(.margins-story__image):focus-visible,
 [color-css-theme=dark] .photo-card>a:hover>span time,[color-css-theme=dark] .photo-card>a:hover>span strong,
 [color-css-theme=dark] .photo-card>a:focus-visible>span time,[color-css-theme=dark] .photo-card>a:focus-visible>span strong{background-color:transparent!important}
+
+/* Card-sized interactions must not inherit the inline editorial-link wash. */
+#main-content.archive-page .archive-person-card{background-image:none!important;background-color:var(--aux-soft)!important;color:var(--aux-text)!important}
+#main-content.archive-page .archive-person-card:hover,
+#main-content.archive-page .archive-person-card:focus-visible{background-image:none!important;background-color:var(--redesign-hover-wash)!important;color:#081839!important}
+#main-content.archive-page .archive-pills a{background-image:none!important;background-size:0!important}
+#main-content.archive-page .archive-pills a:hover,
+#main-content.archive-page .archive-pills a:focus-visible{background-image:none!important;background-color:var(--redesign-hover-wash)!important;color:#081839!important;border-color:#7893df!important}
 
 /* Team and Contact use the same name-to-pronoun rhythm as author profiles. */
 .person-card h3 small,.contact-row span>small{display:inline-block;margin-left:8px;white-space:nowrap;font:400 16px/20px "drummond-variable",Georgia,serif}
