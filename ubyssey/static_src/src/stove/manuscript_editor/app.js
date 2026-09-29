@@ -164,6 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     metadata: collaboration.metadata,
     mediaUpdates: collaboration.ydoc.getMap("articleMediaUpdates"),
     schedulePreview: (options) => preview.refreshDoc(options),
+    onMetadataReady: () => preview.refreshInitialDoc(),
   });
 
   // Prevent Spacebar scrolling

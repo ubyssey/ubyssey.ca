@@ -7,7 +7,7 @@ import { pageEditorState } from "../state.js";
 import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../prosemirror/persistence.js";
 import { syncPageEditorsFromMetadata } from "./editables.jsx";
 import { setupRevisionHistory } from "../revisions/revision_history.js";
-import { focusedPageBlock, replacePagePreviewHtml, replaceSelectedBlockPreviewHtml, replaceUnfocusedPageBlocks, restoreCurrentPageControls } from "./dom.js";
+import { focusedPageBlock, previewMatchesYjsSnapshot, replacePagePreviewHtml, replaceSelectedBlockPreviewHtml, replaceUnfocusedPageBlocks, restoreCurrentPageControls } from "./dom.js";
 import { fetchPreviewHtml } from "./requests.js";
 
 // Handles preview refreshes
@@ -23,12 +23,15 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
   let previewId = 0;
   let previewRevision = 0;
   let deferredPagePreview = false;
+  let deferredRenderOnly = false;
   let scheduledPreviewBlock = null;
   let scheduledPreserveFocusedBlock = false;
+  let scheduledRenderOnly = false;
+  let initialRefreshRequested = false;
   let activePreviewRequest = null;
   const historySelect = document.querySelector("[data-history-select]");
 
-  const schedulePreview = ({ deferIfPageFocused = false, deferUntilBlur = false, immediate = false, debounceMs = null, blockOnly = false, block = null } = {}) => {
+  const schedulePreview = ({ deferIfPageFocused = false, deferUntilBlur = false, immediate = false, debounceMs = null, blockOnly = false, block = null, renderOnly = false } = {}) => {
     const delay = debounceMs ?? (immediate ? 0 : 500);
     if (timer && timerDelay === 0 && delay > 0) return;
 
@@ -38,14 +41,17 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     activePreviewRequest = null;
     clearTimeout(timer);
     scheduledPreviewBlock = block || (blockOnly && pageEditorState.selectedBlock ? { ...pageEditorState.selectedBlock } : null);
+    scheduledRenderOnly = renderOnly;
 
     const deferForFocus = deferIfPageFocused && focusedPageRichText(pageRoot);
     scheduledPreserveFocusedBlock = Boolean(deferForFocus && focusedPageBlock(pageRoot));
     if (deferForFocus) {
       deferredPagePreview = true;
+      deferredRenderOnly = renderOnly;
       if (deferUntilBlur || !scheduledPreserveFocusedBlock) return;
     } else {
       deferredPagePreview = false;
+      deferredRenderOnly = false;
     }
 
     timerDelay = delay;
@@ -60,13 +66,20 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     timer = null;
     timerDelay = null;
     deferredPagePreview = false;
+    deferredRenderOnly = false;
     scheduledPreviewBlock = null;
     scheduledPreserveFocusedBlock = false;
+    scheduledRenderOnly = false;
   };
 
   const refresh = {
     refreshDoc(options = {}) {
       schedulePreview(options);
+    },
+    refreshInitialDoc() {
+      if (initialRefreshRequested) return;
+      initialRefreshRequested = true;
+      schedulePreview({ immediate: true, renderOnly: true });
     },
     // The preview endpoint renders one page document, so a stream refresh uses
     // the document request while keeping the call site explicit about scope.
@@ -93,7 +106,10 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
   const flushDeferredPreview = () => {
     if (pageEditorState.blockEditorModalOpen) return;
     if (!deferredPagePreview || focusedPageRichText(pageRoot)) return;
-    schedulePreview();
+    const renderOnly = deferredRenderOnly;
+    deferredPagePreview = false;
+    deferredRenderOnly = false;
+    schedulePreview({ renderOnly });
   };
 
   const scheduleFromForm = (event) => {
@@ -128,8 +144,11 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     timerDelay = null;
     const requestedBlock = scheduledPreviewBlock;
     const preserveFocusedBlock = scheduledPreserveFocusedBlock;
+    const renderOnly = scheduledRenderOnly;
+    scheduledRenderOnly = false;
     const streamDocs = snapshotStreamDocuments(pageEditorState.streamEditors);
     const formData = formDataWithStreamDocuments(form, streamDocs);
+    if (renderOnly) formData.set("render_only", "1");
 
     const currentPreviewId = ++previewId;
     const requestRevision = previewRevision;
@@ -138,14 +157,27 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
 
     try {
       const html = await fetchPreviewHtml(form.dataset.previewUrl, formData, controller.signal);
-      if (currentPreviewId !== previewId || requestRevision !== previewRevision || !html) return;
-
-      if (requestedBlock) {
-        replaceSelectedBlockPreviewHtml(pageRoot, html, streamDocs, requestedBlock);
+      
+      // Checks that preview matches YJS snapshot
+      const currentStreamDocs = snapshotStreamDocuments(pageEditorState.streamEditors);
+      if (
+        currentPreviewId !== previewId
+        || requestRevision !== previewRevision
+        || !html
+        || !previewMatchesYjsSnapshot(pageRoot, html, currentStreamDocs)
+      ) return;
+      if (renderOnly && focusedPageRichText(pageRoot)) {
+        deferredPagePreview = true;
+        deferredRenderOnly = true;
         return;
       }
 
-      if (preserveFocusedBlock && replaceUnfocusedPageBlocks(pageRoot, html, streamDocs)) {
+      if (requestedBlock) {
+        replaceSelectedBlockPreviewHtml(pageRoot, html, currentStreamDocs, requestedBlock);
+        return;
+      }
+
+      if (preserveFocusedBlock && replaceUnfocusedPageBlocks(pageRoot, html, currentStreamDocs)) {
         return;
       }
 
@@ -154,7 +186,7 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
         skipIfUnchanged: true,
       })) {
         const reveal = pageEditorState.revealSelectedBlock;
-        restoreCurrentPageControls(pageRoot, streamDocs);
+        restoreCurrentPageControls(pageRoot, currentStreamDocs);
         if (reveal) {
           pageEditorState.revealSelectedBlock = null;
           window.requestAnimationFrame(() => {
@@ -200,10 +232,16 @@ export function setupHistoryPreviewButtons(pageRoot, cancelPreview) {
         if (!isCurrent) formData.set("revision", revisionId);
 
         const html = await fetchPreviewHtml(form.dataset.previewUrl, formData);
-        if (currentPreviewId !== historyPreviewId || !html || !replacePagePreviewHtml(pageRoot, html)) return;
+        const currentStreamDocs = isCurrent ? snapshotStreamDocuments(pageEditorState.streamEditors) : null;
+        if (
+          currentPreviewId !== historyPreviewId
+          || !html
+          || !previewMatchesYjsSnapshot(pageRoot, html, currentStreamDocs)
+          || !replacePagePreviewHtml(pageRoot, html)
+        ) return;
 
         if (isCurrent) {
-          restoreCurrentPageControls(pageRoot, streamDocs);
+          restoreCurrentPageControls(pageRoot, currentStreamDocs);
         } else {
           pageEditorState.selectedBlock = null;
           syncSelectedPageBlockEditor(null);

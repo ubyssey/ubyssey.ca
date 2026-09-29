@@ -17,6 +17,7 @@ export function createPagePreview({ form, pageRoot, blockTypeLabel, createBlockE
   return {
     applyStreamChange: controller.applyStreamChange,
     refreshDoc: controller.refreshDoc,
+    refreshInitialDoc: controller.refreshInitialDoc,
     refreshStream: controller.refreshStream,
     refreshBlock: controller.refreshBlock,
     cancel: controller.cancel,

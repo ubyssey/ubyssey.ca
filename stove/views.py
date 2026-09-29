@@ -684,8 +684,9 @@ def editor_page_preview(request, page_id):
             status=422,
         )
 
+    render_only = request.POST.get("render_only") == "1"
     autosaved = False
-    if revision is None:
+    if revision is None and not render_only:
         saved_revision = autosave_page_revision(page.id, request.POST, request.user)
         if saved_revision is None:
             return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)

@@ -31,6 +31,46 @@ function replacePreviewBlock(pageRoot, currentBlock, replacement, streamDocs) {
   return replacement;
 }
 
+function yjsBlockIds(doc) {
+  return (doc?.content || [])
+    .map((block) => String(block.attrs?.id || ""))
+    .filter(Boolean);
+}
+
+// Preview response checked against YJS snapshot to ensure that nothing is missing
+export function previewMatchesYjsSnapshot(pageRoot, html, streamDocs) {
+  if (!streamDocs) return true;
+
+  const content = pageRoot.querySelector(CONTENT_SELECTOR);
+  if (!content) return true;
+
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  const missing = [];
+
+  for (const [fieldName, doc] of streamDocs) {
+    if (!pageBlocksForStreamField(content, fieldName).length) continue;
+
+    const expectedIds = yjsBlockIds(doc);
+    if (!expectedIds.length) continue;
+
+    const responseIds = new Set(
+      pageBlocksForStreamField(template.content, fieldName)
+        .map((block) => String(block.dataset.streamBlockId || "")),
+    );
+    const missingIds = expectedIds.filter((id) => !responseIds.has(id));
+    missing.push(...missingIds.map((id) => ({ fieldName, id })));
+  }
+
+  if (!missing.length) return true;
+
+  console.warn("Missing blocks in preview", {
+    missingBlocks: missing,
+    yjsSnapshot: Array.from(streamDocs, ([fieldName, doc]) => ({ fieldName, blockIds: yjsBlockIds(doc) })),
+  });
+  return false;
+}
+
 export function replaceSelectedBlockPreviewHtml(pageRoot, html, streamDocs, selected) {
   if (!selected) return false;
 
