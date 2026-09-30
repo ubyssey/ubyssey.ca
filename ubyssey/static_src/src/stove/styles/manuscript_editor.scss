@@ -466,10 +466,18 @@ body {
     border: none;
 }
 
+.page-block-editor-modal__panel .pm-page-block-dialog__button--primary:hover {
+    background-color: #5084cc;
+}
+
 .page-block-editor-modal__panel .pm-page-block-dialog__button--danger {
     background-color: #d23732;
     color: #fff;
     border: none;
+}
+
+.page-block-editor-modal__panel .pm-page-block-dialog__button--danger:hover {
+    background-color: #ec4c46;
 }
 
 .manuscript-guide-button {
