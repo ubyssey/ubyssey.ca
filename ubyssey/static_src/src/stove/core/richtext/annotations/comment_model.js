@@ -3,6 +3,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { EditorState } from "prosemirror-state";
 
+export const START_COMMENT_THREAD_META = "startCommentThread";
+
 export function commentSuggestion(comments) {
   return comments?.[0]?.suggestion || null;
 }
@@ -145,7 +147,8 @@ export function startCommentCommand(commentMark) {
     dispatch(state.tr
       .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
-      .setMeta("skipPreview", true));
+      .setMeta("skipPreview", true)
+      .setMeta(START_COMMENT_THREAD_META, threadId));
     return true;
   };
 }

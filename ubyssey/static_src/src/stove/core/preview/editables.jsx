@@ -15,10 +15,32 @@ import { editableFieldInfo, editableFieldInfoForSource, samePath } from "../pros
 import { topLevelBlockInfoByIdOrIndex } from "../prosemirror/blocks.js";
 import { setFieldContent } from "../prosemirror/document.js";
 import { streamRichTextSchema, streamSchema } from "../prosemirror/stream_schema.js";
+import { START_COMMENT_THREAD_META } from "../richtext/annotations/comment_model.js";
 
 const DIRECT_EDITABLE_SELECTOR = "[data-article-editable-page-field], [data-article-editable-stream-field][data-article-editable-path]";
 const EMPTY_RICH_TEXT = [{ type: "paragraph" }];
 const SYNCED_EDITOR_META = "syncedEditor";
+
+// YJS sync plugin wrapper
+// Checks if document itself has been changed
+// So things like cursor movements don't cause new saves
+function documentSyncPlugin(sharedType) {
+  const plugin = ySyncPlugin(sharedType);
+  const createPluginView = plugin.spec.view;
+
+  plugin.spec.view = (view) => {
+    const pluginView = createPluginView(view);
+
+    return {
+      ...pluginView,
+      update(nextView, previousState) {
+        if (nextView.state.doc.eq(previousState.doc)) return;
+        pluginView.update(nextView, previousState);
+      },
+    };
+  };
+  return plugin;
+}
 
 const handleStreamRichTextKeyDown = createStreamRichTextKeyHandler({
   state: pageEditorState,
@@ -86,7 +108,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
     state: EditorState.create({
       doc,
       plugins: [
-        ...(sharedType ? [ySyncPlugin(sharedType)] : []),
+        ...(sharedType ? [documentSyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
         ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory, allowAnnotations }),
       ],
@@ -95,6 +117,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
     dispatchTransaction(transaction) {
       const activeView = this;
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
+      const startedCommentThreadId = transaction.getMeta(START_COMMENT_THREAD_META);
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
@@ -109,6 +132,11 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       if (activateThread) window.queueMicrotask(() => {
         if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(activateThread);
       });
+
+      if (startedCommentThreadId && !isYjsSyncTransaction) window.queueMicrotask(() => {
+        if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(startedCommentThreadId, { focusReply: true });
+      });
+
       pageEditorState.scheduleEditorUiRefresh();
       if (onContentChanged && transaction.docChanged && !transaction.getMeta(SYNCED_EDITOR_META)) {
         onContentChanged(activeView, transaction);
