@@ -324,7 +324,8 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
   function writeYFieldContent(type, content) {
     const currentDoc = yXmlFragmentToProseMirrorRootNode(type, streamRichTextSchema);
     const nodes = (content.toJSON() || []).map((node) => streamRichTextSchema.nodeFromJSON(node));
-    prosemirrorToYXmlFragment(currentDoc.copy(Fragment.fromArray(nodes)), type);
+    const nextDoc = currentDoc.type.create(type.getAttributes(), Fragment.fromArray(nodes), currentDoc.marks);
+    prosemirrorToYXmlFragment(nextDoc, type);
   }
 
   function findYEditableField(fragment, blockId, targetPath) {

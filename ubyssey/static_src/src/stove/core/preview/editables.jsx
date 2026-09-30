@@ -31,6 +31,18 @@ function documentSyncPlugin(sharedType) {
   plugin.spec.view = (view) => {
     const pluginView = createPluginView(view);
 
+    // When binding, we need the schema to be authoritative
+    // Intercepts _prosemirrorChanged which writes PM doc back to YJS
+    // binding is object conntecting editor view to YJS XML field
+    // doc.type.create() creates a new PM node with proper fields direct from schema (same content)
+    // original sync method writes corrected node back to YJS
+    // So that it repairs any missing attributes
+    const binding = ySyncPluginKey.getState(view.state).binding;
+    if (binding) {
+      const syncDocument = binding._prosemirrorChanged.bind(binding);
+      binding._prosemirrorChanged = (doc) => syncDocument(doc.type.create(sharedType.getAttributes(), doc.content, doc.marks));
+    }
+
     return {
       ...pluginView,
       update(nextView, previousState) {
