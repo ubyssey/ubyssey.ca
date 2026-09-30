@@ -22,7 +22,7 @@ def initialize_page_collaboration(page_id, initial_update):
             collaboration.document = initial_update
             collaboration.save(update_fields=["document", "updated_at"])
 
-        return bytes(collaboration.document)
+        return collaboration.pk, bytes(collaboration.document)
 
 
 def update_page_collaboration(page, data):

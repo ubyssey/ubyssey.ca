@@ -3,6 +3,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { EditorState } from "prosemirror-state";
 
+export const START_COMMENT_THREAD_META = "startCommentThread";
+
 export function commentSuggestion(comments) {
   return comments?.[0]?.suggestion || null;
 }
@@ -145,7 +147,8 @@ export function startCommentCommand(commentMark) {
     dispatch(state.tr
       .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
-      .setMeta("skipPreview", true));
+      .setMeta("skipPreview", true)
+      .setMeta(START_COMMENT_THREAD_META, threadId));
     return true;
   };
 }
@@ -272,8 +275,6 @@ export function removeAnnotationThread(thread) {
 }
 
 export function acceptSuggestion(thread, suggestion) {
-  if (suggestion === "add") return removeAnnotationThread(thread);
-
   let changed = false;
   for (const view of thread.views) {
     const fragment = findAnnotationThread(view, "suggestion", thread.threadId);
@@ -281,7 +282,8 @@ export function acceptSuggestion(thread, suggestion) {
 
     let tr = view.state.tr;
     for (const range of [...fragment.ranges].reverse()) {
-      tr = suggestion === "delete" || range.suggestionPart === "delete"
+      const part = range.suggestionPart || suggestion;
+      tr = part === "delete"
         ? tr.delete(range.from, range.to)
         : tr.removeMark(range.from, range.to, fragment.markType);
     }
@@ -300,7 +302,8 @@ export function rejectSuggestion(thread, suggestion) {
 
     let tr = view.state.tr;
     for (const range of [...fragment.ranges].reverse()) {
-      tr = suggestion === "add" || range.suggestionPart === "add"
+      const part = range.suggestionPart || suggestion;
+      tr = part === "add"
         ? tr.delete(range.from, range.to)
         : tr.removeMark(range.from, range.to, fragment.markType);
     }

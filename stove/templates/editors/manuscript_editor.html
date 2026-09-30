@@ -27,6 +27,7 @@
   data-preview-url="{% url 'stove:editor_page_preview' self.id %}"
   data-restore-url="{% url 'stove:editor_page_restore' self.id %}"
   data-history-url="{% url 'stove:editor_page_revisions' self.id %}"
+  data-save-revision-url="{% url 'stove:editor_page_save_revision' self.id %}"
   data-authors-url="{% url 'stove:manuscript_authors' self.id %}"
   data-media-tags-url="{% url 'stove:manuscript_media_tags' self.id %}"
   data-media-options-url="{% url 'stove:manuscript_media_options' self.id %}"
@@ -48,18 +49,6 @@
             <span class="pm-editor-toolbar__meta">{{ deadline.description }}: {{ deadline.date|date:"M j, Y, g:i A" }}</span>
           {% endfor %}
         {% endif %}
-        {% if self.assignment_memo %}
-          <div class="pm-article-info-sidebar__note">
-            <strong>Article Memo</strong>
-            <div>{{ self.assignment_memo|richtext }}</div>
-          </div>
-        {% endif %}
-        {% if self.ethics_notes %}
-          <div class="pm-article-info-sidebar__note">
-            <strong>Ethics Notes</strong>
-            <div>{{ self.ethics_notes|richtext }}</div>
-          </div>
-        {% endif %}
         <div class="manuscript-publish-source" data-article-toolbar-source>
           {% if self.live %}
             {% if self.has_unpublished_changes %}
@@ -74,6 +63,23 @@
             <span data-page-published>Last Published: {{ self.last_published_at|date:"M j, Y H:i"}}</span>
           {% endif %}
         </div>
+      </section>
+    </details>
+    <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="notes">
+      <summary>Notes</summary>
+      <section class="pm-article-info-sidebar">
+        {% if self.assignment_memo %}
+          <div class="pm-article-info-sidebar__note">
+            <strong>Article Memo</strong>
+            <div>{{ self.assignment_memo|richtext }}</div>
+          </div>
+        {% endif %}
+        {% if self.ethics_notes %}
+          <div class="pm-article-info-sidebar__note">
+            <strong>Ethics Notes</strong>
+            <div>{{ self.ethics_notes|richtext }}</div>
+          </div>
+        {% endif %}
       </section>
     </details>
     <details class="pm-sidebar-accordion__item" data-sidebar-accordion-item data-sidebar-accordion-key="metadata">
@@ -103,6 +109,12 @@
           <span class="sidebar-toggle-row"> Invisible Characters
             <label class="copyswitch switch filter">
               <input type="checkbox" id="invisible-characters-toggle">
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="sidebar-toggle-row"> Freeze Footnotes
+            <label class="copyswitch switch filter">
+              <input type="checkbox" id="freeze-footnotes-toggle">
               <span class="slider round"></span>
             </label>
           </span>
@@ -292,6 +304,23 @@
     </section>
   </section>
 </div>
+
+<section class="manuscript-find-replace" data-find-replace hidden>
+  <button type="button" data-find-replace-toggle>&gt;</button>
+  <div class="manuscript-find-replace__row">
+    <input type="search" data-find-replace-find placeholder="Find" autocomplete="off">
+    <span data-find-replace-count></span>
+    <label><input type="checkbox" data-find-replace-case> Match case</label>
+    <button type="button" data-find-replace-previous>↑</button>
+    <button type="button" data-find-replace-next>↓</button>
+    <button type="button" data-find-replace-close>x</button>
+  </div>
+  <div id="manuscript-find-replace-fields" class="manuscript-find-replace__row" data-find-replace-replace-row hidden>
+    <input type="text" data-find-replace-replace placeholder="Replace with" autocomplete="off">
+    <button type="button" data-find-replace-replace-current>Replace</button>
+    <button type="button" data-find-replace-all>Replace all</button>
+  </div>
+</section>
 
 <main class="manuscript nav-border">
   <div

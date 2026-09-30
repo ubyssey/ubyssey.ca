@@ -3,7 +3,7 @@ from channels.db import database_sync_to_async
 from django.db import transaction
 
 # pycrdt provides python bindings to rust port of YJS which is the library used here for collaboration
-from pycrdt import Doc, YMessageType, YSyncMessageType, read_message
+from pycrdt import Doc, YMessageType, YSyncMessageType, create_sync_message, read_message
 from pycrdt.websocket.django_channels_consumer import (
     YjsConsumer,
     handle_sync_message,
@@ -31,6 +31,10 @@ def page_yjs_group_name(page_id):
     return f"stove_yjs_{page_id}"
 
 
+# State vector contains clock for each client ID
+def create_persistence_ack_message(state_vector):
+    return bytes([PERSISTENCE_ACK_MESSAGE]) + state_vector
+
 # Sync Y document with a Wagtail page
 class PageYjsConsumer(YjsConsumer):
 
@@ -38,6 +42,7 @@ class PageYjsConsumer(YjsConsumer):
         super().__init__()
         self.page_id = None
         self._pending_updates = []
+        self._pending_messages = []
         self._persistence_task = None
         # Page collaboration object PK
         self.collaboration_id = None
@@ -53,11 +58,19 @@ class PageYjsConsumer(YjsConsumer):
             await self.close(code=4404)
             return
 
-        await super().connect()
-        await self.channel_layer.group_add(
-            page_restore_group_name(self.page_id),
-            self.channel_name,
-        )
+        self.room_name = self.make_room_name()
+        self.ydoc = Doc()
+        self._websocket_shim = self._make_websocket_shim(self.scope["path"])
+
+        await self.channel_layer.group_add(self.room_name, self.channel_name)
+        await self.channel_layer.group_add(page_restore_group_name(self.page_id), self.channel_name)
+
+        self.collaboration_id, saved_document = await self._load_document()
+        if saved_document:
+            self.ydoc.apply_update(saved_document)
+
+        await self.accept()
+        await self._websocket_shim.send(create_sync_message(self.ydoc))
 
     async def disconnect(self, code):
         if self.page_id is not None:
@@ -72,9 +85,10 @@ class PageYjsConsumer(YjsConsumer):
             await asyncio.gather(self._persistence_task, return_exceptions=True)
         if self._pending_updates:
             updates = self._pending_updates
+            messages = self._pending_messages
             self._pending_updates = []
-            await self._merge_document(updates)
-            await self.group_send_message(bytes([PERSISTENCE_ACK_MESSAGE]))
+            self._pending_messages = []
+            await self._persist_updates(updates, messages)
 
     def make_room_name(self):
         return page_yjs_group_name(self.page_id)
@@ -82,20 +96,12 @@ class PageYjsConsumer(YjsConsumer):
     async def page_restored(self, event):
         await self.close(code=RESTORE_CLOSE_CODE)
 
-    async def make_ydoc(self):
-        ydoc = Doc()
-        self.collaboration_id, saved_document = await self._load_document()
-        if saved_document:
-            ydoc.apply_update(saved_document)
-        return ydoc
-
-    # Sends live changes immediately, then persists the recieved update
     async def receive(self, text_data=None, bytes_data=None):
         if bytes_data is None:
             return
 
-        await self.group_send_message(bytes_data)
         if bytes_data[0] != YMessageType.SYNC:
+            await self.group_send_message(bytes_data)
             return
 
         reply = handle_sync_message(bytes_data[1:], self.ydoc)
@@ -107,6 +113,7 @@ class PageYjsConsumer(YjsConsumer):
             update = read_message(bytes_data[2:])
             if update != b"\x00\x00":
                 self._pending_updates.append(update)
+                self._pending_messages.append(bytes_data)
                 if self._persistence_task is None:
                     self._persistence_task = asyncio.create_task(
                         self._persist_update_batches()
@@ -130,11 +137,23 @@ class PageYjsConsumer(YjsConsumer):
                 await asyncio.sleep(PERSISTENCE_BATCH_DELAY_SECONDS)
                 batch_size = len(self._pending_updates)
                 updates = self._pending_updates[:batch_size]
-                await self._merge_document(updates)
+                messages = self._pending_messages[:batch_size]
+                await self._persist_updates(updates, messages)
                 del self._pending_updates[:batch_size]
-                await self.group_send_message(bytes([PERSISTENCE_ACK_MESSAGE]))
+                del self._pending_messages[:batch_size]
         finally:
             self._persistence_task = None
+
+    async def _persist_updates(self, updates, messages):
+        state_vector = await self._merge_document(updates)
+        if state_vector is None:
+            return
+
+        for message in messages:
+            await self.group_send_message(message)
+
+        # Confirms only for editor that sent the changes
+        await self.send(bytes_data=create_persistence_ack_message(state_vector))
 
     @database_sync_to_async
     def _page_exists(self):
@@ -161,7 +180,7 @@ class PageYjsConsumer(YjsConsumer):
                 page_id=self.page_id,
             ).first()
             if session is None:
-                return
+                return None
             ydoc = Doc()
             if session.document:
                 ydoc.apply_update(bytes(session.document))
@@ -169,3 +188,4 @@ class PageYjsConsumer(YjsConsumer):
                 ydoc.apply_update(update)
             session.document = ydoc.get_update()
             session.save(update_fields=["document", "updated_at"])
+            return ydoc.get_state()
