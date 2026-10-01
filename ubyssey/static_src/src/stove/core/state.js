@@ -25,6 +25,7 @@ export class PageEditorState {
     this.users = null;
     this.awareness = null;
     this.footnoteTexts = null;
+    this.footnotesFrozen = false;
     this.history = null;
   }
 

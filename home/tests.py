@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone as datetime_timezone
 from itertools import combinations
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -9,7 +9,13 @@ from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.utils import timezone
 
 from home.blocks import GameAnalysisPanel, SPORT_CHOICES
-from home.game_analysis_queries import FIXTURE_LIMIT, fixture_queues, panel_active_sports
+from home.game_analysis_queries import (
+    FIXTURE_LIMIT,
+    chronological_articles,
+    fixture_queues,
+    panel_active_sports,
+    six_month_cutoff,
+)
 from home.models import HomePage, ThunderbirdFixture
 from home.views import game_analysis_filter
 
@@ -65,6 +71,42 @@ class HomepageRedesignTests(SimpleTestCase):
         self.assertEqual(homepage.ams_election_heading, "2026 AMS VP Student Life By-Election")
         self.assertEqual(len(HomePage.AMS_ELECTION_PLACEMENTS), 3)
 
+    def test_game_analyses_remains_enabled_by_default(self):
+        self.assertTrue(HomePage().game_analysis_enabled)
+
+    def test_disabled_panel_skips_homepage_game_queries(self):
+        homepage = HomePage(game_analysis_enabled=False)
+        with patch("wagtail.models.Page.get_context", return_value={}), \
+                patch.object(homepage, "get_curated_articles", return_value=[]), \
+                patch("home.models.ArticlePage"), \
+                patch("home.models.settings.DEBUG", False), \
+                patch("home.game_analysis_queries.fixture_queues") as fixtures, \
+                patch("home.game_analysis_queries.chronological_articles") as stories:
+            homepage.get_context(RequestFactory().get("/"))
+        fixtures.assert_not_called()
+        stories.assert_not_called()
+
+    def test_six_month_cutoff_uses_calendar_months(self):
+        now = datetime(2026, 8, 31, 15, 30, tzinfo=datetime_timezone.utc)
+        self.assertEqual(
+            six_month_cutoff(now),
+            datetime(2026, 2, 28, 15, 30, tzinfo=datetime_timezone.utc),
+        )
+
+    def test_filtered_stories_are_recent_sports_game_analyses(self):
+        cutoff = datetime(2026, 3, 25, tzinfo=datetime_timezone.utc)
+        with patch("home.game_analysis_queries.ArticlePage") as article_model, \
+                patch("home.game_analysis_queries.six_month_cutoff", return_value=cutoff):
+            queryset = article_model.objects.live.return_value.public.return_value
+            queryset.filter.return_value.order_by.return_value.specific.return_value.__getitem__.return_value = []
+            self.assertEqual(chronological_articles(["soccer-w"]), [])
+        queryset.filter.assert_called_once_with(
+            current_section="sports",
+            standardarticlepage__story_form="game-analysis",
+            covered_sport__in=["soccer-w"],
+            explicit_published_at__gte=cutoff,
+        )
+
 
 class GameAnalysisFixtureQueryTests(TestCase):
     def test_each_selection_returns_only_its_first_five_chronological_fixtures(self):
@@ -114,7 +156,20 @@ class GameAnalysisFilterViewTests(SimpleTestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.site = SimpleNamespace(root_page_id=42)
-        self.home = SimpleNamespace(pk=42, game_analysis=[])
+        self.home = SimpleNamespace(pk=42, game_analysis=[], game_analysis_enabled=True)
+
+    def test_disabled_panel_rejects_filters_without_querying_content(self):
+        self.home.game_analysis_enabled = False
+        request = self.factory.get("/game-analysis/filter/?sport=soccer-w")
+        with patch("home.views.Site.find_for_request", return_value=self.site), \
+                patch("home.views.HomePage") as homepage_model, \
+                patch("home.views.chronological_articles") as stories, \
+                patch("home.views.fixture_queues") as fixtures:
+            homepage_model.objects.live.return_value.public.return_value.filter.return_value.first.return_value = self.home
+            response = game_analysis_filter(request)
+        self.assertEqual(response.status_code, 404)
+        stories.assert_not_called()
+        fixtures.assert_not_called()
 
     def test_rejects_inactive_sport_before_querying_content(self):
         request = self.factory.get("/game-analysis/filter/?sport=rugby-w")
