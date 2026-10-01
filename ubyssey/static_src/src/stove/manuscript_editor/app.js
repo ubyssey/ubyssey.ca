@@ -1,7 +1,7 @@
 // Entrypoint
 
 import { ACTIVE_SUGGESTION_THREAD_META } from "../core/richtext/plugins.js";
-import { appendStreamDocumentsToFormData, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
+import { appendStreamDocumentsToFormData, formDataWithStreamDocuments, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
 import { mountShortcutDocumentation } from "../core/richtext/shortcut_help.jsx";
 import { createManuscriptToolbar } from "./chrome/toolbar.jsx";
 import { mountManuscriptChrome } from "./chrome/mount.jsx";
@@ -16,6 +16,8 @@ import { createPageHistory } from "../core/collaboration/history.js";
 import { createArticleInfoSidebar } from "./chrome/article_info_sidebar.jsx";
 import { setupSidebarAccordion } from "./chrome/sidebar_accordian.js";
 import { setupPageSaveStatus } from "../core/collaboration/save_status.js";
+import { setupFindReplace } from "./stream/find_replace.js";
+import { setupManualRevisionSave } from "../core/revisions/revision_history.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -79,8 +81,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     blockTypeLabel,
     createBlockEditor,
     createStreamBlockDraft,
+    collaboration,
   });
-  
+
   for (const [fieldName, streamEditor] of Object.entries(streamEditors)) {
     pageEditorState.registerStreamEditor(createStreamEditor(
       fieldName,
@@ -118,6 +121,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     onViewChange: (view) => pageEditorState.articleInfoSidebar?.setView(view),
   });
 
+  setupFindReplace({ state: pageEditorState });
+
   document.addEventListener("keydown", (event) => {
     if (event.defaultPrevented || pageEditorState.blockEditorModalOpen || event.altKey || (!event.ctrlKey && !event.metaKey)) return;
     const editable = event.target.closest?.("input, textarea, [contenteditable], .ProseMirror");
@@ -149,12 +154,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupPageSaveStatus(collaboration, pageEditorState.scheduleEditorUiRefresh);
 
   preview.setupHistory();
-  
+
+  setupManualRevisionSave(form, {
+    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+  });
+
   mountManuscriptChrome({
     form,
     metadata: collaboration.metadata,
     mediaUpdates: collaboration.ydoc.getMap("articleMediaUpdates"),
     schedulePreview: (options) => preview.refreshDoc(options),
+    onMetadataReady: () => preview.refreshInitialDoc(),
   });
 
   // Prevent Spacebar scrolling

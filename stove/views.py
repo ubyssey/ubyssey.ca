@@ -48,6 +48,8 @@ from stove.editors.collaboration.revisions import (
     restore_page_revision,
     save_page_revision,
     autosave_page_revision,
+    save_manual_page_revision,
+    STALE_AUTOSAVE,
 )
 
 
@@ -364,12 +366,13 @@ def page_collaboration(request, page_id):
         return HttpResponse(status=400)
 
     try:
-        document = initialize_page_collaboration(page_id, request.body)
+        collaboration_id, document = initialize_page_collaboration(page_id, request.body)
     except Page.DoesNotExist:
         return HttpResponse(status=404)
 
-    return HttpResponse(document, content_type="application/octet-stream")
-
+    response = HttpResponse(document, content_type="application/octet-stream")
+    response["X-Stove-Collaboration-Id"] = str(collaboration_id)
+    return response
 
 @login_required
 def manuscript_editor(request, page_id):
@@ -603,6 +606,24 @@ def editor_page_revisions(request, page_id):
 
 @login_required
 @require_POST
+def editor_page_save_revision(request, page_id):
+    saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
+    if saved_revision is STALE_AUTOSAVE:
+        return JsonResponse({"errors": errors}, status=409)
+    if errors or saved_revision is None:
+        return JsonResponse({"errors": errors or {"__all__": ["Failed to save revision."]}}, status=422)
+
+    return JsonResponse({
+        "ok": True,
+        "revision": {
+            "id": str(saved_revision.id),
+            "label": f"{get_user_display_name(saved_revision.user)} {date_format(localtime(saved_revision.created_at), 'M j, Y H:i')}",
+        },
+    })
+
+
+@login_required
+@require_POST
 def editor_page_restore(request, page_id):
     page = get_latest_page(page_id)
     revision_id = request.POST.get("revision")
@@ -663,12 +684,15 @@ def editor_page_preview(request, page_id):
             status=422,
         )
 
-    if revision is None:
+    render_only = request.POST.get("render_only") == "1"
+    autosaved = False
+    if revision is None and not render_only:
         saved_revision = autosave_page_revision(page.id, request.POST, request.user)
         if saved_revision is None:
             return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
+        autosaved = saved_revision is not STALE_AUTOSAVE
 
-    return JsonResponse({"errors": editor_errors, "html": html})
+    return JsonResponse({"errors": editor_errors, "html": html, "autosaved": autosaved})
 
 
 @login_required

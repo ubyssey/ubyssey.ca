@@ -27,8 +27,6 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let activeThreadId = null;
   let focusActiveReply = false;
   let positionFrame = null;
-  let hasRendered = false;
-  let renderedThreadIds = new Set();
   let scrollActiveThread = null;
   let scrollEndCleanup = null;
   let moveTimer = null;
@@ -111,14 +109,6 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   const update = () => {
     const threads = currentThreads();
-    const newThread = hasRendered ? threads.find((thread) => thread.pending && !renderedThreadIds.has(thread.threadId)) : null;
-    hasRendered = true;
-    renderedThreadIds = new Set(threads.map((thread) => thread.threadId));
-    if (newThread) {
-      activeThreadId = newThread.threadId;
-      focusActiveReply = true;
-      scrollActiveThread = "center";
-    }
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
     flushSync(() => {
       reactRoot.render(
@@ -280,10 +270,10 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   return {
     update,
-    activateThread(threadId) {
+    activateThread(threadId, { focusReply = false } = {}) {
       if (clickedAnnotationThreadId && threadId !== clickedAnnotationThreadId) return;
       if (!threadId && clickedAnnotationThreadId) return;
-      setActiveThread(threadId);
+      setActiveThread(threadId, "center", focusReply);
     },
   };
 }

@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from "uuid";
 import { cssEscape } from "./comments.jsx";
 import { markRangeAtCursor } from "../marks.js";
 import { newSharedText, updateSharedText } from "../../collaboration/shared_values.js";
+import { pageEditorState } from "../../state.js";
 
 export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
   const pageShadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
@@ -271,6 +272,8 @@ const FOOTNOTE_ANCHOR_TEXT = "\u200b";
 
 export function startFootnoteCommand(footnoteMark) {
   return (state, dispatch) => {
+    if (pageEditorState.footnotesFrozen) return false;
+
     const { empty, $from } = state.selection;
     if (!empty) return false;
 
