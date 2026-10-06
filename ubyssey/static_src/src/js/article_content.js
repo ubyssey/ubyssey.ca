@@ -216,8 +216,9 @@ function alignArticleContextRail() {
 
 function initializeAuthorGallery() {
     const viewer = document.querySelector('[data-author-gallery-viewer]');
-    const items = [...document.querySelectorAll('[data-author-gallery-item]')];
-    if (!viewer || !items.length) return;
+    if (!viewer || !document.querySelector('[data-author-gallery-item]')) return;
+
+    const getItems = () => [...document.querySelectorAll('[data-author-gallery-item]')];
 
     const image = viewer.querySelector('[data-gallery-image]');
     const caption = viewer.querySelector('[data-gallery-caption]');
@@ -229,6 +230,8 @@ function initializeAuthorGallery() {
     let touchStartX;
 
     const show = (nextIndex) => {
+        const items = getItems();
+        if (!items.length) return;
         index = (nextIndex + items.length) % items.length;
         const item = items[index];
         image.src = item.dataset.imageUrl;
@@ -249,10 +252,12 @@ function initializeAuthorGallery() {
         opener?.focus({ preventScroll: true });
     };
 
-    items.forEach((item, itemIndex) => item.addEventListener('click', (event) => {
+    document.addEventListener('click', (event) => {
+        const item = event.target.closest('[data-author-gallery-item]');
+        if (!item) return;
         event.preventDefault();
-        open(itemIndex, item);
-    }));
+        open(getItems().indexOf(item), item);
+    });
     previous.addEventListener('click', () => show(index - 1));
     next.addEventListener('click', () => show(index + 1));
     close.addEventListener('click', closeViewer);
