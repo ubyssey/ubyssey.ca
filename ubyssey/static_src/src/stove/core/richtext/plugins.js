@@ -16,7 +16,10 @@ import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph 
 import { ySyncPluginKey } from "y-prosemirror";
 import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
+import { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
 import { pageEditorState } from "../state.js";
+
+export { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
 
 export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
 export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
@@ -42,18 +45,6 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     createInvisiblesPlugin([invisiblesSpace, hardBreak, invisiblesParagraph], { shouldShowInvisibles: areInvisibleCharactersEnabled() }),
     ...(includeHistory ? [history()] : []),
   ];
-}
-
-let suggestionMode = false;
-export const ACTIVE_SUGGESTION_THREAD_META = "activeSuggestionThread";
-
-export function suggestionModeIsActive() {
-  return suggestionMode;
-}
-
-export function toggleSuggestionMode() {
-  suggestionMode = !suggestionMode;
-  return suggestionMode;
 }
 
 function suggestionPlugin(schema) {
@@ -353,7 +344,7 @@ function suggestionPlugin(schema) {
   };
 
   const insertSuggestion = (view, from, to, text) => {
-    if (!suggestionMode || !text) return false;
+    if (!suggestionModeIsActive() || !text) return false;
 
     const { state } = view;
     let tr = state.tr;
@@ -395,9 +386,101 @@ function suggestionPlugin(schema) {
     return true;
   };
 
+  const pasteSuggestionIntoPreexistingThread = (state, tr, mark, pastedRanges) => {
+    const threadId = mark.attrs.threadId;
+    const suggestion = commentSuggestion(mark.attrs.comments);
+
+    if (suggestion === "add") {
+      return applyAddition(tr, mark, sortRanges([
+        ...mapRanges(tr, threadRanges(state, threadId, "add")),
+        ...pastedRanges,
+      ]));
+    }
+
+    if (suggestion === "delete") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        pastedRanges,
+      );
+    }
+
+    if (suggestion === "replace") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        sortRanges([
+          ...mapRanges(tr, threadRanges(state, threadId, "add")),
+          ...pastedRanges,
+        ]),
+      );
+    }
+
+    return applyAddition(tr, null, pastedRanges);
+  };
+
+  const pasteSuggestion = (view, slice) => {
+    if (!suggestionModeIsActive() || !slice.content.size) return false;
+
+    const { state } = view;
+    const { from, to, empty } = state.selection;
+    if (!(state.selection instanceof TextSelection)) return false;
+    if (!empty && rangeHasSuggestion(state, from, to)) return false;
+
+    const selectedRange = empty ? null : wordRangeWithAdjacentSpace(state, from, to) || { from, to, spacePosition: null };
+    if (selectedRange && rangeHasSuggestion(state, selectedRange.from, selectedRange.to)) return false;
+
+    const canCaptureSpace = selectedRange?.spacePosition
+      && slice.openStart === 0
+      && slice.openEnd === 0
+      && slice.content.childCount === 1
+      && slice.content.firstChild.isText;
+    const insertAt = selectedRange?.to ?? from;
+    let tr = state.tr;
+
+    if (canCaptureSpace && selectedRange.spacePosition === "leading") tr = tr.insertText(" ", insertAt);
+    const sliceInsertAt = canCaptureSpace && selectedRange.spacePosition === "leading" ? tr.mapping.map(insertAt, 1) : insertAt;
+    tr = tr.replaceRange(sliceInsertAt, sliceInsertAt, slice);
+
+    const pastedFrom = tr.mapping.map(insertAt, -1);
+    let pastedTo = tr.mapping.map(insertAt, 1);
+    if (canCaptureSpace && selectedRange.spacePosition === "trailing") {
+      tr = tr.insertText(" ", pastedTo);
+      pastedTo += 1;
+    }
+
+    const pastedRanges = pastedFrom < pastedTo ? [{ from: pastedFrom, to: pastedTo }] : [];
+    if (!pastedRanges.length || !textInRanges(tr.doc, pastedRanges)) return false;
+
+    if (selectedRange) {
+      const deletedFrom = tr.mapping.map(selectedRange.from, -1);
+      const deletedTo = tr.mapping.map(selectedRange.to, -1);
+      const { deleteMark, addMark } = createReplacementMarks(
+        state.doc.textBetween(selectedRange.from, selectedRange.to, " "),
+        textInRanges(tr.doc, pastedRanges),
+      );
+      tr = applyMark(tr, [{ from: deletedFrom, to: deletedTo }], deleteMark);
+      tr = applyMark(tr, pastedRanges, addMark).setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
+    } else {
+      const nearbyMark = adjacentSuggestionMark(state, from, to);
+      tr = nearbyMark
+        ? pasteSuggestionIntoPreexistingThread(state, tr, nearbyMark, pastedRanges)
+        : applyAddition(tr, null, pastedRanges);
+    }
+
+    view.dispatch(tr
+      .setSelection(TextSelection.near(tr.doc.resolve(Math.min(pastedTo, tr.doc.content.size))))
+      .setMeta("paste", true)
+      .setMeta("uiEvent", "paste")
+      .scrollIntoView());
+    return true;
+  };
+
   // When you type next to a suggestion, it shouldn't be a suggestion if suggestion toggle off
   const insertPlainTextBesideSuggestion = (view, from, to, text) => {
-    if (suggestionMode || from !== to || !text) return false;
+    if (suggestionModeIsActive() || from !== to || !text) return false;
 
     const { state } = view;
     const $from = state.doc.resolve(from);
@@ -417,8 +500,11 @@ function suggestionPlugin(schema) {
       handleTextInput(view, from, to, text) {
         return insertSuggestion(view, from, to, text) || insertPlainTextBesideSuggestion(view, from, to, text);
       },
+      handlePaste(view, _event, slice) {
+        return pasteSuggestion(view, slice);
+      },
       handleKeyDown(view, event) {
-        if (!suggestionMode || !["Backspace", "Delete"].includes(event.key)) return false;
+        if (!suggestionModeIsActive() || !["Backspace", "Delete"].includes(event.key)) return false;
 
         const { state } = view;
         const { $from, empty } = state.selection;
@@ -662,7 +748,7 @@ function frozenFootnotePlugin(schema) {
     },
     props: {
       handleKeyDown(view, event) {
-        if (suggestionMode || !pageEditorState.footnotesFrozen || !["Backspace", "Delete"].includes(event.key)) return false;
+        if (suggestionModeIsActive() || !pageEditorState.footnotesFrozen || !["Backspace", "Delete"].includes(event.key)) return false;
         if (!deleteSelectionExceptFootnoteAnchors(view)) return false;
         event.preventDefault();
         return true;
@@ -709,7 +795,7 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations 
     bind("Mod-Alt-s", (state, dispatch) => {
       if (!dispatch) return true;
       toggleSuggestionMode();
-      dispatch(state.tr.setMeta("suggestionModeChanged", suggestionMode));
+      dispatch(state.tr.setMeta("suggestionModeChanged", suggestionModeIsActive()));
       return true;
     });
   }
