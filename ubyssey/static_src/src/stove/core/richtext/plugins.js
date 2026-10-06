@@ -5,6 +5,7 @@ import "prosemirror-gapcursor/style/gapcursor.css";
 import "@guardian/prosemirror-invisibles/dist/style.css";
 
 import { Plugin, PluginKey, TextSelection } from "prosemirror-state";
+import { Slice } from "prosemirror-model";
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { baseKeymap, chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
 import { undo, redo, history } from "prosemirror-history";
@@ -14,6 +15,8 @@ import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
 import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
 import { ySyncPluginKey } from "y-prosemirror";
+import { v4 as uuidv4 } from "uuid";
+
 import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
@@ -37,7 +40,7 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     linkBubblePlugin(schema),
     // Disabling for now, I don't have time to polish
     //selectionCommentBubblePlugin(schema),
-    ...(allowAnnotations ? [activeCommentPlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
+    ...(allowAnnotations ? [activeCommentPlugin(schema), footnoteSelectionPlugin(schema), footnotePastePlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
     keymap(buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations })),
     keymap(baseKeymap),
     dropCursor(),
@@ -677,24 +680,143 @@ function activeCommentPlugin(schema) {
   });
 }
 
-function frozenFootnotePlugin(schema) {
+// Finds all footnotes in selection
+function selectedFootnoteAnchorRanges(state, footnoteMark) {
+  const { from, to } = state.selection;
+  if (from === to) return [];
+
+  const ranges = [];
+  state.doc.nodesBetween(from, to, (node, position) => {
+    const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
+    const nodeEnd = position + node.nodeSize;
+    if (footnote?.attrs.anchor) {
+      ranges.push({ from: position, to: nodeEnd });
+    }
+    return true;
+  });
+  return ranges;
+}
+
+// Used for highlighting
+const footnoteSelectionPluginKey = new PluginKey("footnoteSelection");
+function footnoteSelectionPlugin(schema) {
   const footnoteMark = schema.marks.footnote;
   if (!footnoteMark) return null;
 
-  const selectedFootnoteAnchorRanges = (state) => {
+  const decorationsForSelection = (state) => {
     const { from, to } = state.selection;
-    if (from === to) return [];
+    if (from === to) return DecorationSet.empty;
 
-    const ranges = [];
-    state.doc.descendants((node, position) => {
+    const decorations = selectedFootnoteAnchorRanges(state, footnoteMark)
+      .map(({ from: anchorFrom, to: anchorTo }) => Decoration.inline(anchorFrom, anchorTo, {
+        class: "pm-footnote--selected",
+      }));
+    return DecorationSet.create(state.doc, decorations);
+  };
+
+  return new Plugin({
+    key: footnoteSelectionPluginKey,
+    state: {
+      init: (_config, state) => decorationsForSelection(state),
+      apply(transaction, decorations, _oldState, newState) {
+        if (!transaction.docChanged && !transaction.selectionSet) return decorations;
+        return decorationsForSelection(newState);
+      },
+    },
+    props: {
+      decorations: (state) => footnoteSelectionPluginKey.getState(state),
+    },
+  });
+}
+
+function footnotePastePlugin(schema) {
+  const footnoteMark = schema.marks.footnote;
+  if (!footnoteMark) return null;
+
+  return new Plugin({
+    props: {
+      transformPasted(slice, view) {
+        if (view.dragging?.move) return slice;
+        return uniquePastedFootnoteIds(slice, usedFootnoteIds(view), footnoteMark);
+      },
+    },
+  });
+}
+
+function usedFootnoteIds(view) {
+  const views = new Set([
+    view,
+    ...pageEditorState.currentPageTextViews(),
+    pageEditorState.blockEditorView,
+  ]);
+
+  const usedIds = new Set();
+  for (const editorView of views) {
+    if (!editorView?.state) continue;
+
+    const footnoteMark = editorView.state.schema.marks.footnote;
+    if (!footnoteMark) continue;
+
+    editorView.state.doc.descendants((node) => {
       const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
-      if (footnote?.attrs.anchor && position >= from && position + node.nodeSize <= to) {
-        ranges.push({ from: position, to: position + node.nodeSize });
-      }
+      if (footnote?.attrs.anchor && footnote.attrs.footnoteId) usedIds.add(footnote.attrs.footnoteId);
       return true;
     });
-    return ranges;
+  }
+  return usedIds;
+}
+
+// Replaces duplicated footnote IDs in pasted content with new UUIDs
+function uniquePastedFootnoteIds(slice, usedIds, footnoteMark) {
+  const uniqueId = () => {
+    let footnoteId;
+    do footnoteId = uuidv4(); while (usedIds.has(footnoteId));
+    return footnoteId;
   };
+
+  const pastedIds = new Map();
+
+  const pastedFootnoteId = (footnoteId) => {
+    if (pastedIds.has(footnoteId)) return pastedIds.get(footnoteId);
+
+    const nextId = usedIds.has(footnoteId) ? uniqueId() : footnoteId;
+    usedIds.add(nextId);
+    pastedIds.set(footnoteId, nextId);
+    return nextId;
+  };
+
+  const mapFragment = (fragment) => {
+    let mapped = fragment;
+    fragment.forEach((node, _offset, index) => {
+      let nextNode = node;
+      if (node.content.size) {
+        const content = mapFragment(node.content);
+        if (content !== node.content) nextNode = node.copy(content);
+      }
+
+      const footnote = footnoteMark.isInSet(nextNode.marks);
+      const footnoteId = footnote?.attrs.footnoteId;
+      if (footnote?.attrs.anchor && footnoteId) {
+        const nextId = pastedFootnoteId(footnoteId);
+        if (nextId !== footnoteId) {
+          nextNode = nextNode.mark(nextNode.marks.map((mark) => (
+            mark === footnote ? footnoteMark.create({ ...footnote.attrs, footnoteId: nextId }) : mark
+          )));
+        }
+      }
+
+      if (nextNode !== node) mapped = mapped.replaceChild(index, nextNode);
+    });
+    return mapped;
+  };
+
+  const content = mapFragment(slice.content);
+  return content === slice.content ? slice : new Slice(content, slice.openStart, slice.openEnd);
+}
+
+function frozenFootnotePlugin(schema) {
+  const footnoteMark = schema.marks.footnote;
+  if (!footnoteMark) return null;
 
   const deletedRangeContainsFootnoteAnchor = (doc, from, to) => {
     let containsAnchor = false;
@@ -709,7 +831,7 @@ function frozenFootnotePlugin(schema) {
   const deleteSelectionExceptFootnoteAnchors = (view) => {
     const { state } = view;
     const { from, to } = state.selection;
-    const anchors = selectedFootnoteAnchorRanges(state);
+    const anchors = selectedFootnoteAnchorRanges(state, footnoteMark);
     if (!anchors.length) return false;
 
     let transaction = state.tr;
