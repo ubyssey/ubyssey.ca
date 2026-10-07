@@ -481,6 +481,17 @@ function suggestionPlugin(schema) {
     return true;
   };
 
+  const cutAsSuggestion = (view, from, to, { cursorAfterDeletion = false } = {}) => {
+    const { state } = view;
+    const removesAddition = rangeIsSuggestion(state, from, to, "add");
+    let tr = deleteRangeWithSuggestions(state, from, to);
+    tr = mergeAdjacentDeletionThreads(tr, tr.getMeta(ACTIVE_SUGGESTION_THREAD_META));
+
+    const cursor = Math.min(cursorAfterDeletion && !removesAddition ? to : from, tr.doc.content.size);
+    view.dispatch(tr.setSelection(TextSelection.create(tr.doc, cursor)).scrollIntoView());
+    return true;
+  };
+
   // When you type next to a suggestion, it shouldn't be a suggestion if suggestion toggle off
   const insertPlainTextBesideSuggestion = (view, from, to, text) => {
     if (suggestionModeIsActive() || from !== to || !text) return false;
@@ -506,6 +517,26 @@ function suggestionPlugin(schema) {
       handlePaste(view, _event, slice) {
         return pasteSuggestion(view, slice);
       },
+      handleDOMEvents: {
+        cut(view, event) {
+          if (!suggestionModeIsActive() || view.state.selection.empty || !event.clipboardData) return false;
+
+          const { dom, text } = view.serializeForClipboard(view.state.selection.content());
+          event.preventDefault();
+          event.clipboardData.clearData();
+          event.clipboardData.setData("text/html", dom.innerHTML);
+          event.clipboardData.setData("text/plain", text);
+
+          const { state } = view;
+          let { from, to } = state.selection;
+          if (!rangeHasSuggestion(state, from, to)) {
+            const selectedRange = wordRangeWithAdjacentSpace(state, from, to);
+            if (!selectedRange) return true;
+            ({ from, to } = selectedRange);
+          }
+          return cutAsSuggestion(view, from, to);
+        },
+      },
       handleKeyDown(view, event) {
         if (!suggestionModeIsActive() || !["Backspace", "Delete"].includes(event.key)) return false;
 
@@ -527,13 +558,7 @@ function suggestionPlugin(schema) {
         }
         event.preventDefault();
 
-        const removesAddition = rangeIsSuggestion(state, from, to, "add");
-        let tr = deleteRangeWithSuggestions(state, from, to);
-        tr = mergeAdjacentDeletionThreads(tr, tr.getMeta(ACTIVE_SUGGESTION_THREAD_META));
-
-        const cursor = Math.min(event.key === "Delete" && empty && !removesAddition ? to : from, tr.doc.content.size);
-        view.dispatch(tr.setSelection(TextSelection.create(tr.doc, cursor)).scrollIntoView());
-        return true;
+        return cutAsSuggestion(view, from, to, { cursorAfterDeletion: event.key === "Delete" && empty });
       },
     },
   });
