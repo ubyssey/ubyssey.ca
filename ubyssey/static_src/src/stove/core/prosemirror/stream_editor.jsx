@@ -151,7 +151,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
         };
       },
 
-      mergeRichTextBlock({ blockId, path = [] }) {
+      mergeRichTextBlock({ blockId, path = [], currentContent = null }) {
         const streamBlock = findYStreamBlock(fragment, blockId);
         if (!streamBlock || streamBlock.getAttribute("blockType") !== "richtext") return null;
         const blockIndex = fragment.toArray().indexOf(streamBlock);
@@ -165,7 +165,7 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
 
         const previousDoc = yXmlFragmentToProseMirrorRootNode(previousField, streamRichTextSchema);
         const currentDoc = yXmlFragmentToProseMirrorRootNode(currentField, streamRichTextSchema);
-        const content = joinRichTextContent(previousDoc.content, currentDoc.content);
+        const content = joinRichTextContent(previousDoc.content, currentContent || currentDoc.content);
         const cursorPosition = previousDoc.content.size - 1;
 
         fragment.doc.transact(() => {
