@@ -69,6 +69,8 @@ export function useAuthorsPanel() {
         rows.appendChild(row);
         setupAuthorSelect(authorSelect);
       });
+
+      form.dispatchEvent(new Event("input", { bubbles: true }));
     };
 
     panel.querySelectorAll("[data-article-author-select]").forEach(setupAuthorSelect);
