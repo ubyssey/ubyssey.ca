@@ -1,4 +1,5 @@
 import asyncio
+from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from django.db import transaction
 
@@ -11,6 +12,8 @@ from pycrdt.websocket.django_channels_consumer import (
 
 from wagtail.models import Page
 from stove.models import PageCollaboration
+from stove.editors.collaboration.wagtail import WAGTAIL_EDITING_CLOSE_CODE, page_is_being_edited_in_wagtail
+from stove.editors.collaboration.presence import PRESENCE_REFRESH_SECONDS, refresh_page_presence
 
 # Formerly was 0.25
 PERSISTENCE_BATCH_DELAY_SECONDS = 0.1
@@ -44,6 +47,8 @@ class PageYjsConsumer(YjsConsumer):
         self._pending_updates = []
         self._pending_messages = []
         self._persistence_task = None
+        self._presence_refresh_task = None
+        self.presence_id = None
         # Page collaboration object PK
         self.collaboration_id = None
 
@@ -54,8 +59,20 @@ class PageYjsConsumer(YjsConsumer):
             return
 
         self.page_id = int(self.scope["url_route"]["kwargs"]["page_id"])
+        query_params = parse_qs(self.scope["query_string"].decode())
+        self.presence_id = query_params.get("presence", [None])[0]
+
+        if self.presence_id is None:
+            await self.close(code=4400)
+            return
         if not await self._page_exists():
             await self.close(code=4404)
+            return
+        if await self._page_is_being_edited_in_wagtail():
+            await self.close(code=WAGTAIL_EDITING_CLOSE_CODE)
+            return
+        if not await self._refresh_stove_presence():
+            await self.close(code=4400)
             return
 
         self.room_name = self.make_room_name()
@@ -70,9 +87,18 @@ class PageYjsConsumer(YjsConsumer):
             self.ydoc.apply_update(saved_document)
 
         await self.accept()
+
+        self._presence_refresh_task = asyncio.create_task(
+            self._refresh_stove_presence_loop()
+        )
+        
         await self._websocket_shim.send(create_sync_message(self.ydoc))
 
     async def disconnect(self, code):
+        if self._presence_refresh_task:
+            self._presence_refresh_task.cancel()
+            await asyncio.gather(self._presence_refresh_task, return_exceptions=True)
+            self._presence_refresh_task = None
         if self.page_id is not None:
             await self.channel_layer.group_discard(
                 page_restore_group_name(self.page_id),
@@ -95,6 +121,9 @@ class PageYjsConsumer(YjsConsumer):
 
     async def page_restored(self, event):
         await self.close(code=RESTORE_CLOSE_CODE)
+
+    async def page_wagtail_edit_started(self, event):
+        await self.close(code=WAGTAIL_EDITING_CLOSE_CODE)
 
     async def receive(self, text_data=None, bytes_data=None):
         if bytes_data is None:
@@ -155,9 +184,23 @@ class PageYjsConsumer(YjsConsumer):
         # Confirms only for editor that sent the changes
         await self.send(bytes_data=create_persistence_ack_message(state_vector))
 
+    async def _refresh_stove_presence_loop(self):
+        while True:
+            await asyncio.sleep(PRESENCE_REFRESH_SECONDS)
+            if not await self._refresh_stove_presence():
+                return
+
     @database_sync_to_async
     def _page_exists(self):
         return Page.objects.filter(pk=self.page_id).exists()
+
+    @database_sync_to_async
+    def _page_is_being_edited_in_wagtail(self):
+        return page_is_being_edited_in_wagtail(self.page_id)
+
+    @database_sync_to_async
+    def _refresh_stove_presence(self):
+        return refresh_page_presence(self.page_id, self.presence_id)
 
     @database_sync_to_async
     def _load_document(self):

@@ -5,6 +5,7 @@ import * as buffer from "lib0/buffer";
 
 // See consumers.py, code sent on restore
 const RESTORE_CLOSE_CODE = 4410;
+const WAGTAIL_EDITING_CLOSE_CODE = 4411;
 
 // Sends message that changes were merged in
 const PERSISTENCE_ACK_MESSAGE = 4;
@@ -99,10 +100,21 @@ function editorColour(id) {
 }
 
 // Creates Y.doc, and sends initial update (this allows reconnections to work) and handles response (gets new remote changes)
-export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl }) {
+export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, presenceUrl, websocketUrl }) {
   const ydoc = new Y.Doc();
+  const presenceId = crypto.randomUUID();
   const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
   let collaborationId = null;
+
+  const updatePresence = (action) => fetch(presenceUrl, {
+    method: "POST",
+    credentials: "same-origin",
+    keepalive: action === "release",
+    headers: {
+      "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value || "",
+    },
+    body: new URLSearchParams({ action, presence: presenceId }),
+  });
 
   const startOfflineRecovery = () => {
     const pendingUpdates = createPendingUpdatesStore({
@@ -120,7 +132,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   };
 
   try {
-    const response = await fetch(initializationUrl, {
+    const initializationRequestUrl = new URL(initializationUrl, window.location.origin);
+    initializationRequestUrl.searchParams.set("presence", presenceId);
+
+    const response = await fetch(initializationRequestUrl, {
       method: "POST",
       credentials: "same-origin",
       headers: {
@@ -129,6 +144,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       },
       body: initialUpdate,
     });
+
+    if (response.status === 409) {
+      return { blockedByWagtail: true };
+    }
 
     if (!response.ok) throw new Error(`Collaboration initialization failed (${response.status})`);
     Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
@@ -155,6 +174,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     websocketUrl,
     "yjs",
     ydoc,
+    { params: { presence: presenceId } },
   );
 
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
@@ -183,9 +203,14 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       pendingUpdates.clear();
       window.location.reload();
     }
+    if (event?.code === WAGTAIL_EDITING_CLOSE_CODE) {
+      pendingUpdates.clear();
+      window.location.assign(document.querySelector("[data-page-form]").dataset.stoveHomeUrl || "/stove/");
+    }
   });
 
   window.addEventListener("pagehide", (event) => {
+    updatePresence("release").catch(() => {});
     provider.awareness.setLocalState(null);
     if (event.persisted) provider.disconnect();
     else provider.destroy();
@@ -193,8 +218,13 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
 
   window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
-    provider.connect();
-    provider.awareness.setLocalStateField("user", user);
+    updatePresence("claim")
+      .then((response) => {
+        if (!response.ok) throw new Error("Unable to resume Stove editor");
+        provider.connect();
+        provider.awareness.setLocalStateField("user", user);
+      })
+      .catch((error) => console.warn(error));
   });
   return {
     ydoc,

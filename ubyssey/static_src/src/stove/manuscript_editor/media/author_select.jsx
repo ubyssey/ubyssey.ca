@@ -24,6 +24,8 @@ export function setupMediaAuthorSelect(form) {
         value={options.find((option) => String(option.value) === String(field.value)) || null}
         onChange={(option) => {
           field.value = option?.value || "";
+          // Render on change cause it doesn't by default update the hidden real field
+          render(options, isDisabled);
           field.dispatchEvent(new Event("change", { bubbles: true }));
         }}
       />,
