@@ -1,4 +1,4 @@
-import { fetchRevisions, restoreRevision } from "./api.js";
+import { fetchRevisions, restoreRevision, saveRevision } from "./api.js";
 
 // TODO: potentially rename when we fix prosemirror/yjs history
 
@@ -43,6 +43,8 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
         loadRevisionHistory(form, historySelect);
       }, delay);
   });
+
+  form.addEventListener("editor:revision-saved", () => loadRevisionHistory(form, historySelect));
 
   const selectedRevision = () => historySelect?.value || "";
   const selectedRevisionIsCurrent = () => !historySelect || historySelect.value === "";
@@ -96,4 +98,83 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
   for (const btn of historyButtons) {
     btn.addEventListener("click", () => { onPreviewRevision(btn.dataset.revisionId, false); });
   }
+}
+
+export function setupManualRevisionSave(form, { formDataForSave }) {
+  const saveButton = form?.querySelector("[data-save-revision]");
+  if (!saveButton || !form.dataset.saveRevisionUrl) return;
+
+  saveButton.addEventListener("click", async () => {
+    const originalText = saveButton.textContent;
+    let saved = false;
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+
+    try {
+      const payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+      if (payload.errors) {
+        const message = Object.entries(payload.errors)
+          .map(([field, messages]) => {
+            const text = Array.isArray(messages) ? messages.join(", ") : messages;
+            return field === "__all__" ? text : field + ": " + text;
+          })
+          .join("\n");
+        alert(message);
+        return;
+      }
+      saved = true;
+      saveButton.textContent = "Saved";
+
+      form.dispatchEvent(new CustomEvent("editor:revision-saved"));
+
+      window.setTimeout(() => {
+        if (!saveButton.disabled) saveButton.textContent = originalText;
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save revision");
+    } finally {
+      saveButton.disabled = false;
+
+      if (!saved) saveButton.textContent = originalText;
+    }
+  });
+}
+
+export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => {} }) {
+  const wagtailButton = form?.querySelector("[data-view-wagtail]");
+  if (!wagtailButton || !form.dataset.saveRevisionUrl || !wagtailButton.dataset.wagtailUrl) return;
+
+  wagtailButton.addEventListener("click", async () => {
+    const originalText = wagtailButton.textContent;
+    wagtailButton.disabled = true;
+    wagtailButton.textContent = "Saving...";
+
+    try {
+      await beforeSave();
+      const formData = formDataForSave();
+      formData.set("handoff_to_wagtail", "1");
+      const payload = await saveRevision(form.dataset.saveRevisionUrl, formData);
+      
+      if (payload.errors) {
+        const message = Object.entries(payload.errors)
+          .map(([field, messages]) => {
+            const text = Array.isArray(messages) ? messages.join(", ") : messages;
+            return field === "__all__" ? text : field + ": " + text;
+          })
+          .join("\n");
+        alert(message);
+        return;
+      }
+
+      form.dispatchEvent(new CustomEvent("editor:revision-saved"));
+      window.location.assign(wagtailButton.dataset.wagtailUrl);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save revision");
+    } finally {
+      wagtailButton.textContent = originalText;
+      wagtailButton.disabled = false;
+    }
+  });
 }

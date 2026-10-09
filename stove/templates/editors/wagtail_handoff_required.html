@@ -1,0 +1,11 @@
+{% extends "stove_base.html" %}
+
+{% block title %}Switch from Stove to Wagtail{% endblock %}
+
+{% block content %}
+<section class="page-editor-message">
+    <h1>Switch from Stove to Wagtail first</h1>
+    <p>This page has collaborative Stove changes. Opening it directly in Wagtail could discard unsaved work.</p>
+    <p><a href="{{ stove_editor_url }}">Open the Stove editor</a>, then use <strong>View in Wagtail</strong> to save and kick people editing Stove (check with them first maybe).</p>
+</section>
+{% endblock %}

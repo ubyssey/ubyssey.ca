@@ -145,6 +145,20 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
+span[data-footnote-anchor="true"]:has(.pm-footnote--selected)::before {
+    background: rgba(0, 113, 201, 0.2);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #0071c9;
+}
+
+:host(.footnotes-frozen) span[data-footnote-id] {
+    color: #888;
+}
+
+:host(.footnotes-frozen) span[data-footnote-id]::before {
+    color: #888;
+}
+
 .page-shadow-preview [data-article-block][data-stream-field="content"]:hover:not(.pm-page-block--selected) {
     outline: 1px dashed #000;
     outline-offset: 8px;
@@ -290,6 +304,11 @@ span[data-footnote-id]::before {
     border-color: var(--color-ubyssey_blue, #0071c9);
     background: var(--color-ubyssey_blue, #0071c9);
     color: #fff;
+}
+
+.pm-editor-toolbar__selection {
+    color: var(--text_color-200, #555);
+    white-space: nowrap;
 }
 
 // Each editor overrides with their assigned color.

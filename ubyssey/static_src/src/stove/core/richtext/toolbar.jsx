@@ -30,6 +30,7 @@ export function createEditorToolbar(root, {
   history = null,
   onHistoryCommand = () => {},
   renderExtraControls = () => null,
+  renderRightControls = () => null,
   toolbarItems = TOOLBAR_ITEMS,
 } = {}) {
   if (!root) return null;
@@ -44,6 +45,7 @@ export function createEditorToolbar(root, {
         history={history}
         onHistoryCommand={onHistoryCommand}
         extraControls={renderExtraControls()}
+        rightControls={renderRightControls()}
         toolbarItems={toolbarItems}
         refresh={update}
       />,
@@ -82,7 +84,7 @@ export function createEditorToolbar(root, {
   };
 }
 
-function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls, toolbarItems }) {
+function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls, rightControls, toolbarItems }) {
 
   return (
     <div className="pm-editor-toolbar">
@@ -118,6 +120,7 @@ function EditorToolbar({ view, history, onHistoryCommand, refresh, extraControls
         })}
         {extraControls}
       </div>
+      {rightControls && <div className="pm-editor-toolbar__selection">{rightControls}</div>}
     </div>
   );
 }

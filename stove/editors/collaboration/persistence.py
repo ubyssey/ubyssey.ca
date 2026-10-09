@@ -6,6 +6,7 @@ from wagtail.models import Page
 
 from stove.models import PageCollaboration
 from stove.editors.collaboration.consumers import page_yjs_group_name
+from stove.editors.collaboration.presence import claim_page_presence
 
 # We can't overwrite directly since the assigment manager only contains these roles
 ASSIGNMENT_AUTHOR_ROLES = ["author", "backfield_editor", "copy_editor"]
@@ -20,7 +21,7 @@ def _update_shared_text(metadata, key, value):
         metadata[key] = Text(value)
 
 
-def initialize_page_collaboration(page_id, initial_update):
+def initialize_page_collaboration(page_id, initial_update, presence_id):
     document = Doc()
     document.apply_update(initial_update)
 
@@ -31,7 +32,9 @@ def initialize_page_collaboration(page_id, initial_update):
             collaboration.document = initial_update
             collaboration.save(update_fields=["document", "updated_at"])
 
-        return bytes(collaboration.document)
+        claim_page_presence(page_id, presence_id)
+
+        return collaboration.pk, bytes(collaboration.document)
 
 
 def update_page_collaboration(page, data):

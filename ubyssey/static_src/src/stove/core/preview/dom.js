@@ -31,6 +31,46 @@ function replacePreviewBlock(pageRoot, currentBlock, replacement, streamDocs) {
   return replacement;
 }
 
+function yjsBlockIds(doc) {
+  return (doc?.content || [])
+    .map((block) => String(block.attrs?.id || ""))
+    .filter(Boolean);
+}
+
+// Preview response checked against YJS snapshot to ensure that nothing is missing
+export function previewMatchesYjsSnapshot(pageRoot, html, streamDocs) {
+  if (!streamDocs) return true;
+
+  const content = pageRoot.querySelector(CONTENT_SELECTOR);
+  if (!content) return true;
+
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  const missing = [];
+
+  for (const [fieldName, doc] of streamDocs) {
+    if (!pageBlocksForStreamField(content, fieldName).length) continue;
+
+    const expectedIds = yjsBlockIds(doc);
+    if (!expectedIds.length) continue;
+
+    const responseIds = new Set(
+      pageBlocksForStreamField(template.content, fieldName)
+        .map((block) => String(block.dataset.streamBlockId || "")),
+    );
+    const missingIds = expectedIds.filter((id) => !responseIds.has(id));
+    missing.push(...missingIds.map((id) => ({ fieldName, id })));
+  }
+
+  if (!missing.length) return true;
+
+  console.warn("Missing blocks in preview", {
+    missingBlocks: missing,
+    yjsSnapshot: Array.from(streamDocs, ([fieldName, doc]) => ({ fieldName, blockIds: yjsBlockIds(doc) })),
+  });
+  return false;
+}
+
 export function replaceSelectedBlockPreviewHtml(pageRoot, html, streamDocs, selected) {
   if (!selected) return false;
 
@@ -112,13 +152,14 @@ function previewPositionAnchor(pageRoot) {
   const content = pageRoot.querySelector(CONTENT_SELECTOR);
   if (!content) return null;
 
+  const active = focusedPageBlock(pageRoot);
   const selected = pageEditorState.selectedBlock && findPageBlock(pageRoot, pageEditorState.selectedBlock);
   const visible = Array.from(content.querySelectorAll(PAGE_BLOCK_SELECTOR)).find((block) => {
     const bounds = block.getBoundingClientRect();
     return bounds.bottom >= 0 && bounds.top <= window.innerHeight;
   });
 
-  const element = selected || visible || content;
+  const element = active || selected || visible || content;
   const descriptor = element === content ? null : describePageBlock(element);
   return { descriptor, top: element.getBoundingClientRect().top };
 }
@@ -288,6 +329,7 @@ function refreshPreviewBlockIndexes(root, fieldName) {
   [
     ...pageEditorState.pageRichTextEditors,
     ...pageEditorState.pageDirectRichTextEditors,
+    ...pageEditorState.pageDirectPlainTextEditors,
   ]
     .filter((editor) => editor.streamSource?.instance.fieldName === fieldName)
     .forEach((editor) => {
@@ -296,7 +338,7 @@ function refreshPreviewBlockIndexes(root, fieldName) {
       ));
       if (index < 0) return;
 
-      editor.blockIndex = index;
+      if ("blockIndex" in editor) editor.blockIndex = index;
       editor.streamSource.blockIndex = index;
     });
   invalidatePreviewHtml(root);
@@ -307,8 +349,7 @@ function refreshPreviewBlockIndexes(root, fieldName) {
 // RichText Blocks do their special behaviours with enter/backspace
 // Moved blocks are reordered
 // etc
-export function reconcilePreviewBlocks({ before, doc, instance, pageRoot }) {
-  const changes = diffStreamBlockStructure(before, doc);
+export function reconcilePreviewBlocks({ before, doc, instance, pageRoot, changes = diffStreamBlockStructure(before, doc) }) {
   if (!changes.structureChanged) {
     return {
       changes: null,
@@ -411,15 +452,6 @@ export function reconcilePreviewBlocks({ before, doc, instance, pageRoot }) {
         anchor = block;
       });
       marker.remove();
-
-      const movedIds = new Set(changes.moved.map((block) => block.id));
-      const movedBlocks = orderedBlocks.filter((block) => movedIds.has(String(block.dataset.streamBlockId || "")));
-      movedBlocks.forEach((block) => {
-        destroyPageEditorsWithin(block);
-      });
-
-      const streamDocs = new Map([[instance.fieldName, doc.toJSON()]]);
-      movedBlocks.forEach((block) => setupPagePreviewEditors(root, streamDocs, block));
     }
   }
 

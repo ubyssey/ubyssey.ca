@@ -35,6 +35,8 @@ def game_analysis_filter(request):
     home = HomePage.objects.live().public().filter(pk=site.root_page_id).first() if site else None
     if home is None:
         return JsonResponse({"error": "Homepage unavailable."}, status=404)
+    if not home.game_analysis_enabled:
+        return JsonResponse({"error": "Game Analyses is disabled."}, status=404)
 
     panel = next((item.value for item in home.game_analysis if item.block_type == "panel"), None)
     active_sports = panel_active_sports(panel)

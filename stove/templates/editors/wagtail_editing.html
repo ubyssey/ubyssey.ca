@@ -1,0 +1,12 @@
+{% extends "stove_base.html" %}
+
+{% block title %}Editing in Wagtail{% endblock %}
+
+{% block content %}
+<section class="page-editor-message">
+    <h1>This page is being edited in Wagtail</h1>
+    <p>Return to the content tracker and try again after the Wagtail editor is closed.</p>
+    <p><a href="{% url 'wagtailadmin_pages:edit' page_id %}">Go to Wagtail Page</a></p>
+    <p><a href="{% url 'stove:content_tracker_base' %}">Return to content tracker</a></p>
+</section>
+{% endblock %}

@@ -34,13 +34,12 @@ export function setupPageSaveStatus(collaboration, onChange = () => {}) {
     onChange();
   };
 
-  const saveSucceededHandler = () => {
-    saveFailed = false;
-    updateSavedStatus();
-  };
 
   document.addEventListener("editor-save-failed", saveFailedHandler);
-  document.addEventListener("editor-save-succeeded", saveSucceededHandler);
   collaboration.ydoc.on("update", updateSavingStatus);
-  collaboration.provider?.on("persistence-ack", updateSavedStatus);
+  // The server sends this only to the connection whose updates were merged
+  collaboration.provider?.on("persistence-ack", () => {
+    saveFailed = false;
+    updateSavedStatus();
+  });
 }

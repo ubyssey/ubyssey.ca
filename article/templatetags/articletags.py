@@ -45,18 +45,19 @@ def redesign_card_byline(article):
     Article pages retain their complete role-based credit list in the extended
     byline. Cards intentionally follow the homepage's reporter-only rule.
     """
-    # Querysets of Wagtail's base ArticlePage return a base page instance.
-    # Resolve it before reading the StandardArticlePage-only contributor
-    # helpers, otherwise Archive and section cards silently fall back to every
-    # credited role rather than the homepage's reporter-only convention.
-    specific_article = getattr(article, "specific", article)
-    primary_authors = getattr(specific_article, "primary_author_orderables", None)
-    if primary_authors is not None and hasattr(specific_article, "get_authors_string"):
-        return mark_safe(specific_article.get_authors_string(links=True, authors_list=primary_authors))
+    # ArticlePage's manager already prefetches article_authors__author. Using
+    # .specific or filtering the related manager here adds queries per card,
+    # which is especially costly on heavily crawled archive pages.
+    orderables = getattr(article, "article_authors", None)
+    if orderables is not None and hasattr(article, "get_authors_string"):
+        contributors = list(orderables.all())
+        reporters = [author for author in contributors if author.author_role == "author"]
+        primary_authors = reporters or contributors[:1]
+        return mark_safe(article.get_authors_string(links=True, authors_list=primary_authors))
     return (
-        getattr(specific_article, "authors_with_urls", "")
-        or getattr(specific_article, "authors_string", "")
-        or getattr(specific_article, "preview_byline", "")
+        getattr(article, "authors_with_urls", "")
+        or getattr(article, "authors_string", "")
+        or getattr(article, "preview_byline", "")
     )
 
 

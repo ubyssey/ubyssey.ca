@@ -20,6 +20,7 @@ urlpatterns = [
     path("page/<int:page_id>/editor-revisions", views.editor_page_revisions, name="editor_page_revisions"),
     path("page/<int:page_id>/editor-preview", views.editor_page_preview, name="editor_page_preview"),
     path("page/<int:page_id>/editor-full-preview", views.editor_page_full_preview, name="editor_page_full_preview"),
+    path("page/<int:page_id>/editor-save-revision", views.editor_page_save_revision, name="editor_page_save_revision"),
     path("page/<int:page_id>/editor-restore", views.editor_page_restore, name="editor_page_restore"),
     path("page/<int:page_id>/media-upload", views.article_media_upload, name="article_media_upload"),
     path("page/<int:page_id>/media-tags", views.manuscript_media_tags, name="manuscript_media_tags"),
@@ -27,6 +28,7 @@ urlpatterns = [
     path("page/<int:page_id>/media-existing", views.article_media_add_existing, name="article_media_add_existing"),
     path("page/<int:page_id>/page-options", views.manuscript_page_options, name="manuscript_page_options"),
     path("page/<int:page_id>/collaboration", views.page_collaboration, name="page_collaboration"),
+    path("page/<int:page_id>/collaboration/presence", views.page_collaboration_presence, name="page_collaboration_presence"),
 
     path("author/<int:page_id>", views.author_editor, name="author_editor"),
     path("homepage", views.homepage_editor, name="homepage_editor"),

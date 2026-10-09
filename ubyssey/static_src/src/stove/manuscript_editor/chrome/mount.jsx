@@ -9,11 +9,16 @@ import { useMediaModals } from "../media/media_modals.jsx";
 import { useCopyEditingToggles, usePageFieldToggles } from "./page_fields.js";
 import { setupFeaturedMediaSidebarEditors } from "../../core/preview/editables.jsx";
 
-function ManuscriptChrome({ form, metadata, mediaUpdates, schedulePreview }) {
+function ManuscriptChrome({ form, metadata, mediaUpdates, onMetadataReady, schedulePreview }) {
   usePageFieldToggles(form, schedulePreview);
   useCopyEditingToggles();
   useAuthorsPanel();
-  useEffect(() => setupMetadataCollaboration(form, metadata), [form, metadata]);
+  useEffect(() => {
+    const cleanup = setupMetadataCollaboration(form, metadata);
+    // Waits till collab metadata applied to form before initial refresh
+    onMetadataReady?.();
+    return cleanup;
+  }, [form, metadata, onMetadataReady]);
   useEffect(() => setupFeaturedMediaSidebarEditors(form), [form]);
   useMediaModals(form, mediaUpdates);
 

@@ -1,5 +1,9 @@
 """Small, selection-scoped queries for the homepage Game Analyses panel."""
 
+import calendar
+
+from django.utils import timezone
+
 from article.models import ArticlePage
 from ubyssey.sports import GAME_ANALYSIS_ACTIVE_SPORT_CHOICES
 
@@ -7,6 +11,16 @@ from ubyssey.sports import GAME_ANALYSIS_ACTIVE_SPORT_CHOICES
 STORY_LIMIT = 4
 FIXTURE_LIMIT = 5
 ACTIVE_SPORTS = tuple(sport for sport, _label in GAME_ANALYSIS_ACTIVE_SPORT_CHOICES)
+
+
+def six_month_cutoff(now=None):
+    """Use six calendar months, preserving the time of day when possible."""
+    now = now or timezone.now()
+    month_index = now.year * 12 + now.month - 1 - 6
+    year, zero_based_month = divmod(month_index, 12)
+    month = zero_based_month + 1
+    day = min(now.day, calendar.monthrange(year, month)[1])
+    return now.replace(year=year, month=month, day=day)
 
 
 def panel_active_sports(panel_value=None):
@@ -31,13 +45,15 @@ def fixture_queues(sports, now):
 
 
 def chronological_articles(sports):
-    """Return only the newest four live Game Analysis stories for this selection."""
+    """Return recent Sports Game Analysis stories for this selection."""
     return list(
         ArticlePage.objects.live()
         .public()
         .filter(
+            current_section="sports",
             standardarticlepage__story_form="game-analysis",
             covered_sport__in=sports,
+            explicit_published_at__gte=six_month_cutoff(),
         )
         .order_by("-explicit_published_at", "-pk")
         .specific()[:STORY_LIMIT]

@@ -1,9 +1,9 @@
 // Preview editor setup, and direct edit sync
 
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
-import { EditorState } from "prosemirror-state";
+import { EditorState, TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { yCursorPlugin, ySyncPlugin } from "y-prosemirror";
+import { yCursorPlugin, ySyncPlugin, ySyncPluginKey } from "y-prosemirror";
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
 import { markRangeAtCursor } from "../richtext/marks.js";
@@ -15,10 +15,44 @@ import { editableFieldInfo, editableFieldInfoForSource, samePath } from "../pros
 import { topLevelBlockInfoByIdOrIndex } from "../prosemirror/blocks.js";
 import { setFieldContent } from "../prosemirror/document.js";
 import { streamRichTextSchema, streamSchema } from "../prosemirror/stream_schema.js";
+import { START_COMMENT_THREAD_META } from "../richtext/annotations/comment_model.js";
 
 const DIRECT_EDITABLE_SELECTOR = "[data-article-editable-page-field], [data-article-editable-stream-field][data-article-editable-path]";
 const EMPTY_RICH_TEXT = [{ type: "paragraph" }];
 const SYNCED_EDITOR_META = "syncedEditor";
+
+// YJS sync plugin wrapper
+// Checks if document itself has been changed
+// So things like cursor movements don't cause new saves
+function documentSyncPlugin(sharedType) {
+  const plugin = ySyncPlugin(sharedType);
+  const createPluginView = plugin.spec.view;
+
+  plugin.spec.view = (view) => {
+    const pluginView = createPluginView(view);
+
+    // When binding, we need the schema to be authoritative
+    // Intercepts _prosemirrorChanged which writes PM doc back to YJS
+    // binding is object conntecting editor view to YJS XML field
+    // doc.type.create() creates a new PM node with proper fields direct from schema (same content)
+    // original sync method writes corrected node back to YJS
+    // So that it repairs any missing attributes
+    const binding = ySyncPluginKey.getState(view.state).binding;
+    if (binding) {
+      const syncDocument = binding._prosemirrorChanged.bind(binding);
+      binding._prosemirrorChanged = (doc) => syncDocument(doc.type.create(sharedType.getAttributes(), doc.content, doc.marks));
+    }
+
+    return {
+      ...pluginView,
+      update(nextView, previousState) {
+        if (nextView.state.doc.eq(previousState.doc)) return;
+        pluginView.update(nextView, previousState);
+      },
+    };
+  };
+  return plugin;
+}
 
 const handleStreamRichTextKeyDown = createStreamRichTextKeyHandler({
   state: pageEditorState,
@@ -86,7 +120,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
     state: EditorState.create({
       doc,
       plugins: [
-        ...(sharedType ? [ySyncPlugin(sharedType)] : []),
+        ...(sharedType ? [documentSyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
         ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory, allowAnnotations }),
       ],
@@ -95,13 +129,26 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
     dispatchTransaction(transaction) {
       const activeView = this;
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
+      const startedCommentThreadId = transaction.getMeta(START_COMMENT_THREAD_META);
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
-      const activateThread = activeSuggestionThreadId || (transaction.selectionSet ? annotationThreadAtSelection(nextState) : null);
+
+      // Thread selection
+      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
+      const activateThread = activeSuggestionThreadId || (
+        activeView.hasFocus() && !isYjsSyncTransaction && transaction.selectionSet
+          ? annotationThreadAtSelection(nextState)
+          : null
+      );
       if (activateThread) window.queueMicrotask(() => {
         if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(activateThread);
       });
+
+      if (startedCommentThreadId && !isYjsSyncTransaction) window.queueMicrotask(() => {
+        if (!activeView.isDestroyed) pageEditorState.commentSidebar?.activateThread(startedCommentThreadId, { focusReply: true });
+      });
+
       pageEditorState.scheduleEditorUiRefresh();
       if (onContentChanged && transaction.docChanged && !transaction.getMeta(SYNCED_EDITOR_META)) {
         onContentChanged(activeView, transaction);
@@ -123,7 +170,15 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       return handleStreamRichTextKeyDown(activeView, event, streamSource);
     },
   });
-  const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType) : null;
+  const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType, {
+    source: streamSource,
+    getSelection() {
+      if (view.isDestroyed || !view.hasFocus()) return null;
+      const selection = view.state.selection;
+      if (!(selection instanceof TextSelection)) return null;
+      return { anchor: selection.anchor, head: selection.head };
+    },
+  }) : null;
 
   view.streamSource = streamSource;
   view.annotationsEnabled = allowAnnotations;
@@ -142,6 +197,54 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       view.destroy();
     },
   };
+}
+
+function sameStreamSource(left, right) {
+  return Boolean(
+    left
+    && right
+    && left.instance === right.instance
+    && left.blockId === right.blockId
+    && samePath(left.path, right.path),
+  );
+}
+
+// Restores selections after RichText actions like split or merge which span blocks
+export function restorePageRichTextSelections(restorations = []) {
+  if (!restorations.length) return;
+
+  window.queueMicrotask(() => {
+    const activeEditor = pageEditorState.pageRichTextEditors.find((editor) => (
+      !editor.view.isDestroyed && editor.view.hasFocus()
+    ));
+
+    for (const restoration of restorations) {
+      const { source, fromSource, selection } = restoration;
+      if (activeEditor && !sameStreamSource(activeEditor.streamSource, fromSource) && !sameStreamSource(activeEditor.streamSource, source)) continue;
+
+      const editor = pageEditorState.pageRichTextEditors.find((item) => (
+        !item.view.isDestroyed && sameStreamSource(item.streamSource, source)
+      ));
+
+      if (!editor || !selection) continue;
+
+      const doc = editor.view.state.doc;
+      const anchor = Math.max(1, Math.min(selection.anchor, Math.max(1, doc.content.size - 1)));
+      const head = Math.max(1, Math.min(selection.head, Math.max(1, doc.content.size - 1)));
+      
+      editor.view.dispatch(editor.view.state.tr.setSelection(TextSelection.between(
+        doc.resolve(anchor),
+        doc.resolve(head),
+      )));
+      editor.view.focus();
+      selectPageBlock({
+        fieldName: source.instance.fieldName,
+        blockId: source.blockId,
+      }, editor.view.dom.getRootNode());
+
+      break;
+    }
+  });
 }
 
 // Turned into helper now that there are sidebar plain text editors

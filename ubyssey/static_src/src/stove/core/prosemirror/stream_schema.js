@@ -207,7 +207,11 @@ export const streamSchema = new Schema({
 // ie binding to a Y.XmlElement rather than a Prosemirror Doc
 export const streamRichTextSchema = new Schema({
   nodes: baseNodesWithLists.remove("doc").append({
-    editable_field: streamNodes.get("editable_field"),
+    editable_field: {
+      ...streamNodes.get("editable_field"),
+      // Override for Richtext blocks
+      content: "block+",
+    },
   }),
   marks,
   topNode: "editable_field",
