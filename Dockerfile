@@ -1,4 +1,4 @@
-FROM python:3.10-bookworm
+FROM python:3.10-bullseye
 # Development Dockerfile
 COPY . /app
 WORKDIR /app
