@@ -15,8 +15,6 @@ handlers:
   static_files: robots.txt
   upload: robots.txt
 
-# Archived pages
-
 - url: .*
   script: auto
   secure: always
