@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+<article class="bc-election-card{% if item.special %} bc-election-card--context{% endif %}">
+  {% if item.article.preview_image %}
+    <a class="bc-election-card__image" href="{{ item.article.url }}"><img src="{{ item.article.preview_image }}" alt="{{ item.article.image_alt|default:'' }}" loading="lazy"></a>
+  {% else %}{% with featured=item.article.featured_media.first %}{% if featured.image %}
+    <a class="bc-election-card__image" href="{{ item.article.url }}">{% image featured.image fill-600x400-c100 loading="lazy" alt=featured.alt_text %}</a>
+  {% endif %}{% endwith %}{% endif %}
+  <div class="bc-election-card__copy">
+    {% if item.label %}<span class="bc-election-card__label">{{ item.label }}</span>{% endif %}
+    <h3><a href="{{ item.article.url }}">{{ item.article.title }}</a></h3>
+    {% if item.article.lede %}<p>{{ item.article.lede|striptags|truncatewords:18 }}</p>{% endif %}
+  </div>
+</article>

@@ -140,6 +140,7 @@ class HomePage(Page):
         'archive.ArchivePage',
         'join.JoinLandingPage',
         'specialfeaturelanding.RedesignAuxiliaryPage',
+        'home.BCLocalElectionsPage',
     ]
 
     tagline = models.CharField(
@@ -243,6 +244,37 @@ class HomePage(Page):
         "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
         related_name="+", verbose_name="Right election story",
     )
+
+    bc_elections_page = models.ForeignKey(
+        "home.BCLocalElectionsPage", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+        help_text="Select the election page whose story slots and party logos feed the homepage feature.",
+    )
+    bc_elections_banner_enabled = models.BooleanField(default=False)
+    bc_elections_banner_text = models.CharField(
+        max_length=150, default="2026 BC GENERAL LOCAL ELECTIONS",
+    )
+    bc_elections_panel_enabled = models.BooleanField(default=False)
+    bc_elections_panel_heading = models.CharField(
+        max_length=150, default="2026 BC General Local Elections",
+    )
+    bc_elections_panel_description = models.TextField(blank=True, default="")
+    bc_elections_explainers_heading = models.CharField(
+        max_length=100, default="About the Elections",
+    )
+    bc_elections_vancouver_heading = models.CharField(
+        max_length=100, default="Vancouver Mayoral Candidates",
+    )
+    bc_elections_parties_heading = models.CharField(
+        max_length=100, default="About the Parties",
+    )
+    bc_elections_metro_link_text = models.CharField(
+        max_length=120, default="Explore Greater Vancouver mayoral candidates",
+    )
+    bc_elections_show_explainers = models.BooleanField(default=True)
+    bc_elections_show_vancouver = models.BooleanField(default=True)
+    bc_elections_show_parties = models.BooleanField(default=True)
+    bc_elections_show_live_results = models.BooleanField(default=True)
 
     newsletter_action_url = models.URLField(
         blank=True,
@@ -386,6 +418,26 @@ class HomePage(Page):
         ),
         MultiFieldPanel(
             [
+                FieldPanel("bc_elections_page"),
+                FieldPanel("bc_elections_banner_enabled"),
+                FieldPanel("bc_elections_banner_text"),
+                FieldPanel("bc_elections_panel_enabled"),
+                FieldPanel("bc_elections_panel_heading"),
+                FieldPanel("bc_elections_panel_description"),
+                FieldPanel("bc_elections_explainers_heading"),
+                FieldPanel("bc_elections_vancouver_heading"),
+                FieldPanel("bc_elections_parties_heading"),
+                FieldPanel("bc_elections_metro_link_text"),
+                FieldPanel("bc_elections_show_live_results"),
+                FieldPanel("bc_elections_show_explainers"),
+                FieldPanel("bc_elections_show_vancouver"),
+                FieldPanel("bc_elections_show_parties"),
+            ],
+            heading="2026 BC local elections: homepage banner and panel",
+            help_text="Create and publish the election page first. The banner and panel are independently off by default; story slots and logos are edited on the linked election page.",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("redesign_hero_top_left"),
                 FieldPanel("redesign_hero_bottom_left"),
                 FieldPanel("redesign_hero_centre"),
@@ -427,6 +479,8 @@ class HomePage(Page):
 
     def clean(self):
         super().clean()
+        if (self.bc_elections_banner_enabled or self.bc_elections_panel_enabled) and not self.bc_elections_page_id:
+            raise ValidationError("Choose the BC local elections page before enabling its homepage banner or panel.")
         hero_fields = (
             "redesign_hero_top_left",
             "redesign_hero_bottom_left",
@@ -447,6 +501,22 @@ class HomePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        context["bc_elections_page"] = None
+        context["bc_elections_content"] = None
+        if self.bc_elections_page_id and (
+            self.bc_elections_banner_enabled or self.bc_elections_panel_enabled
+        ):
+            election_page = BCLocalElectionsPage.objects.live().public().filter(
+                pk=self.bc_elections_page_id,
+            ).first()
+            if election_page:
+                context["bc_elections_page"] = election_page
+                if self.bc_elections_panel_enabled:
+                    context["bc_elections_content"] = election_page.get_election_content(
+                        include_metro=False,
+                        include_live=self.bc_elections_show_live_results,
+                    )
 
         context["ams_election_stories"] = []
         if (self.ams_election_enabled and self.ams_election_story_left_id
@@ -607,3 +677,163 @@ class HomePage(Page):
             context["redesign_queue_active"] = False
 
         return context
+
+
+class BCLocalElectionsPage(Page):
+    """Editor-curated hub for the 2026 BC local elections."""
+
+    template = "home/bc_local_elections_page.html"
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    show_in_menus_default = False
+
+    intro_kicker = models.CharField(
+        max_length=100, default="The Ubyssey · Election coverage",
+    )
+    election_summary = models.TextField(
+        blank=True, default="", help_text="Short description below the page title.",
+    )
+    about_heading = models.CharField(max_length=100, default="About the Elections")
+    vancouver_heading = models.CharField(max_length=100, default="Vancouver Mayoral Candidates")
+    parties_heading = models.CharField(max_length=100, default="About the Parties")
+    metro_heading = models.CharField(max_length=100, default="Greater Vancouver Mayoral Candidates")
+    parties_extra_text = models.TextField(
+        blank=True, default="", help_text="Optional note in the eighth position of the party grid.",
+    )
+    live_results_article = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Optional live-results story shown above the four story sections.",
+    )
+    live_results_label = models.CharField(max_length=100, default="Election results")
+    live_active_label = models.CharField(max_length=30, default="LIVE")
+    live_results_ended_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Optional end time shown once live updates stop. Defaults to the last update time.",
+    )
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [FieldPanel("intro_kicker"), FieldPanel("election_summary"),
+             FieldPanel("live_results_article"), FieldPanel("live_results_label"),
+             FieldPanel("live_active_label"),
+             FieldPanel("live_results_ended_at")],
+            heading="Introduction and live results",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("about_heading"), InlinePanel("explainers", max_num=3, label="Explainer")],
+            heading="About the Elections: up to three stories",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("vancouver_heading"), InlinePanel("vancouver_profiles", max_num=6, label="Profile")],
+            heading="Vancouver mayoral candidates: up to six profiles",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("parties_heading"), FieldPanel("parties_extra_text"),
+             InlinePanel("party_profiles", max_num=7, label="Party")],
+            heading="About the Parties: up to seven profiles",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("metro_heading"), InlinePanel("metro_profiles", max_num=8, label="Profile")],
+            heading="Greater Vancouver mayoral candidates: up to eight profiles",
+        ),
+    ]
+
+    def clean(self):
+        super().clean()
+        if self.slug != "2026-bc-general-local-elections":
+            raise ValidationError({"slug": "Use 2026-bc-general-local-elections for the public election URL."})
+
+    def get_election_content(self, *, include_metro=True, include_live=True):
+        """Resolve only manually selected, live and public stories in one bounded query."""
+        relations = {
+            "explainers": self.explainers,
+            "vancouver": self.vancouver_profiles,
+            "parties": self.party_profiles,
+        }
+        if include_metro:
+            relations["metro"] = self.metro_profiles
+
+        rows = {
+            name: list(relation.order_by("sort_order"))
+            for name, relation in relations.items()
+        }
+        story_ids = {
+            row.article_id for group in rows.values() for row in group if row.article_id
+        }
+        if include_live and self.live_results_article_id:
+            story_ids.add(self.live_results_article_id)
+        stories = {
+            story.pk: story for story in ArticlePage.objects.live().public()
+            .filter(pk__in=story_ids).specific()
+        } if story_ids else {}
+        content = {
+            name: [
+                SimpleNamespace(
+                    article=stories[row.article_id],
+                    label=row.display_label,
+                    special=getattr(row, "is_context_card", False),
+                    logo_id=getattr(row, "logo_id", None),
+                    logo=row.logo if getattr(row, "logo_id", None) else None,
+                    description=getattr(row, "description", ""),
+                )
+                for row in group if row.article_id in stories
+            ]
+            for name, group in rows.items()
+        }
+        live_article = stories.get(self.live_results_article_id) if include_live else None
+        content["live_article"] = live_article
+        content["live_active"] = bool(live_article and live_article.is_live())
+        content["live_ended_at"] = (
+            self.live_results_ended_at
+            or (live_article.updated_at() if live_article and hasattr(live_article, "updated_at") else None)
+            or (live_article.explicit_published_at if live_article else None)
+        )
+        return content
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["election_content"] = self.get_election_content()
+        return context
+
+
+class BCElectionStorySlot(Orderable):
+    """Shared editable fields for the four ordered groups of election stories."""
+
+    article = models.ForeignKey(
+        "article.ArticlePage", null=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    display_label = models.CharField(
+        max_length=100, blank=True, default="",
+        help_text="Optional short label; article headline remains the link text.",
+    )
+    panels = [FieldPanel("article"), FieldPanel("display_label")]
+
+    class Meta:
+        abstract = True
+        ordering = ("sort_order",)
+
+
+class BCElectionExplainer(BCElectionStorySlot):
+    page = ParentalKey("home.BCLocalElectionsPage", on_delete=models.CASCADE, related_name="explainers")
+
+
+class BCElectionVancouverProfile(BCElectionStorySlot):
+    page = ParentalKey("home.BCLocalElectionsPage", on_delete=models.CASCADE, related_name="vancouver_profiles")
+    is_context_card = models.BooleanField(
+        default=False,
+        help_text="Use for the MVRD acclaimed profile and information mix; gives the card a distinct treatment.",
+    )
+    panels = BCElectionStorySlot.panels + [FieldPanel("is_context_card")]
+
+
+class BCElectionPartyProfile(BCElectionStorySlot):
+    page = ParentalKey("home.BCLocalElectionsPage", on_delete=models.CASCADE, related_name="party_profiles")
+    logo = models.ForeignKey(
+        "images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    description = models.TextField(blank=True, default="")
+    panels = BCElectionStorySlot.panels + [FieldPanel("logo"), FieldPanel("description")]
+
+
+class BCElectionMetroProfile(BCElectionStorySlot):
+    page = ParentalKey("home.BCLocalElectionsPage", on_delete=models.CASCADE, related_name="metro_profiles")

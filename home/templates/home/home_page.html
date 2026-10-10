@@ -1,15 +1,17 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags ubyssey_ad_filters %}
-{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}?v=game-analysis-transition-4">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"><link rel="stylesheet" href="{% static 'ubyssey/css/home.css' %}?v=bc-elections-1">{% endblock %}
 {% block header %}{% include "home/components/redesign_nav.html" %}{% endblock %}
 {% block content %}{% filter specify_homepage_sidebar_ads:request %}
 <main class="hp-redesign" id="main-content">
+  {% if bc_elections_page and self.bc_elections_banner_enabled %}{% include "home/components/bc_elections_banner.html" %}{% endif %}
   {% if ams_election_stories and self.ams_election_placement == "before_hero" %}{% include "home/components/ams_election.html" %}{% endif %}
   <section class="hp-hero page-shell" aria-label="Top stories">
     <div class="hp-hero__rail">{% for article in redesign_articles|slice:":1" %}{% include "home/components/redesign_card.html" with article=article variant="side-top" %}{% endfor %}{% for article in redesign_articles|slice:"1:2" %}{% include "home/components/redesign_card.html" with article=article variant="side-bottom" %}{% endfor %}</div>
     <div class="hp-hero__lead">{% for article in redesign_articles|slice:"2:3" %}{% include "home/components/redesign_card.html" with article=article variant="lead" lead_headline_position=self.redesign_hero_headline_position lead_headline_variant=self.redesign_hero_headline_variant %}{% endfor %}</div>
     <div class="hp-hero__rail">{% for article in redesign_articles|slice:"3:4" %}{% include "home/components/redesign_card.html" with article=article variant="side-top" %}{% endfor %}{% for article in redesign_articles|slice:"4:5" %}{% include "home/components/redesign_card.html" with article=article variant="side-bottom" %}{% endfor %}</div>
   </section>
+  {% if bc_elections_content and self.bc_elections_panel_enabled %}{% include "home/components/bc_elections_panel.html" %}{% endif %}
   {% if ams_election_stories and self.ams_election_placement == "between_hero_games" %}{% include "home/components/ams_election.html" %}{% endif %}
   {% if self.game_analysis_enabled %}{% if self.game_analysis %}{% for panel in self.game_analysis %}{% include_block panel %}{% endfor %}{% else %}{% include "home/stream_blocks/game_analysis_empty.html" %}{% endif %}{% endif %}
   {% if ams_election_stories and self.ams_election_placement == "after_games" %}{% include "home/components/ams_election.html" %}{% endif %}

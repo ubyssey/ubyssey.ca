@@ -1,0 +1,40 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=bc-elections-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}
+<main id="main-content" class="bc-election-page">
+  <header class="bc-election-page__intro page-shell">
+    <p class="bc-election-page__kicker">{{ self.intro_kicker }}</p>
+    <h1>{{ self.title }}</h1>
+    {% if self.election_summary %}<p>{{ self.election_summary|linebreaksbr }}</p>{% endif %}
+  </header>
+  <nav class="bc-election-page__nav page-shell" aria-label="{{ self.title }}">
+    <a href="#about-the-elections">{{ self.about_heading }}</a>
+    <a href="#vancouver-mayoral-candidates">{{ self.vancouver_heading }}</a>
+    <a href="#about-the-parties">{{ self.parties_heading }}</a>
+    <a href="#greater-vancouver-mayoral-candidates">{{ self.metro_heading }}</a>
+  </nav>
+  <div class="page-shell">{% include "home/components/bc_election_live_story.html" %}</div>
+  <section class="bc-election-page__section page-shell" id="about-the-elections" aria-labelledby="bc-about-title">
+    <h2 class="bc-election-heading" id="bc-about-title">{{ self.about_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--three">{% for item in election_content.explainers %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+  </section>
+  <section class="bc-election-page__section page-shell" id="vancouver-mayoral-candidates" aria-labelledby="bc-vancouver-title">
+    <h2 class="bc-election-heading" id="bc-vancouver-title">{{ self.vancouver_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--three">{% for item in election_content.vancouver %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+  </section>
+  <section class="bc-election-page__section page-shell" id="about-the-parties" aria-labelledby="bc-parties-title">
+    <h2 class="bc-election-heading" id="bc-parties-title">{{ self.parties_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--parties">
+      <div>{% for item in election_content.parties|slice:':4' %}{% include "home/components/bc_election_party.html" %}{% endfor %}</div>
+      <div>{% for item in election_content.parties|slice:'4:' %}{% include "home/components/bc_election_party.html" %}{% endfor %}{% if self.parties_extra_text %}<p class="bc-election-page__party-note">{{ self.parties_extra_text|linebreaksbr }}</p>{% endif %}</div>
+    </div>
+  </section>
+  <section class="bc-election-page__section page-shell" id="greater-vancouver-mayoral-candidates" aria-labelledby="bc-metro-title">
+    <h2 class="bc-election-heading" id="bc-metro-title">{{ self.metro_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--four">{% for item in election_content.metro %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+  </section>
+</main>
+{% endblock %}

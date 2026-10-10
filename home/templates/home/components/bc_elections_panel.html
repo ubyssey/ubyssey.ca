@@ -1,0 +1,26 @@
+<section class="bc-election-home page-shell" aria-labelledby="bc-election-home-title">
+  <h2 class="bc-election-heading" id="bc-election-home-title"><a href="{{ bc_elections_page.url }}">{{ self.bc_elections_panel_heading }} <span aria-hidden="true">↗</span></a></h2>
+  {% if self.bc_elections_panel_description %}<p class="bc-election-home__description">{{ self.bc_elections_panel_description|linebreaksbr }}</p>{% endif %}
+  {% if self.bc_elections_show_live_results %}{% with election_content=bc_elections_content %}{% include "home/components/bc_election_live_story.html" %}{% endwith %}{% endif %}
+  <div class="bc-election-home__columns">
+    {% if self.bc_elections_show_explainers %}
+    <section class="bc-election-home__column bc-election-home__column--explainers" aria-labelledby="bc-election-explainers-title">
+      <h3 id="bc-election-explainers-title">{{ self.bc_elections_explainers_heading }}</h3>
+      <div class="bc-election-home__explainers">{% for item in bc_elections_content.explainers %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+    </section>
+    {% endif %}
+    {% if self.bc_elections_show_vancouver %}
+    <section class="bc-election-home__column bc-election-home__column--vancouver" aria-labelledby="bc-election-vancouver-title">
+      <h3 id="bc-election-vancouver-title">{{ self.bc_elections_vancouver_heading }}</h3>
+      <div class="bc-election-home__profiles">{% for item in bc_elections_content.vancouver %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+    </section>
+    {% endif %}
+    {% if self.bc_elections_show_parties %}
+    <section class="bc-election-home__column bc-election-home__column--parties" aria-labelledby="bc-election-parties-title">
+      <h3 id="bc-election-parties-title">{{ self.bc_elections_parties_heading }}</h3>
+      <div class="bc-election-home__parties">{% for item in bc_elections_content.parties %}{% include "home/components/bc_election_party.html" %}{% endfor %}</div>
+      <a class="bc-election-home__metro-link" href="{{ bc_elections_page.url }}#greater-vancouver-mayoral-candidates">{{ self.bc_elections_metro_link_text }} <span aria-hidden="true">→</span></a>
+    </section>
+    {% endif %}
+  </div>
+</section>

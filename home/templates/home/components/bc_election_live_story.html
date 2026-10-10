@@ -1,0 +1,18 @@
+{% load wagtailimages_tags %}
+{% with article=election_content.live_article %}
+{% if article %}
+<article class="bc-live-story" aria-label="{% if bc_elections_page %}{{ bc_elections_page.live_results_label }}{% else %}{{ self.live_results_label }}{% endif %}">
+  <div class="bc-live-story__meta">
+    {% if election_content.live_active %}<span class="bc-live-story__live"><span class="bc-live-story__dot" aria-hidden="true"></span> {% if bc_elections_page %}{{ bc_elections_page.live_active_label }}{% else %}{{ self.live_active_label }}{% endif %}</span>
+    {% elif election_content.live_ended_at %}<time datetime="{{ election_content.live_ended_at|date:'c' }}">{{ election_content.live_ended_at|date:'M j, Y' }}</time>{% endif %}
+  </div>
+  <div class="bc-live-story__copy">
+    <span class="bc-live-story__eyebrow">{% if bc_elections_page %}{{ bc_elections_page.live_results_label }}{% else %}{{ self.live_results_label }}{% endif %}</span>
+    <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+    {% if article.lede %}<p>{{ article.lede|striptags|truncatewords:36 }}</p>{% endif %}
+  </div>
+  {% if article.preview_image %}<a class="bc-live-story__image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt|default:'' }}" loading="lazy"></a>
+  {% else %}{% with featured=article.featured_media.first %}{% if featured.image %}<a class="bc-live-story__image" href="{{ article.url }}">{% image featured.image fill-750x540-c100 loading="lazy" alt=featured.alt_text %}</a>{% endif %}{% endwith %}{% endif %}
+</article>
+{% endif %}
+{% endwith %}

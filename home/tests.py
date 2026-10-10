@@ -16,7 +16,7 @@ from home.game_analysis_queries import (
     panel_active_sports,
     six_month_cutoff,
 )
-from home.models import HomePage, ThunderbirdFixture
+from home.models import BCLocalElectionsPage, HomePage, ThunderbirdFixture
 from home.views import game_analysis_filter
 
 
@@ -27,6 +27,12 @@ class HomepageRedesignTests(SimpleTestCase):
             "home/components/redesign_nav.html",
             "home/components/redesign_card.html",
             "home/components/ams_election.html",
+            "home/components/bc_elections_banner.html",
+            "home/components/bc_elections_panel.html",
+            "home/components/bc_election_story_card.html",
+            "home/components/bc_election_party.html",
+            "home/components/bc_election_live_story.html",
+            "home/bc_local_elections_page.html",
             "home/components/game_analysis_story.html",
             "home/components/redesign_story_row.html",
             "home/stream_blocks/game_analysis.html",
@@ -73,6 +79,36 @@ class HomepageRedesignTests(SimpleTestCase):
 
     def test_game_analyses_remains_enabled_by_default(self):
         self.assertTrue(HomePage().game_analysis_enabled)
+
+    def test_bc_elections_homepage_feature_is_opt_in(self):
+        homepage = HomePage()
+        self.assertFalse(homepage.bc_elections_banner_enabled)
+        self.assertFalse(homepage.bc_elections_panel_enabled)
+        self.assertIn("home.BCLocalElectionsPage", HomePage.subpage_types)
+        self.assertEqual(BCLocalElectionsPage.template, "home/bc_local_elections_page.html")
+
+    def test_empty_election_slots_do_not_query_articles(self):
+        class EmptySlots:
+            def order_by(self, *_args):
+                return []
+
+            def select_related(self, *_args):
+                return self
+
+        page = SimpleNamespace(
+            explainers=EmptySlots(),
+            vancouver_profiles=EmptySlots(),
+            party_profiles=EmptySlots(),
+            live_results_article_id=None,
+            live_results_ended_at=None,
+        )
+        with patch("home.models.ArticlePage") as articles:
+            content = BCLocalElectionsPage.get_election_content(page, include_metro=False)
+        articles.objects.live.assert_not_called()
+        self.assertEqual(content["explainers"], [])
+        self.assertEqual(content["vancouver"], [])
+        self.assertEqual(content["parties"], [])
+        self.assertIsNone(content["live_article"])
 
     def test_disabled_panel_skips_homepage_game_queries(self):
         homepage = HomePage(game_analysis_enabled=False)
