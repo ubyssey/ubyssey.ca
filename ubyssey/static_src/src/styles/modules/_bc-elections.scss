@@ -25,14 +25,18 @@
   }
 }
 
+html:has(.bc-election-page) { scroll-behavior: smooth; }
+
 .bc-election-banner {
-  display: block;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
   width: 100%;
-  padding: 14px 0;
+  min-height: 64px;
+  padding: 9px 0;
   background: var(--bc-ink);
   color: var(--bc-paper);
-  font: 700 clamp(14px, 1.5vw, 20px)/1.3 "articulat-cf", sans-serif;
-  letter-spacing: .045em;
+  font: 400 20px/1.2 "meursault-variable", Georgia, serif;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
@@ -44,18 +48,54 @@
 }
 
 .bc-election-heading {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
   margin: 0;
-  padding: 14px 0;
+  padding: 7px 10px;
   border-top: 1px solid var(--bc-ink);
   border-bottom: 1px solid var(--bc-ink);
   color: var(--bc-ink);
-  font: 400 clamp(18px, 2.2vw, 28px)/1.2 "meursault-variable", Georgia, serif;
+  font: 400 20px/1.2 "meursault-variable", Georgia, serif;
   text-align: center;
   text-transform: uppercase;
 
   a { color: inherit; text-decoration: none; }
-  a:hover, a:focus-visible { color: var(--bc-orange); }
   a span { font: 600 .7em/1 "articulat-cf", sans-serif; }
+}
+
+// Match the editorial blue text wash rather than switching links to orange.
+.bc-election-heading a,
+.bc-election-card h3 a,
+.bc-live-story h2 a,
+.bc-election-page__nav a,
+.bc-party__name > span,
+.bc-election-home__metro-link > span:first-child {
+  background-image: linear-gradient(var(--redesign-hover-wash, #c6d6ee), var(--redesign-hover-wash, #c6d6ee));
+  background-repeat: no-repeat;
+  background-position: 0 90%;
+  background-size: 0 78%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size .22s ease, color .22s ease;
+}
+
+.bc-election-heading a:hover,
+.bc-election-heading a:focus-visible,
+.bc-election-card h3 a:hover,
+.bc-election-card h3 a:focus-visible,
+.bc-live-story h2 a:hover,
+.bc-live-story h2 a:focus-visible,
+.bc-election-page__nav a:hover,
+.bc-election-page__nav a:focus-visible,
+.bc-party__link:hover .bc-party__name > span,
+.bc-party__link:focus-visible .bc-party__name > span,
+.bc-election-home__metro-link:hover > span:first-child,
+.bc-election-home__metro-link:focus-visible > span:first-child {
+  background-size: 100% 78%;
+  color: #081839;
 }
 
 .bc-election-home {
@@ -116,7 +156,7 @@
     text-decoration: none;
     text-transform: uppercase;
 
-    &:hover, &:focus-visible { color: var(--bc-orange); }
+    &:hover, &:focus-visible { color: var(--bc-ink); }
   }
 }
 
@@ -150,7 +190,7 @@
     font-variation-settings: "wdth" 80, "wght" 600;
 
     a { color: inherit; text-decoration: none; }
-    a:hover, a:focus-visible { color: var(--bc-orange); }
+    a:hover, a:focus-visible { color: #081839; }
   }
   p { margin: 6px 0 0; color: var(--bc-muted); font: 400 13px/1.35 "meursault-variable", Georgia, serif; }
 
@@ -178,7 +218,7 @@
     text-decoration: none;
     transition: background-color .18s ease;
 
-    &:hover, &:focus-visible { background: var(--bc-soft-orange); color: var(--bc-orange); }
+    &:hover, &:focus-visible { color: var(--bc-ink); }
   }
   &__logo { display: block; flex: 0 0 40px; width: 40px; height: 40px; background: #fff; }
   &__logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
@@ -205,7 +245,7 @@
   &__eyebrow { color: var(--bc-orange); font: 700 11px/1.3 "articulat-cf", sans-serif; letter-spacing: .04em; text-transform: uppercase; }
   h2 { margin: 5px 0 0; color: var(--bc-ink); font: 600 clamp(22px, 2.5vw, 34px)/1.15 "meursault-variable", Georgia, serif; }
   h2 a { color: inherit; text-decoration: none; }
-  h2 a:hover, h2 a:focus-visible { color: var(--bc-orange); }
+  h2 a:hover, h2 a:focus-visible { color: #081839; }
   p { margin: 7px 0 0; color: var(--bc-muted); font: 400 15px/1.4 "meursault-variable", Georgia, serif; }
   &__image { height: 150px; overflow: hidden; }
   &__image img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -215,12 +255,12 @@
 .bc-election-page {
   &__intro { padding-top: 56px; padding-bottom: 30px; }
   &__kicker { margin: 0 0 16px; color: var(--bc-orange); font: 700 13px/1.2 "articulat-cf", sans-serif; letter-spacing: .08em; text-transform: uppercase; }
-  &__intro h1 { margin: 0; color: var(--bc-ink); font: 600 clamp(40px, 5.5vw, 74px)/1.03 "meursault-variable", Georgia, serif; }
+  &__intro h1 { margin: 0; color: var(--bc-ink); font: 600 clamp(40px, 4vw, 50px)/1.05 "meursault-variable", Georgia, serif; }
   &__intro > p:last-child:not(.bc-election-page__kicker) { max-width: 810px; margin: 18px 0 0; color: var(--bc-muted); font: 400 20px/1.42 "meursault-variable", Georgia, serif; }
   &__nav { display: flex; flex-wrap: wrap; gap: 10px 26px; padding-top: 16px; padding-bottom: 16px; border-top: 1px solid var(--bc-rule); border-bottom: 1px solid var(--bc-rule); }
-  &__nav a { color: var(--bc-ink); font: 700 13px/1.3 "articulat-cf", sans-serif; text-decoration: none; text-transform: uppercase; }
-  &__nav a:hover, &__nav a:focus-visible { color: var(--bc-orange); }
-  &__section { margin-top: 46px; scroll-margin-top: 30px; }
+  &__nav a { color: var(--bc-ink); font: 400 16px/22px "meursault-variable", Georgia, serif; text-decoration: none; }
+  &__section { margin-top: 46px; }
+  &__section > .bc-election-heading { scroll-margin-top: 116px; }
   &__section:last-child { margin-bottom: 76px; }
   &__grid { display: grid; gap: 20px; margin-top: 22px; }
   &__grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -240,7 +280,8 @@
 }
 
 @media (max-width: 760px) {
-  .bc-election-banner { padding: 13px 0; }
+  .bc-election-banner { min-height: 54px; font-size: 18px; }
+  .bc-election-heading { min-height: 54px; font-size: 18px; }
   .bc-election-home { margin-top: 28px; }
   .bc-election-home__columns,
   .bc-election-home__columns:has(> .bc-election-home__column--explainers):has(> .bc-election-home__column--vancouver):has(> .bc-election-home__column--parties) { display: block; }
@@ -254,6 +295,7 @@
   .bc-live-story:not(:has(.bc-live-story__image)) { grid-template-columns: 1fr; }
   .bc-election-page__intro { padding-top: 34px; }
   .bc-election-page__nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .bc-election-page__section > .bc-election-heading { scroll-margin-top: 80px; }
   .bc-election-page__grid--three, .bc-election-page__grid--four, .bc-election-page__grid--parties { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .bc-election-page__grid--parties { display: block; }
 }
@@ -266,5 +308,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html:has(.bc-election-page) { scroll-behavior: auto; }
   .bc-election-banner, .bc-election-banner span span, .bc-election-card__image img, .bc-party__link { transition: none; }
+  .bc-election-heading a, .bc-election-card h3 a, .bc-live-story h2 a, .bc-election-page__nav a, .bc-party__name > span, .bc-election-home__metro-link > span:first-child { transition: none; }
 }

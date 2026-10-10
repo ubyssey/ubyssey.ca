@@ -3,7 +3,7 @@
   <a class="bc-party__link" href="{{ item.article.url }}">
     {% if item.logo %}<span class="bc-party__logo">{% image item.logo width-120 loading="lazy" alt="" %}</span>{% endif %}
     <span class="bc-party__copy">
-      <span class="bc-party__name">{{ item.label|default:item.article.title }}</span>
+      <span class="bc-party__name"><span>{{ item.label|default:item.article.title }}</span></span>
       {% if item.description %}<span class="bc-party__description">{{ item.description|striptags|truncatewords:18 }}</span>{% endif %}
     </span>
     <span class="bc-party__arrow" aria-hidden="true">↗</span>

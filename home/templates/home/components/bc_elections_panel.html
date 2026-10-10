@@ -19,7 +19,7 @@
     <section class="bc-election-home__column bc-election-home__column--parties" aria-labelledby="bc-election-parties-title">
       <h3 id="bc-election-parties-title">{{ self.bc_elections_parties_heading }}</h3>
       <div class="bc-election-home__parties">{% for item in bc_elections_content.parties %}{% include "home/components/bc_election_party.html" %}{% endfor %}</div>
-      <a class="bc-election-home__metro-link" href="{{ bc_elections_page.url }}#greater-vancouver-mayoral-candidates">{{ self.bc_elections_metro_link_text }} <span aria-hidden="true">→</span></a>
+      <a class="bc-election-home__metro-link" href="{{ bc_elections_page.url }}#greater-vancouver-mayoral-candidates"><span>{{ self.bc_elections_metro_link_text }}</span><span aria-hidden="true">→</span></a>
     </section>
     {% endif %}
   </div>
