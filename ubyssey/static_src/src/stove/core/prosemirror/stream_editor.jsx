@@ -36,6 +36,8 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     ])).sort((a, b) => a.localeCompare(b));
 
     let observedDoc = null;
+    let observedDocNeedsRefresh = false;
+
     const changeListeners = new Set();
     const richTextTypes = new Map();
     const richTextRegistrations = new Map();
@@ -222,6 +224,15 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
 
     // Capture selections before remote transaction so we can restore
     fragment.doc.on("beforeTransaction", (transaction) => {
+
+      if (transaction.origin !== ySyncPluginKey && observedDocNeedsRefresh) {
+        observedDoc = instance.doc;
+        observedDocNeedsRefresh = false;
+      }
+
+      // Richtext keystrokes bypass block structure checks and reconstruction
+      if (transaction.origin === ySyncPluginKey) return;
+
       const selections = [];
       richTextRegistrations.forEach((registrations) => {
         registrations.forEach((registration) => {
@@ -239,26 +250,35 @@ export function createStreamEditorFactory({ createEmptyBlock: createDefaultBlock
     // Checks whether itself or nested children not just top level are changed
     fragment.observeDeep((events, transaction) => {
       if (repairingIdentity) return;
+
+      const fields = events.map((event) => {
+        let current = event.target;
+        while (current && current.nodeName !== "editable_field") current = current.parent;
+        return current;
+      });
+
+      const richTextOnly = fields.length > 0 && fields.every((field) => field && richTextTypes.has(field));
+      const localChange = transaction.origin instanceof StreamModelUpdate;
+      const change = localChange ? transaction.origin.change : {};
+      const kind = localChange ? change.kind || "structure" : "remote";
+      
+      if (richTextOnly && (transaction.origin === ySyncPluginKey || (localChange && kind !== "structure"))) {
+        observedDocNeedsRefresh = true;
+        return;
+      }
+
       repairingIdentity = true;
       try {
         normalizeStreamBlockIds(fragment);
       } finally {
         repairingIdentity = false;
       }
-      const fields = events.map((event) => {
-        let current = event.target;
-        while (current && current.nodeName !== "editable_field") current = current.parent;
-        return current;
-      });
-      const change = transaction.origin instanceof StreamModelUpdate ? transaction.origin.change : {};
+
       const richTextSelections = selectionsBeforeTransaction.get(transaction) || [];
       const nextDoc = yXmlFragmentToProseMirrorRootNode(fragment, streamSchema);
       const before = observedDoc;
       observedDoc = nextDoc;
-      const localChange = transaction.origin instanceof StreamModelUpdate;
-      const kind = localChange ? change.kind || "structure" : "remote";
-      const richTextOnly = fields.length > 0 && fields.every((field) => field && richTextTypes.has(field));
-      if (kind !== "structure" && kind !== "remote" && richTextOnly) return;
+      observedDocNeedsRefresh = false;
 
       const changeInfo = {
         before,
