@@ -6,7 +6,7 @@
     {% if self.bc_elections_show_explainers %}
     <section class="bc-election-home__column bc-election-home__column--explainers" aria-labelledby="bc-election-explainers-title">
       <h3 id="bc-election-explainers-title">{{ self.bc_elections_explainers_heading }}</h3>
-      <div class="bc-election-home__explainers">{% for item in bc_elections_content.explainers %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+      <div class="bc-election-home__explainers">{% for item in bc_elections_content.explainers %}{% include "home/components/bc_election_story_card.html" with show_dek=True %}{% endfor %}</div>
     </section>
     {% endif %}
     {% if self.bc_elections_show_vancouver %}
