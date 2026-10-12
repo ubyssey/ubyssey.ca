@@ -268,6 +268,14 @@ class HomePage(Page):
     bc_elections_parties_heading = models.CharField(
         max_length=100, default="About the Parties",
     )
+    bc_elections_parties_note_heading = models.CharField(
+        max_length=120, blank=True, default="",
+        help_text="Optional heading in the space below the homepage party links.",
+    )
+    bc_elections_parties_note_body = models.TextField(
+        blank=True, default="",
+        help_text="Optional body text below the homepage party links.",
+    )
     bc_elections_metro_link_text = models.CharField(
         max_length=120, default="Explore Greater Vancouver mayoral candidates",
     )
@@ -427,6 +435,8 @@ class HomePage(Page):
                 FieldPanel("bc_elections_explainers_heading"),
                 FieldPanel("bc_elections_vancouver_heading"),
                 FieldPanel("bc_elections_parties_heading"),
+                FieldPanel("bc_elections_parties_note_heading"),
+                FieldPanel("bc_elections_parties_note_body"),
                 FieldPanel("bc_elections_metro_link_text"),
                 FieldPanel("bc_elections_show_live_results"),
                 FieldPanel("bc_elections_show_explainers"),
