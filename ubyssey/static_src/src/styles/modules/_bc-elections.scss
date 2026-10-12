@@ -25,6 +25,14 @@
 
 html:has(.bc-election-page) { scroll-behavior: smooth; }
 
+.bc-election-arrow {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -.12em;
+  flex: none;
+}
+
 .hp-redesign a.bc-election-banner {
   box-sizing: border-box;
   display: grid;
@@ -42,8 +50,8 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
 
   > .page-shell { color: inherit; }
   &:hover, &:focus-visible { background: #b9cfff; color: #08111f; }
-  span span { display: inline-block; margin-left: .4em; transition: transform .18s ease; }
-  &:hover span span, &:focus-visible span span { transform: translateX(4px); }
+  .bc-election-arrow { margin-left: .35em; transition: transform .18s ease; }
+  &:hover .bc-election-arrow, &:focus-visible .bc-election-arrow { transform: translateX(4px); }
 }
 
 [color-css-theme="dark"] .hp-redesign a.bc-election-banner {
@@ -68,7 +76,7 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
   text-transform: uppercase;
 
   a { color: inherit; text-decoration: none; }
-  a span { font: 600 .7em/1 "articulat-cf", sans-serif; }
+  .bc-election-arrow { width: .7em; height: .7em; }
 }
 
 // Match the editorial blue text wash used elsewhere on the site.
@@ -245,7 +253,7 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
   &__logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
   &__copy { display: flex; flex-direction: column; min-width: 0; }
   &__name { font: 600 16px/1.2 "meursault-variable", Georgia, serif; }
-  &__arrow { margin-left: auto; color: var(--bc-accent); font: 700 16px/1 sans-serif; }
+  &__arrow { display: flex; align-items: center; margin-left: auto; color: var(--bc-accent); font-size: 16px; }
   .bc-election-byline { margin: -4px 0 10px 54px; }
   &:not(:has(.bc-party__logo)) .bc-election-byline { margin-left: 2px; }
 }
@@ -330,6 +338,6 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
 
 @media (prefers-reduced-motion: reduce) {
   html:has(.bc-election-page) { scroll-behavior: auto; }
-  .hp-redesign a.bc-election-banner, .bc-election-banner span span, .bc-election-card__image img, .bc-party__link { transition: none; }
+  .hp-redesign a.bc-election-banner, .bc-election-banner .bc-election-arrow, .bc-election-card__image img, .bc-party__link { transition: none; }
   .bc-election-heading a, .bc-election-card h3 a, .bc-live-story h2 a, .bc-election-page__nav a, .bc-party__name > span, .bc-election-home__metro-link > span:first-child, .bc-election-byline a { transition: none; }
 }

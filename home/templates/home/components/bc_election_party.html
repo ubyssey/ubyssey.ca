@@ -5,7 +5,7 @@
     <span class="bc-party__copy">
       <span class="bc-party__name"><span>{{ item.label|default:item.article.title }}</span></span>
     </span>
-    <span class="bc-party__arrow" aria-hidden="true">↗</span>
+    <span class="bc-party__arrow">{% include "home/components/bc_election_arrow.html" %}</span>
   </a>
   <div class="bc-election-byline"><span class="bc-election-byline__prefix">By</span> {{ item.article|redesign_card_byline|normalize_redesign_byline|safe }}</div>
 </article>
