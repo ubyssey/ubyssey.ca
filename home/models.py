@@ -514,6 +514,7 @@ class HomePage(Page):
 
         context["bc_elections_page"] = None
         context["bc_elections_content"] = None
+        election_panel_story_ids = set()
         if self.bc_elections_page_id and (
             self.bc_elections_banner_enabled or self.bc_elections_panel_enabled
         ):
@@ -523,10 +524,23 @@ class HomePage(Page):
             if election_page:
                 context["bc_elections_page"] = election_page
                 if self.bc_elections_panel_enabled:
-                    context["bc_elections_content"] = election_page.get_election_content(
+                    election_content = election_page.get_election_content(
                         include_metro=False,
                         include_live=self.bc_elections_show_live_results,
                     )
+                    context["bc_elections_content"] = election_content
+                    visible_groups = (
+                        ("explainers", self.bc_elections_show_explainers),
+                        ("vancouver", self.bc_elections_show_vancouver),
+                        ("parties", self.bc_elections_show_parties),
+                    )
+                    for group, enabled in visible_groups:
+                        if enabled:
+                            election_panel_story_ids.update(
+                                item.article.pk for item in election_content[group]
+                            )
+                    if election_content["live_article"]:
+                        election_panel_story_ids.add(election_content["live_article"].pk)
 
         context["ams_election_stories"] = []
         if (self.ams_election_enabled and self.ams_election_story_left_id
@@ -583,7 +597,7 @@ class HomePage(Page):
 
         # The top fold keeps its editorial choices (or the usual recent-story
         # fallback), including Game Analysis stories. Only the twelve rows
-        # below it should exclude that story form.
+        # below it should exclude that story form and visible election-panel stories.
         if len(ordered_articles) < 5:
             recent = (ArticlePage.objects.live().public()
                       .descendant_of(self)
@@ -595,12 +609,14 @@ class HomePage(Page):
 
         ordered_articles = ordered_articles[:5] + [
             article for article in ordered_articles[5:]
-            if getattr(article, "story_form", "") != "game-analysis"
+            if (getattr(article, "story_form", "") != "game-analysis"
+                and article.pk not in election_panel_story_ids)
         ]
         if len(ordered_articles) < 17:
             recent = (ArticlePage.objects.live().public()
                       .descendant_of(self)
                       .exclude(pk__in=seen)
+                      .exclude(pk__in=election_panel_story_ids)
                       .exclude(standardarticlepage__story_form="game-analysis")
                       .order_by("-explicit_published_at")[:17 - len(ordered_articles)])
             ordered_articles.extend(article.specific for article in recent)
@@ -677,6 +693,7 @@ class HomePage(Page):
             chronological_articles = list(
                 ArticlePage.objects.live().public().descendant_of(self)
                 .exclude(pk__in=hero_ids)
+                .exclude(pk__in=election_panel_story_ids)
                 .exclude(standardarticlepage__story_form="game-analysis")
                 .order_by("-explicit_published_at", "-id")[:12]
             )

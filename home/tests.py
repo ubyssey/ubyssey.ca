@@ -110,6 +110,40 @@ class HomepageRedesignTests(SimpleTestCase):
         self.assertEqual(content["parties"], [])
         self.assertIsNone(content["live_article"])
 
+    def test_visible_election_panel_stories_stay_out_of_below_fold_stream(self):
+        stories = []
+        for story_id in range(1, 9):
+            story = SimpleNamespace(pk=story_id, story_form="standard")
+            story.specific = story
+            stories.append(story)
+        election_content = {
+            "explainers": [SimpleNamespace(article=stories[5])],
+            "vancouver": [SimpleNamespace(article=stories[6])],
+            "parties": [SimpleNamespace(article=stories[7])],
+            "live_article": stories[7],
+        }
+        election_page = SimpleNamespace(get_election_content=lambda **_kwargs: election_content)
+        homepage = HomePage(
+            bc_elections_page_id=42,
+            bc_elections_panel_enabled=True,
+            bc_elections_show_vancouver=False,
+            game_analysis_enabled=False,
+        )
+        with patch("wagtail.models.Page.get_context", return_value={}), \
+                patch.object(homepage, "get_curated_articles", return_value=stories), \
+                patch("home.models.BCLocalElectionsPage.objects") as election_pages, \
+                patch("home.models.ArticlePage"), \
+                patch("home.models.settings.DEBUG", False):
+            election_pages.live.return_value.public.return_value.filter.return_value.first.return_value = election_page
+            context = homepage.get_context(RequestFactory().get("/"))
+
+        # The five top-fold stories remain; the visible explainer and party/live
+        # story do not. The hidden Vancouver story remains eligible below fold.
+        self.assertEqual(
+            [story.pk for story in context["redesign_articles"]],
+            [1, 2, 3, 4, 5, 7],
+        )
+
     def test_disabled_panel_skips_homepage_game_queries(self):
         homepage = HomePage(game_analysis_enabled=False)
         with patch("wagtail.models.Page.get_context", return_value={}), \
