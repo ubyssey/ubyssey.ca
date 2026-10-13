@@ -157,7 +157,6 @@ MIDDLEWARE = [
 
     'canonical_domain.middleware.CanonicalDomainMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'ubyssey.middleware.middleware.JsonErrorMiddleware',
 ]
 
 if DEBUG:

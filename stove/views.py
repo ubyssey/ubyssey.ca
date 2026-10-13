@@ -25,6 +25,8 @@ from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
 from django.db.models import Min
 
+from django.core.exceptions import ValidationError
+
 from stove.editors.collaboration.persistence import (
     ASSIGNMENT_AUTHOR_ROLES,
     initialize_page_collaboration,
@@ -154,7 +156,11 @@ def create_page(request, section_id):
     if ("ethics_notes" in data):
         newPage.ethics_notes = data["ethics_notes"]
 
-    section.add_child(instance=newPage)
+    try:
+        section.add_child(instance=newPage)
+    except ValidationError as err:
+        return HttpResponseBadRequest(err.messages)
+        #return JsonResponse({"errors": err.messages}, status=400)
 
     try: 
         newPage.save_revision()
