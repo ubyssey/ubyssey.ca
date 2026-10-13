@@ -160,7 +160,6 @@ def create_page(request, section_id):
         section.add_child(instance=newPage)
     except ValidationError as err:
         return HttpResponseBadRequest(err.messages)
-        #return JsonResponse({"errors": err.messages}, status=400)
 
     try: 
         newPage.save_revision()
