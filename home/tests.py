@@ -45,17 +45,27 @@ class HomepageRedesignTests(SimpleTestCase):
                 self.assertIsNotNone(get_template(template_name))
 
     def test_homepage_title_entities_decode_without_trusting_markup(self):
-        rendered = Template(
-            "{% load articletags %}{{ title|decode_html_entities }}"
-        ).render(Context({"title": "Arts &amp; Culture &lt;script&gt;alert(1)&lt;/script&gt;"}))
-        self.assertEqual(rendered, "Arts &amp; Culture &lt;script&gt;alert(1)&lt;/script&gt;")
+        headline = Template("{% load articletags %}{{ title|safe_headline_markup }}")
+        cases = {
+            "&lt;em&gt;Arts &amp; Culture&lt;/em&gt;": "<em>Arts &amp; Culture</em>",
+            "<em>Not For Sale!</em>": "<em>Not For Sale!</em>",
+            '<em onclick="alert(1)">Title</em>': "<em>Title</em>",
+            "<script>alert(1)</script>": "&lt;script&gt;alert(1)&lt;/script&gt;",
+            '<img src=x onerror="alert(1)">': '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;',
+        }
+        for title, expected in cases.items():
+            with self.subTest(title=title):
+                self.assertEqual(headline.render(Context({"title": title})), expected)
 
         for template_name in (
             "home/components/redesign_card.html",
             "home/components/redesign_story_row.html",
+            "home/components/game_analysis_story.html",
+            "home/components/bc_election_story_card.html",
+            "home/components/bc_election_live_story.html",
         ):
             with self.subTest(template=template_name):
-                self.assertIn("article.title|decode_html_entities", get_template(template_name).template.source)
+                self.assertIn("title|safe_headline_markup", get_template(template_name).template.source)
 
     def test_game_analysis_panel_exposes_editorial_fields(self):
         self.assertEqual(

@@ -7,7 +7,7 @@
   {% endif %}{% endwith %}{% endif %}
   <div class="bc-election-card__copy">
     {% if item.label %}<span class="bc-election-card__label">{{ item.label }}</span>{% endif %}
-    <h3><a href="{{ item.article.url }}">{{ item.article.title }}</a></h3>
+    <h3><a href="{{ item.article.url }}">{{ item.article.title|safe_headline_markup }}</a></h3>
     {% if show_dek and item.article.lede %}<p>{{ item.article.lede|striptags|truncatewords:18 }}</p>{% endif %}
     <div class="bc-election-byline"><span class="bc-election-byline__prefix">By</span> {{ item.article|redesign_card_byline|normalize_redesign_byline|safe }}</div>
   </div>

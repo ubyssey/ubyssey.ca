@@ -8,7 +8,7 @@
   </div>
   <div class="bc-live-story__copy">
     <span class="bc-live-story__eyebrow">{% if bc_elections_page %}{{ bc_elections_page.live_results_label }}{% else %}{{ self.live_results_label }}{% endif %}</span>
-    <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+    <h2><a href="{{ article.url }}">{{ article.title|safe_headline_markup }}</a></h2>
     <div class="bc-election-byline"><span class="bc-election-byline__prefix">By</span> {{ article|redesign_card_byline|normalize_redesign_byline|safe }}</div>
   </div>
   {% if article.preview_image %}<a class="bc-live-story__image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt|default:'' }}" loading="lazy"></a>
