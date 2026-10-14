@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta, timezone as datetime_timezone
 from itertools import combinations
+from io import BytesIO
 from types import SimpleNamespace
 from unittest.mock import patch
 
 from django import forms
+from django.template import Context, Template
 from django.template.loader import get_template
 from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.utils import timezone
@@ -17,6 +19,7 @@ from home.game_analysis_queries import (
     six_month_cutoff,
 )
 from home.models import BCLocalElectionsPage, HomePage, ThunderbirdFixture
+from home.sports_calendar import import_calendar
 from home.views import game_analysis_filter
 
 
@@ -40,6 +43,19 @@ class HomepageRedesignTests(SimpleTestCase):
         for template_name in templates:
             with self.subTest(template=template_name):
                 self.assertIsNotNone(get_template(template_name))
+
+    def test_homepage_title_entities_decode_without_trusting_markup(self):
+        rendered = Template(
+            "{% load articletags %}{{ title|decode_html_entities }}"
+        ).render(Context({"title": "Arts &amp; Culture &lt;script&gt;alert(1)&lt;/script&gt;"}))
+        self.assertEqual(rendered, "Arts &amp; Culture &lt;script&gt;alert(1)&lt;/script&gt;")
+
+        for template_name in (
+            "home/components/redesign_card.html",
+            "home/components/redesign_story_row.html",
+        ):
+            with self.subTest(template=template_name):
+                self.assertIn("article.title|decode_html_entities", get_template(template_name).template.source)
 
     def test_game_analysis_panel_exposes_editorial_fields(self):
         self.assertEqual(
@@ -220,6 +236,65 @@ class GameAnalysisFixtureQueryTests(TestCase):
                     [game.pk for game in selected_recent],
                     expected_recent,
                 )
+
+
+class ThunderbirdCalendarImportTests(TestCase):
+    EVENT = "Women's Hockey at University of Manitoba"
+    CATEGORY = "Women's Hockey"
+
+    def calendar(self, *games):
+        rows = ["Event,Start Date,Start Time,Category,Facility"]
+        rows.extend(
+            f'"{self.EVENT}",{date},{time},"{self.CATEGORY}",Wayne Fleming Arena'
+            for date, time in games
+        )
+        return BytesIO(("\n".join(rows) + "\n").encode())
+
+    def test_double_header_imports_both_games_and_keeps_scores_on_refresh(self):
+        friday = ("10/9/2026", "5:00PM")
+        saturday = ("10/10/2026", "11:00AM")
+        import_calendar(self.calendar(friday))
+        first = ThunderbirdFixture.objects.get()
+        first.away_score = 3
+        first.home_score = 2
+        first.save()
+
+        # The new game comes first to reproduce the former reconciliation bug:
+        # it used to overwrite Friday because Friday was the sole nearby match.
+        result = import_calendar(self.calendar(saturday, friday))
+        self.assertEqual(result["reconciled"], 0)
+        self.assertEqual(ThunderbirdFixture.objects.count(), 2)
+        first.refresh_from_db()
+        self.assertEqual((first.away_score, first.home_score), (3, 2))
+        self.assertEqual(first.source_event, f"{self.EVENT}|10/9/2026|5:00PM")
+
+        import_calendar(self.calendar(friday, saturday))
+        self.assertEqual(ThunderbirdFixture.objects.count(), 2)
+        first.refresh_from_db()
+        self.assertEqual((first.away_score, first.home_score), (3, 2))
+
+    def test_unambiguous_reschedule_preserves_entered_result(self):
+        import_calendar(self.calendar(("10/9/2026", "5:00PM")))
+        fixture = ThunderbirdFixture.objects.get()
+        fixture.away_score = 4
+        fixture.save()
+
+        result = import_calendar(self.calendar(("10/9/2026", "6:00PM")))
+        self.assertEqual(result["reconciled"], 1)
+        self.assertEqual(ThunderbirdFixture.objects.count(), 1)
+        fixture.refresh_from_db()
+        self.assertEqual(fixture.away_score, 4)
+        self.assertEqual(fixture.source_event, f"{self.EVENT}|10/9/2026|6:00PM")
+
+    def test_volleyball_double_header_keeps_both_home_games(self):
+        self.EVENT = "Women's Volleyball vs University of Calgary"
+        self.CATEGORY = "Women's Volleyball"
+        import_calendar(self.calendar(("10/23/2026", "7:15PM"), ("10/24/2026", "5:45PM")))
+        self.assertEqual(ThunderbirdFixture.objects.count(), 2)
+        self.assertEqual(
+            list(ThunderbirdFixture.objects.order_by("starts_at").values_list("home_name", flat=True)),
+            ["UBC Thunderbirds", "UBC Thunderbirds"],
+        )
 
 
 class GameAnalysisFilterViewTests(SimpleTestCase):

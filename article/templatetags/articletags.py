@@ -11,6 +11,12 @@ import re
 
 register = template.Library()
 
+@register.filter(name="decode_html_entities")
+@stringfilter
+def decode_html_entities(value):
+    """Decode stored title entities; template autoescaping still protects HTML."""
+    return html.unescape(value)
+
 @register.filter(name="normalize_redesign_byline")
 @stringfilter
 def normalize_redesign_byline(value):
