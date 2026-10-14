@@ -5,11 +5,18 @@ from django.template.loader import render_to_string
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from section.models import SectionPage
+from article.headline_markup import render_headline_markup
 import datetime
 import html
 import re
 
 register = template.Library()
+
+@register.filter(name="safe_headline_markup")
+@stringfilter
+def safe_headline_markup(value):
+    """Preserve allowed headline emphasis without trusting arbitrary markup."""
+    return mark_safe(render_headline_markup(value))
 
 @register.filter(name="normalize_redesign_byline")
 @stringfilter
