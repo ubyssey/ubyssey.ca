@@ -40,7 +40,12 @@
     "description": "A commentary is a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense."
   },
   {
-    "value": "essay", 
+    "value": "analysis",
+    "label": "Analysis",
+    "description": "An analysis is a beat writer's view on a topic relevant to their assigned sport, explaining the reasoning and mechanics behind that specific phenomena."
+  },
+  {
+    "value": "essay",
     "label": "Essay", 
     "description": "An opinion essay refers to author's views on the news, written from their own perspective but based on reporting."
   },
