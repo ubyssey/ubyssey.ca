@@ -1,4 +1,10 @@
-{% load wagtailcore_tags %}
-<p class="drop-cap" data-article-editable-stream-field="content" data-article-editable-path="">
-    {{ value|striptags }}
+{% load wagtailcore_tags article_droptags %}
+<p class="drop-cap" data-article-editable-stream-field="content" data-article-editable-path="" data-article-editable-mode="richtext-inline">
+    {{ value|inline_richtext }}
 </p>
+
+{% comment %} 
+Old code before dropcaps were fixed:
+...
+    {{ value|striptags }}
+{% endcomment %}

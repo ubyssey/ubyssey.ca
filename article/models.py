@@ -1642,7 +1642,7 @@ class StandardArticlePage(ArticlePage):
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
             ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
-            ('dropcap', blocks.TextBlock(
+            ('dropcap', blocks.RichTextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
                 help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
