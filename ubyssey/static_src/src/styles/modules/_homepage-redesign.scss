@@ -883,3 +883,27 @@ html[color-css-theme=dark] .hp-nav__bar nav a[data-section]:focus-visible {
   box-shadow: inset 0 -16px 0 var(--hp-nav-section-hover);
   color: #081839 !important;
 }
+
+/* The homepage uses one section tag treatment in both themes. */
+.hp-redesign .hp-beat {
+  background: #253377;
+  color: #fff !important;
+}
+[color-css-theme=dark] .hp-redesign .hp-beat {
+  background: #b9cfff;
+  color: #081839 !important;
+}
+
+/* Keep Game Analyses typography consistent with the site's editorial type. */
+.hp-games__filters button {
+  font-family: "meursault-variable", Georgia, serif;
+  font-weight: 600;
+}
+.hp-scoreboard__tabs button {
+  font-family: "meursault-variable", Georgia, serif;
+  font-weight: 700;
+}
+.hp-fixture__teams strong {
+  font-family: "meursault-variable", Georgia, serif;
+  font-weight: 600;
+}
