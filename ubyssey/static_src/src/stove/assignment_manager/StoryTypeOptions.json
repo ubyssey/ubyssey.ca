@@ -17,12 +17,12 @@
   {
     "value": "profile", 
     "label": "Profile", 
-    "description": "A profile tells the stories of individuals and their worldviews, written from a repoter's perspective."
+    "description": "A profile is a story about individuals and their worldviews, written from a reporter's perspective."
   },
   {
     "value": "q-and-a", 
     "label": "Q&A", 
-    "description": "A Q&A is a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity."
+    "description": "A Q&A is a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity, written from a reporter's perspective."
   },
   {
     "value": "review", 
@@ -32,32 +32,32 @@
   {
     "value": "game-analysis", 
     "label": "Game Analysis", 
-    "description": "A game analysis is a story about individual games, written from an reporter's perspective."
+    "description": "A game analysis is a story about individual games, written from a reporter's perspective."
   },
   {
     "value": "commentary", 
     "label": "Commentary", 
-    "description": "A commentary is a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense."
+    "description": "A commentary is a story that takes a position on an event or topic relevant to a sport, and suggests a course of action — either in the future or the past — written from a reporter's perspective."
   },
   {
     "value": "analysis",
     "label": "Analysis",
-    "description": "An analysis is a beat writer's view on a topic relevant to their assigned sport, explaining the reasoning and mechanics behind that specific phenomena."
+    "description": "An analysis is a perspective piece on a topic relevant to a sport, explaining the reasoning and mechanics behind that specific phenomenon, written from a reporter's perspective."
   },
   {
     "value": "essay",
     "label": "Essay", 
-    "description": "An opinion essay refers to author's views on the news, written from their own perspective but based on reporting."
+    "description": "An opinion essay is an author's view on the news, written from their own perspective but based on reporting."
   },
   {
     "value": "column", 
     "label": "Column", 
-    "description": "A column is a story reported by a columnists — an opinion journalists who makes abstract judgments about the news and the way the world should be."
+    "description": "A column is a story written by a columnist — an opinion journalist who makes abstract judgments about the news and the way the world should be."
   },
   {
     "value": "editorial", 
     "label": "Editorial", 
-    "description": "An n editorial is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day."
+    "description": "An editorial is an opinion essay by the Ubyssey Editorial Board, the body of the newspaper's staff who debates and decides positions on the news of the day."
   },
   {
     "value": "letter-to-the-editor", 
@@ -67,12 +67,12 @@
   {
     "value": "letter-from-the-editor", 
     "label": "Letter from the Editor", 
-    "description": "A letter from the editor is a message to readers from the The Ubyssey's Senior Masthead."
+    "description": "A letter from the editor is a message to readers from The Ubyssey's Senior Masthead."
   },
   {
     "value": "public-service-announcement", 
     "label": "Public Service Announcement", 
-    "description": "A public service announcement shares public interest information with imminent relevance, such as extreme weather or threats to public safety."
+    "description": "A public service announcement is a piece sharing public interest information with imminent relevance, such as extreme weather or threats to public safety."
   },
   {
     "value": "other", 
