@@ -26,6 +26,9 @@ export function createPreviewController({ form, pageRoot, collaboration = null }
       }
 
       if (kind === "remote") {
+        if (!richTextOnly) {
+          refreshPlainTextEditorsFromStream(instance);
+        }
         if (!richTextOnly && !previewHandled) {
           refresh.refreshStream(instance.fieldName, {
             immediate: true,
