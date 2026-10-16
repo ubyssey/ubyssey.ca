@@ -24,7 +24,7 @@ from wagtail.admin.panels import (
 
 
 from wagtail import blocks
-from wagtail.fields import StreamField
+from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page, PageManager, Orderable
 from wagtail.search import index
 from modelcluster.fields import ParentalKey
@@ -140,7 +140,7 @@ class AuthorPage(RoutablePageMixin, Page):
         default='',
     )
 
-    bio_description =  models.TextField(
+    bio_description =  RichTextField(
         null=False,
         blank=True,
         default='',

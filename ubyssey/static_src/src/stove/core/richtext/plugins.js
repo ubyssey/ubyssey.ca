@@ -5,6 +5,7 @@ import "prosemirror-gapcursor/style/gapcursor.css";
 import "@guardian/prosemirror-invisibles/dist/style.css";
 
 import { Plugin, PluginKey, TextSelection } from "prosemirror-state";
+import { Slice } from "prosemirror-model";
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { baseKeymap, chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
 import { undo, redo, history } from "prosemirror-history";
@@ -14,9 +15,14 @@ import { gapCursor } from "prosemirror-gapcursor";
 import { ellipsis, emDash, inputRules, smartQuotes, textblockTypeInputRule, undoInputRule, wrappingInputRule } from "prosemirror-inputrules";
 import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph as invisiblesParagraph } from "@guardian/prosemirror-invisibles/dist/index.mjs";
 import { ySyncPluginKey } from "y-prosemirror";
+import { v4 as uuidv4 } from "uuid";
+
 import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
+import { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
 import { pageEditorState } from "../state.js";
+
+export { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
 
 export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
 export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
@@ -34,7 +40,7 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     linkBubblePlugin(schema),
     // Disabling for now, I don't have time to polish
     //selectionCommentBubblePlugin(schema),
-    ...(allowAnnotations ? [activeCommentPlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
+    ...(allowAnnotations ? [activeCommentPlugin(schema), footnoteSelectionPlugin(schema), footnotePastePlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
     keymap(buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations })),
     keymap(baseKeymap),
     dropCursor(),
@@ -42,18 +48,6 @@ export function editorPlugins(schema, {includeHistory = true, undoCommand = undo
     createInvisiblesPlugin([invisiblesSpace, hardBreak, invisiblesParagraph], { shouldShowInvisibles: areInvisibleCharactersEnabled() }),
     ...(includeHistory ? [history()] : []),
   ];
-}
-
-let suggestionMode = false;
-export const ACTIVE_SUGGESTION_THREAD_META = "activeSuggestionThread";
-
-export function suggestionModeIsActive() {
-  return suggestionMode;
-}
-
-export function toggleSuggestionMode() {
-  suggestionMode = !suggestionMode;
-  return suggestionMode;
 }
 
 function suggestionPlugin(schema) {
@@ -353,7 +347,7 @@ function suggestionPlugin(schema) {
   };
 
   const insertSuggestion = (view, from, to, text) => {
-    if (!suggestionMode || !text) return false;
+    if (!suggestionModeIsActive() || !text) return false;
 
     const { state } = view;
     let tr = state.tr;
@@ -395,9 +389,112 @@ function suggestionPlugin(schema) {
     return true;
   };
 
+  const pasteSuggestionIntoPreexistingThread = (state, tr, mark, pastedRanges) => {
+    const threadId = mark.attrs.threadId;
+    const suggestion = commentSuggestion(mark.attrs.comments);
+
+    if (suggestion === "add") {
+      return applyAddition(tr, mark, sortRanges([
+        ...mapRanges(tr, threadRanges(state, threadId, "add")),
+        ...pastedRanges,
+      ]));
+    }
+
+    if (suggestion === "delete") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        pastedRanges,
+      );
+    }
+
+    if (suggestion === "replace") {
+      return applyReplacement(
+        tr,
+        mark,
+        mapRanges(tr, threadRanges(state, threadId, "delete")),
+        sortRanges([
+          ...mapRanges(tr, threadRanges(state, threadId, "add")),
+          ...pastedRanges,
+        ]),
+      );
+    }
+
+    return applyAddition(tr, null, pastedRanges);
+  };
+
+  const pasteSuggestion = (view, slice) => {
+    if (!suggestionModeIsActive() || !slice.content.size) return false;
+
+    const { state } = view;
+    const { from, to, empty } = state.selection;
+    if (!(state.selection instanceof TextSelection)) return false;
+    if (!empty && rangeHasSuggestion(state, from, to)) return false;
+
+    const selectedRange = empty ? null : wordRangeWithAdjacentSpace(state, from, to) || { from, to, spacePosition: null };
+    if (selectedRange && rangeHasSuggestion(state, selectedRange.from, selectedRange.to)) return false;
+
+    const canCaptureSpace = selectedRange?.spacePosition
+      && slice.openStart === 0
+      && slice.openEnd === 0
+      && slice.content.childCount === 1
+      && slice.content.firstChild.isText;
+    const insertAt = selectedRange?.to ?? from;
+    let tr = state.tr;
+
+    if (canCaptureSpace && selectedRange.spacePosition === "leading") tr = tr.insertText(" ", insertAt);
+    const sliceInsertAt = canCaptureSpace && selectedRange.spacePosition === "leading" ? tr.mapping.map(insertAt, 1) : insertAt;
+    tr = tr.replaceRange(sliceInsertAt, sliceInsertAt, slice);
+
+    const pastedFrom = tr.mapping.map(insertAt, -1);
+    let pastedTo = tr.mapping.map(insertAt, 1);
+    if (canCaptureSpace && selectedRange.spacePosition === "trailing") {
+      tr = tr.insertText(" ", pastedTo);
+      pastedTo += 1;
+    }
+
+    const pastedRanges = pastedFrom < pastedTo ? [{ from: pastedFrom, to: pastedTo }] : [];
+    if (!pastedRanges.length || !textInRanges(tr.doc, pastedRanges)) return false;
+
+    if (selectedRange) {
+      const deletedFrom = tr.mapping.map(selectedRange.from, -1);
+      const deletedTo = tr.mapping.map(selectedRange.to, -1);
+      const { deleteMark, addMark } = createReplacementMarks(
+        state.doc.textBetween(selectedRange.from, selectedRange.to, " "),
+        textInRanges(tr.doc, pastedRanges),
+      );
+      tr = applyMark(tr, [{ from: deletedFrom, to: deletedTo }], deleteMark);
+      tr = applyMark(tr, pastedRanges, addMark).setMeta(ACTIVE_SUGGESTION_THREAD_META, deleteMark.attrs.threadId);
+    } else {
+      const nearbyMark = adjacentSuggestionMark(state, from, to);
+      tr = nearbyMark
+        ? pasteSuggestionIntoPreexistingThread(state, tr, nearbyMark, pastedRanges)
+        : applyAddition(tr, null, pastedRanges);
+    }
+
+    view.dispatch(tr
+      .setSelection(TextSelection.near(tr.doc.resolve(Math.min(pastedTo, tr.doc.content.size))))
+      .setMeta("paste", true)
+      .setMeta("uiEvent", "paste")
+      .scrollIntoView());
+    return true;
+  };
+
+  const cutAsSuggestion = (view, from, to, { cursorAfterDeletion = false } = {}) => {
+    const { state } = view;
+    const removesAddition = rangeIsSuggestion(state, from, to, "add");
+    let tr = deleteRangeWithSuggestions(state, from, to);
+    tr = mergeAdjacentDeletionThreads(tr, tr.getMeta(ACTIVE_SUGGESTION_THREAD_META));
+
+    const cursor = Math.min(cursorAfterDeletion && !removesAddition ? to : from, tr.doc.content.size);
+    view.dispatch(tr.setSelection(TextSelection.create(tr.doc, cursor)).scrollIntoView());
+    return true;
+  };
+
   // When you type next to a suggestion, it shouldn't be a suggestion if suggestion toggle off
   const insertPlainTextBesideSuggestion = (view, from, to, text) => {
-    if (suggestionMode || from !== to || !text) return false;
+    if (suggestionModeIsActive() || from !== to || !text) return false;
 
     const { state } = view;
     const $from = state.doc.resolve(from);
@@ -417,8 +514,31 @@ function suggestionPlugin(schema) {
       handleTextInput(view, from, to, text) {
         return insertSuggestion(view, from, to, text) || insertPlainTextBesideSuggestion(view, from, to, text);
       },
+      handlePaste(view, _event, slice) {
+        return pasteSuggestion(view, slice);
+      },
+      handleDOMEvents: {
+        cut(view, event) {
+          if (!suggestionModeIsActive() || view.state.selection.empty || !event.clipboardData) return false;
+
+          const { dom, text } = view.serializeForClipboard(view.state.selection.content());
+          event.preventDefault();
+          event.clipboardData.clearData();
+          event.clipboardData.setData("text/html", dom.innerHTML);
+          event.clipboardData.setData("text/plain", text);
+
+          const { state } = view;
+          let { from, to } = state.selection;
+          if (!rangeHasSuggestion(state, from, to)) {
+            const selectedRange = wordRangeWithAdjacentSpace(state, from, to);
+            if (!selectedRange) return true;
+            ({ from, to } = selectedRange);
+          }
+          return cutAsSuggestion(view, from, to);
+        },
+      },
       handleKeyDown(view, event) {
-        if (!suggestionMode || !["Backspace", "Delete"].includes(event.key)) return false;
+        if (!suggestionModeIsActive() || !["Backspace", "Delete"].includes(event.key)) return false;
 
         const { state } = view;
         const { $from, empty } = state.selection;
@@ -438,13 +558,7 @@ function suggestionPlugin(schema) {
         }
         event.preventDefault();
 
-        const removesAddition = rangeIsSuggestion(state, from, to, "add");
-        let tr = deleteRangeWithSuggestions(state, from, to);
-        tr = mergeAdjacentDeletionThreads(tr, tr.getMeta(ACTIVE_SUGGESTION_THREAD_META));
-
-        const cursor = Math.min(event.key === "Delete" && empty && !removesAddition ? to : from, tr.doc.content.size);
-        view.dispatch(tr.setSelection(TextSelection.create(tr.doc, cursor)).scrollIntoView());
-        return true;
+        return cutAsSuggestion(view, from, to, { cursorAfterDeletion: event.key === "Delete" && empty });
       },
     },
   });
@@ -591,24 +705,143 @@ function activeCommentPlugin(schema) {
   });
 }
 
-function frozenFootnotePlugin(schema) {
+// Finds all footnotes in selection
+function selectedFootnoteAnchorRanges(state, footnoteMark) {
+  const { from, to } = state.selection;
+  if (from === to) return [];
+
+  const ranges = [];
+  state.doc.nodesBetween(from, to, (node, position) => {
+    const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
+    const nodeEnd = position + node.nodeSize;
+    if (footnote?.attrs.anchor) {
+      ranges.push({ from: position, to: nodeEnd });
+    }
+    return true;
+  });
+  return ranges;
+}
+
+// Used for highlighting
+const footnoteSelectionPluginKey = new PluginKey("footnoteSelection");
+function footnoteSelectionPlugin(schema) {
   const footnoteMark = schema.marks.footnote;
   if (!footnoteMark) return null;
 
-  const selectedFootnoteAnchorRanges = (state) => {
+  const decorationsForSelection = (state) => {
     const { from, to } = state.selection;
-    if (from === to) return [];
+    if (from === to) return DecorationSet.empty;
 
-    const ranges = [];
-    state.doc.descendants((node, position) => {
+    const decorations = selectedFootnoteAnchorRanges(state, footnoteMark)
+      .map(({ from: anchorFrom, to: anchorTo }) => Decoration.inline(anchorFrom, anchorTo, {
+        class: "pm-footnote--selected",
+      }));
+    return DecorationSet.create(state.doc, decorations);
+  };
+
+  return new Plugin({
+    key: footnoteSelectionPluginKey,
+    state: {
+      init: (_config, state) => decorationsForSelection(state),
+      apply(transaction, decorations, _oldState, newState) {
+        if (!transaction.docChanged && !transaction.selectionSet) return decorations;
+        return decorationsForSelection(newState);
+      },
+    },
+    props: {
+      decorations: (state) => footnoteSelectionPluginKey.getState(state),
+    },
+  });
+}
+
+function footnotePastePlugin(schema) {
+  const footnoteMark = schema.marks.footnote;
+  if (!footnoteMark) return null;
+
+  return new Plugin({
+    props: {
+      transformPasted(slice, view) {
+        if (view.dragging?.move) return slice;
+        return uniquePastedFootnoteIds(slice, usedFootnoteIds(view), footnoteMark);
+      },
+    },
+  });
+}
+
+function usedFootnoteIds(view) {
+  const views = new Set([
+    view,
+    ...pageEditorState.currentPageTextViews(),
+    pageEditorState.blockEditorView,
+  ]);
+
+  const usedIds = new Set();
+  for (const editorView of views) {
+    if (!editorView?.state) continue;
+
+    const footnoteMark = editorView.state.schema.marks.footnote;
+    if (!footnoteMark) continue;
+
+    editorView.state.doc.descendants((node) => {
       const footnote = node.isText ? footnoteMark.isInSet(node.marks) : null;
-      if (footnote?.attrs.anchor && position >= from && position + node.nodeSize <= to) {
-        ranges.push({ from: position, to: position + node.nodeSize });
-      }
+      if (footnote?.attrs.anchor && footnote.attrs.footnoteId) usedIds.add(footnote.attrs.footnoteId);
       return true;
     });
-    return ranges;
+  }
+  return usedIds;
+}
+
+// Replaces duplicated footnote IDs in pasted content with new UUIDs
+function uniquePastedFootnoteIds(slice, usedIds, footnoteMark) {
+  const uniqueId = () => {
+    let footnoteId;
+    do footnoteId = uuidv4(); while (usedIds.has(footnoteId));
+    return footnoteId;
   };
+
+  const pastedIds = new Map();
+
+  const pastedFootnoteId = (footnoteId) => {
+    if (pastedIds.has(footnoteId)) return pastedIds.get(footnoteId);
+
+    const nextId = usedIds.has(footnoteId) ? uniqueId() : footnoteId;
+    usedIds.add(nextId);
+    pastedIds.set(footnoteId, nextId);
+    return nextId;
+  };
+
+  const mapFragment = (fragment) => {
+    let mapped = fragment;
+    fragment.forEach((node, _offset, index) => {
+      let nextNode = node;
+      if (node.content.size) {
+        const content = mapFragment(node.content);
+        if (content !== node.content) nextNode = node.copy(content);
+      }
+
+      const footnote = footnoteMark.isInSet(nextNode.marks);
+      const footnoteId = footnote?.attrs.footnoteId;
+      if (footnote?.attrs.anchor && footnoteId) {
+        const nextId = pastedFootnoteId(footnoteId);
+        if (nextId !== footnoteId) {
+          nextNode = nextNode.mark(nextNode.marks.map((mark) => (
+            mark === footnote ? footnoteMark.create({ ...footnote.attrs, footnoteId: nextId }) : mark
+          )));
+        }
+      }
+
+      if (nextNode !== node) mapped = mapped.replaceChild(index, nextNode);
+    });
+    return mapped;
+  };
+
+  const content = mapFragment(slice.content);
+  return content === slice.content ? slice : new Slice(content, slice.openStart, slice.openEnd);
+}
+
+function frozenFootnotePlugin(schema) {
+  const footnoteMark = schema.marks.footnote;
+  if (!footnoteMark) return null;
 
   const deletedRangeContainsFootnoteAnchor = (doc, from, to) => {
     let containsAnchor = false;
@@ -623,7 +856,7 @@ function frozenFootnotePlugin(schema) {
   const deleteSelectionExceptFootnoteAnchors = (view) => {
     const { state } = view;
     const { from, to } = state.selection;
-    const anchors = selectedFootnoteAnchorRanges(state);
+    const anchors = selectedFootnoteAnchorRanges(state, footnoteMark);
     if (!anchors.length) return false;
 
     let transaction = state.tr;
@@ -662,7 +895,7 @@ function frozenFootnotePlugin(schema) {
     },
     props: {
       handleKeyDown(view, event) {
-        if (suggestionMode || !pageEditorState.footnotesFrozen || !["Backspace", "Delete"].includes(event.key)) return false;
+        if (suggestionModeIsActive() || !pageEditorState.footnotesFrozen || !["Backspace", "Delete"].includes(event.key)) return false;
         if (!deleteSelectionExceptFootnoteAnchors(view)) return false;
         event.preventDefault();
         return true;
@@ -709,7 +942,7 @@ function buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations 
     bind("Mod-Alt-s", (state, dispatch) => {
       if (!dispatch) return true;
       toggleSuggestionMode();
-      dispatch(state.tr.setMeta("suggestionModeChanged", suggestionMode));
+      dispatch(state.tr.setMeta("suggestionModeChanged", suggestionModeIsActive()));
       return true;
     });
   }

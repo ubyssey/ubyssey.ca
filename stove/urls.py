@@ -28,6 +28,7 @@ urlpatterns = [
     path("page/<int:page_id>/media-existing", views.article_media_add_existing, name="article_media_add_existing"),
     path("page/<int:page_id>/page-options", views.manuscript_page_options, name="manuscript_page_options"),
     path("page/<int:page_id>/collaboration", views.page_collaboration, name="page_collaboration"),
+    path("page/<int:page_id>/collaboration/presence", views.page_collaboration_presence, name="page_collaboration_presence"),
 
     path("author/<int:page_id>", views.author_editor, name="author_editor"),
     path("homepage", views.homepage_editor, name="homepage_editor"),

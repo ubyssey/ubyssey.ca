@@ -33,11 +33,12 @@ function initialYjsUpdate(streamEditors, createEmptyBlock, initializeSharedData)
   return Y.encodeStateAsUpdate(combined);
 }
 
-export async function setupPageCollaboration({createEmptyBlock, currentEditor, initializationUrl, initializeSharedData = () => ({}), streamEditors, websocketUrl}) {
+export async function setupPageCollaboration({createEmptyBlock, currentEditor, initializationUrl, initializeSharedData = () => ({}), streamEditors, presenceUrl, websocketUrl}) {
   const collaboration = await connectYjs({
     initialUpdate: initialYjsUpdate(streamEditors, createEmptyBlock, initializeSharedData),
     currentEditor,
     initializationUrl,
+    presenceUrl,
     websocketUrl,
   });
 

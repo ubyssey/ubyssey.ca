@@ -254,6 +254,7 @@ export function createStreamRichTextKeyHandler({state, streamSchema, createEmpty
     const result = source.instance.mergeRichTextBlock({
       blockId: source.blockId,
       path: source.path || [],
+      currentContent: inlineView.state.doc.content,
     });
     source.instance.history.stopCapturing();
 

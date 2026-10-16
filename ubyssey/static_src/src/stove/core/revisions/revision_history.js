@@ -140,3 +140,41 @@ export function setupManualRevisionSave(form, { formDataForSave }) {
     }
   });
 }
+
+export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => {} }) {
+  const wagtailButton = form?.querySelector("[data-view-wagtail]");
+  if (!wagtailButton || !form.dataset.saveRevisionUrl || !wagtailButton.dataset.wagtailUrl) return;
+
+  wagtailButton.addEventListener("click", async () => {
+    const originalText = wagtailButton.textContent;
+    wagtailButton.disabled = true;
+    wagtailButton.textContent = "Saving...";
+
+    try {
+      await beforeSave();
+      const formData = formDataForSave();
+      formData.set("handoff_to_wagtail", "1");
+      const payload = await saveRevision(form.dataset.saveRevisionUrl, formData);
+      
+      if (payload.errors) {
+        const message = Object.entries(payload.errors)
+          .map(([field, messages]) => {
+            const text = Array.isArray(messages) ? messages.join(", ") : messages;
+            return field === "__all__" ? text : field + ": " + text;
+          })
+          .join("\n");
+        alert(message);
+        return;
+      }
+
+      form.dispatchEvent(new CustomEvent("editor:revision-saved"));
+      window.location.assign(wagtailButton.dataset.wagtailUrl);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save revision");
+    } finally {
+      wagtailButton.textContent = originalText;
+      wagtailButton.disabled = false;
+    }
+  });
+}

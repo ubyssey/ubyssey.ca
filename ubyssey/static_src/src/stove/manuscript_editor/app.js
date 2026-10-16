@@ -17,7 +17,7 @@ import { createArticleInfoSidebar } from "./chrome/article_info_sidebar.jsx";
 import { setupSidebarAccordion } from "./chrome/sidebar_accordian.js";
 import { setupPageSaveStatus } from "../core/collaboration/save_status.js";
 import { setupFindReplace } from "./stream/find_replace.js";
-import { setupManualRevisionSave } from "../core/revisions/revision_history.js";
+import { setupManualRevisionSave, setupWagtailHandoff } from "../core/revisions/revision_history.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent) || {};
@@ -41,8 +41,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     initializationUrl: "/stove/page/" + pageId + "/collaboration",
     initializeSharedData: (ydoc) => ({ metadata: seedMetadata(ydoc, form) }),
     streamEditors,
+    presenceUrl: "/stove/page/" + pageId + "/collaboration/presence",
     websocketUrl: protocol + "//" + window.location.host + "/ws/stove/manuscript/" + pageId,
   });
+
+  if (collaboration.blockedByWagtail) {
+    window.location.assign(form.dataset.stoveHomeUrl || "/stove/");
+    return;
+  }
 
   pageEditorState.awareness = collaboration.awareness;
   pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
@@ -157,6 +163,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupManualRevisionSave(form, {
     formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+  });
+
+  setupWagtailHandoff(form, {
+    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    beforeSave: () => {
+      pageEditorState.users.kickOtherUsers();
+      return pageEditorState.users.waitForOtherUsersToLeave();
+    },
   });
 
   mountManuscriptChrome({

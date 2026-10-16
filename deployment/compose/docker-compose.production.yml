@@ -21,6 +21,10 @@ services:
       - ubyssey-internal
     volumes:
       - ./mysql-data:/var/lib/mysql
+    # Set here as otherwise they reset on each push
+    command:
+      - "--binlog-expire-logs_seconds=259200"
+      - "--binlog-transaction-compression=ON"
 
   cache:
     image: memcached:1.6.10

@@ -132,6 +132,27 @@ export function setupPresence(container, currentUser, awareness, { findBlock, ho
       }, 1000);
       return true;
     },
+    // Timeout is sketchy but probably fine (1s for everyone else to send their edits)
+    waitForOtherUsersToLeave(timeout = 1000) {
+      if (!awareness) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        let timer = null;
+        const finish = () => {
+          clearTimeout(timer);
+          awareness.off("change", check);
+          resolve();
+        };
+        const check = () => {
+          const hasOtherUsers = Array.from(awareness.getStates().keys()).some((clientId) => clientId !== connectionId);
+          if (!hasOtherUsers) finish();
+        };
+
+        timer = window.setTimeout(finish, timeout);
+        awareness.on("change", check);
+        check();
+      });
+    },
     destroy() {
       clearTimeout(kickClearTimer);
       awareness?.off("change", handleAwarenessChange);

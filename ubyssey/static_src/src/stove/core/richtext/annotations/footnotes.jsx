@@ -22,6 +22,7 @@ import { pageEditorState } from "../../state.js";
 export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
   const pageShadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   const reactRoot = createRoot(root);
+  let renderedFootnotes = null;
 
   const focusFootnote = (footnoteId) => {
     const input = root.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"]`);
@@ -45,9 +46,9 @@ export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
   });
 
   const update = () => {
-    const activeInput = root.contains(document.activeElement) ? document.activeElement : null;
-    const activeFootnoteId = activeInput && activeInput.dataset.footnoteId;
     const footnotes = getViews().flatMap((view) => collectFootnotes(view));
+    if (sameFootnoteStructure(footnotes, renderedFootnotes)) return;
+    renderedFootnotes = footnotes;
 
     reactRoot.render(
       <FootnotePanel
@@ -56,20 +57,20 @@ export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
         getViews={getViews}
       />,
     );
-
-    const nextActiveFootnoteId = activeFootnoteId;
-    if (!nextActiveFootnoteId) return;
-
-    window.requestAnimationFrame(() => {
-      const nextInput = root.querySelector(`[data-footnote-id="${nextActiveFootnoteId}"]`);
-      if (!nextInput) return;
-      nextInput.focus({ preventScroll: true });
-    });
   };
 
   footnoteTexts?.observe(update);
   update();
   return { update };
+}
+
+function sameFootnoteStructure(footnotes, renderedFootnotes) {
+  // Only rerender if structure of footnotes changed
+  return Boolean(renderedFootnotes)
+    && footnotes.length === renderedFootnotes.length
+    && footnotes.every((footnote, index) => (
+      footnote.footnoteId === renderedFootnotes[index].footnoteId
+    ));
 }
 
 // Footnote UI on left sidebar
@@ -100,6 +101,7 @@ function FootnotePanel({ footnotes, footnoteTexts, getViews }) {
 function FootnoteText({ footnote, footnoteTexts, getViews }) {
   const ref = useRef(null);
   const currentSharedText = footnoteTexts?.get(footnote.footnoteId);
+  const sourceInstance = footnote.view.streamSource?.instance;
 
   useEffect(() => {
     const sharedText = currentSharedText instanceof Y.Text ? currentSharedText : sharedFootnoteText(footnote, footnoteTexts);
@@ -144,7 +146,7 @@ function FootnoteText({ footnote, footnoteTexts, getViews }) {
             .setSelection(TextSelection.create(tr.doc, selection))
             .setMeta("addToHistory", false));
         }
-        updateFootnote(footnote.view, footnote.footnoteId, nextText, getViews);
+        updateFootnote(sourceInstance, footnote.footnoteId, nextText, getViews);
       });
     };
     
@@ -156,7 +158,7 @@ function FootnoteText({ footnote, footnoteTexts, getViews }) {
       if (observer) sharedText.unobserve(observer);
       if (view) view.destroy();
     };
-  }, [footnote.footnoteId, footnote.view, currentSharedText, footnoteTexts, getViews]);
+  }, [footnote.footnoteId, sourceInstance, currentSharedText, footnoteTexts, getViews]);
 
   return <div className="pm-footnote-editor" ref={ref} />;
 }
@@ -313,8 +315,8 @@ function collectFootnotes(view) {
   return Array.from(footnotes.values());
 }
 
-function updateFootnote(view, footnoteId, text, getViews) {
-  const targetViews = view.streamSource ? getViews().filter((targetView) => (targetView.streamSource?.instance === view.streamSource.instance)) : [view];
+function updateFootnote(sourceInstance, footnoteId, text, getViews) {
+  const targetViews = sourceInstance ? getViews().filter((targetView) => targetView.streamSource?.instance === sourceInstance) : getViews();
   let changed = false;
   for (const targetView of targetViews) {
     const ranges = [];

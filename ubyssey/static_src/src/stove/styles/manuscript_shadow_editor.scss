@@ -145,6 +145,12 @@ span[data-footnote-id]::before {
     vertical-align: super;
 }
 
+span[data-footnote-anchor="true"]:has(.pm-footnote--selected)::before {
+    background: rgba(0, 113, 201, 0.2);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #0071c9;
+}
+
 :host(.footnotes-frozen) span[data-footnote-id] {
     color: #888;
 }
