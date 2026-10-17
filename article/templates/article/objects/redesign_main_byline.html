@@ -7,7 +7,6 @@
     <a data-share-bsky href="https://bsky.app/intent/compose?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to Bluesky"><img src="{% static 'ubyssey/images/article/share-bluesky.svg' %}" alt=""></a>
     <a data-share-whatsapp href="https://wa.me/?text={{ article.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" title="Share to WhatsApp"><img src="{% static 'ubyssey/images/article/share-whatsapp.svg' %}" alt=""></a>
   </nav>
-  {% if contributors %}
   {% if contributors|length > 1 %}
   <div class="ar-main-byline__card ar-main-byline__card--multiple">
     <div class="ar-main-byline__avatars" aria-hidden="true">{% for contributor in contributors %}{% if contributor.author.image %}{% image contributor.author.image fill-88x88-c100 format-webp class="ar-main-byline__avatar" alt="" %}{% endif %}{% endfor %}</div>
@@ -22,6 +21,5 @@
       <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:"F j, Y" }}</time>
     </div>
   </div>{% endwith %}{% endif %}
-  {% endif %}
 </section>
 {% endwith %}
