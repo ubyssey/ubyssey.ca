@@ -5,15 +5,16 @@ function Contest({ title, candidates, compact = false }) {
     return (
         <section className="election-results__contest" aria-label={title}>
             <h2>{title}</h2>
-            {compact && <p className="election-results__hint">Ten councillors will be elected. Once votes are reported, the current top 10 are highlighted; results are not final until confirmed.</p>}
             <ol className={compact ? "election-results__list election-results__list--compact" : "election-results__list"}>
                 {candidates.map((candidate, index) => (
                     <li className={["election-results__candidate", candidate.winner ? "is-winner" : "", compact && index < 10 && candidate.votes > 0 ? "is-leading" : ""].join(" ")} key={`${title}-${candidate.name}`}>
                         {candidate.image && <img className="election-results__image" src={candidate.image} alt="" loading="lazy" />}
                         <div className="election-results__identity">
-                            {candidate.profile_url ? <a href={candidate.profile_url} className="election-results__name">{candidate.name}</a> : <span className="election-results__name">{candidate.name}</span>}
+                            <div className="election-results__name-line">
+                                {candidate.profile_url ? <a href={candidate.profile_url} className="election-results__name">{candidate.name}</a> : <span className="election-results__name">{candidate.name}</span>}
+                                {candidate.winner && <strong className="election-results__winner">✓ Elected</strong>}
+                            </div>
                             {candidate.party && <span className="election-results__party">{candidate.party}</span>}
-                            {candidate.winner && <strong className="election-results__winner">✓ Elected</strong>}
                         </div>
                         <div className="election-results__numbers">
                             <span>{new Intl.NumberFormat("en-CA").format(candidate.votes)} votes</span>
