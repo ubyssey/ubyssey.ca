@@ -1,9 +1,27 @@
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from django.test import SimpleTestCase
+from django.template.loader import render_to_string
+from django.test import RequestFactory, SimpleTestCase
 
 from liveblog.models import LiveBlogUpdateAuthorBlock
+
+
+class LiveBlogBylineTests(SimpleTestCase):
+    def test_byline_without_primary_author_still_renders_share_controls(self):
+        article = SimpleNamespace(
+            title='Live election results',
+            primary_author_orderables=[],
+        )
+        request = RequestFactory().get('/news/live-election-results/')
+
+        html = render_to_string(
+            'article/objects/redesign_main_byline.html',
+            {'article': article, 'request': request},
+        )
+
+        self.assertIn('class="ar-share"', html)
+        self.assertNotIn('class="ar-main-byline__card', html)
 
 
 class LiveBlogUpdateAuthorBlockTests(SimpleTestCase):
