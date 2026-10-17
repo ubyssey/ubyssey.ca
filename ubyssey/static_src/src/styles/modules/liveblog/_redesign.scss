@@ -130,7 +130,7 @@
     border: 1px solid var(--live-rule);
     background: transparent;
     color: var(--live-text);
-    font: 600 12px/29px "articulat-cf", sans-serif;
+    font: 650 13px/29px "meursault-variable", Georgia, serif;
     cursor: pointer;
     transition: background-color .15s ease, border-color .15s ease, color .15s ease;
   }
@@ -144,7 +144,7 @@
     background: var(--live-blue);
     color: #fff;
   }
-  .c-liveblog__heading button span { margin-left: 8px; }
+  .c-liveblog__sort-arrow { display: inline-block; width: 15px; height: 15px; margin-left: 8px; vertical-align: -3px; }
   #liveblog-feed {
     position: relative;
     box-sizing: border-box;
@@ -478,16 +478,17 @@
   flex-direction: row;
 }
 .c-liveblog-redesign .election-results {
+  --election-bar: #223377;
   position: sticky;
   top: 84px;
   min-width: 0;
   border-top: 1px solid var(--live-rule);
   color: var(--live-text);
 }
-[color-css-theme=dark] .c-liveblog-redesign .election-results { --live-blue: #77c0d2; }
+[color-css-theme=dark] .c-liveblog-redesign .election-results { --live-blue: #77c0d2; --election-bar: #9faeff; }
 .c-liveblog-redesign .election-results__scroll {
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
   overscroll-behavior: contain;
   padding: 18px 12px 16px 0;
   scrollbar-width: thin;
@@ -498,7 +499,6 @@
   font: 650 24px/1.15 "meursault-variable", Georgia, serif;
 }
 .c-liveblog-redesign .election-results__meta,
-.c-liveblog-redesign .election-results__hint,
 .c-liveblog-redesign .election-results__source,
 .c-liveblog-redesign .election-results__waiting,
 .c-liveblog-redesign .election-results__error {
@@ -514,8 +514,8 @@
   grid-template-columns: 46px minmax(0, 1fr) 112px;
   align-items: center;
   gap: 10px;
-  min-height: 70px;
-  padding: 9px 5px;
+  min-height: 64px;
+  padding: 7px 5px;
   border-bottom: 1px solid var(--live-rule);
 }
 .c-liveblog-redesign .election-results__candidate.is-winner { background: #e7f5e8; }
@@ -524,21 +524,20 @@
 .c-liveblog-redesign .election-results__image { width: 46px; height: 46px; object-fit: cover; }
 .c-liveblog-redesign .election-results__identity { grid-column: 2; min-width: 0; }
 .c-liveblog-redesign .election-results__candidate:not(:has(.election-results__image)) .election-results__identity { grid-column: 1 / 3; }
+.c-liveblog-redesign .election-results__name-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; }
 .c-liveblog-redesign .election-results__name {
-  display: block;
   color: var(--live-text);
-  font: 650 15px/1.2 "articulat-cf", sans-serif;
+  font: 600 15px/1.2 "meursault-variable", Georgia, serif;
 }
 .c-liveblog-redesign a.election-results__name:hover,
 .c-liveblog-redesign a.election-results__name:focus-visible { color: var(--live-blue); text-decoration: underline; }
-.c-liveblog-redesign .election-results__party,
-.c-liveblog-redesign .election-results__winner {
+.c-liveblog-redesign .election-results__party {
   display: block;
   margin-top: 2px;
   color: var(--live-muted);
   font: 500 12px/1.2 "articulat-cf", sans-serif;
 }
-.c-liveblog-redesign .election-results__winner { color: #167539; font-weight: 700; }
+.c-liveblog-redesign .election-results__winner { color: #167539; font: 600 12px/1.2 "meursault-variable", Georgia, serif; white-space: nowrap; }
 [color-css-theme=dark] .c-liveblog-redesign .election-results__winner { color: #95e3a6; }
 .c-liveblog-redesign .election-results__numbers {
   display: grid;
@@ -546,12 +545,12 @@
   grid-template-columns: 1fr auto;
   align-items: end;
   gap: 3px;
-  font: 600 11px/1.2 "articulat-cf", sans-serif;
+  font: 400 11px/1.2 "meursault-variable", Georgia, serif;
   white-space: nowrap;
 }
-.c-liveblog-redesign .election-results__bar { grid-column: 1 / 3; height: 5px; background: var(--live-summary); }
-.c-liveblog-redesign .election-results__bar > span { display: block; height: 100%; background: var(--live-blue); }
-.c-liveblog-redesign .election-results__list--compact .election-results__candidate { min-height: 56px; }
+.c-liveblog-redesign .election-results__bar { grid-column: 1 / 3; height: 7.5px; background: var(--live-summary); }
+.c-liveblog-redesign .election-results__bar > span { display: block; height: 100%; background: var(--election-bar); }
+.c-liveblog-redesign .election-results__list--compact .election-results__candidate { min-height: 52px; }
 .c-liveblog-redesign .election-results__list--compact .election-results__image { width: 36px; height: 36px; object-fit: contain; }
 .c-liveblog-redesign .election-results__source { margin-top: 20px; }
 
@@ -561,7 +560,7 @@
 @media (max-width: 800px) {
   .c-liveblog-redesign .election-results-layout { display: block; width: min(650px, calc(100% - 36px)); margin: 82px auto 80px; }
   .c-liveblog-redesign .election-results { position: static; }
-  .c-liveblog-redesign .election-results__scroll { max-height: 440px; padding-right: 8px; }
+  .c-liveblog-redesign .election-results__scroll { max-height: calc(100dvh - 100px); overflow-y: auto; padding-right: 8px; }
   .c-liveblog-redesign .election-results-layout > .article-content { margin-top: 35px !important; }
   .c-liveblog-redesign .election-results-layout .c-liveblog__share { position: static; margin-bottom: 16px; }
   .c-liveblog-redesign .election-results__candidate { grid-template-columns: 40px minmax(0, 1fr) 102px; }
@@ -625,7 +624,10 @@
 
 /* The rich-text embed wrapper and bare iframes should occupy the story rail. */
 .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .responsive-object,
-.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video {
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video,
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div:has(> iframe[src*="youtube.com/embed/"]),
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div:has(> iframe[src*="youtube-nocookie.com/embed/"]),
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div:has(> iframe[src*="player.vimeo.com/video/"]) {
   position: relative;
   display: block;
   box-sizing: border-box;
@@ -638,7 +640,10 @@
   overflow: hidden;
 }
 .c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .responsive-object iframe,
-.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video iframe {
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video iframe,
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div > iframe[src*="youtube.com/embed/"],
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div > iframe[src*="youtube-nocookie.com/embed/"],
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > div > iframe[src*="player.vimeo.com/video/"] {
   position: absolute;
   width: 100% !important;
   max-width: none !important;
@@ -661,8 +666,6 @@
 /* Election-only paired scroll rails share one aligned divider. */
 @media (min-width: 801px) {
   .c-liveblog-redesign .c-article--election-results .election-results-layout {
-    height: calc(100vh - 110px);
-    min-height: 440px;
     margin-top: 78px;
     margin-bottom: 96px;
   }
@@ -670,11 +673,12 @@
   .c-liveblog-redesign .c-article--election-results .election-results-layout > .article-content {
     position: relative;
     top: auto;
-    height: 100%;
+    height: auto;
+    max-height: calc(100vh - 110px);
     min-height: 0;
     overflow-x: hidden !important;
     overflow-y: auto !important;
-    overscroll-behavior-y: auto;
+    overscroll-behavior-y: contain;
     scrollbar-width: thin;
   }
   .c-liveblog-redesign .c-article--election-results .election-results {
