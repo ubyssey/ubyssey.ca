@@ -566,3 +566,156 @@
   .c-liveblog-redesign .election-results-layout .c-liveblog__share { position: static; margin-bottom: 16px; }
   .c-liveblog-redesign .election-results__candidate { grid-template-columns: 40px minmax(0, 1fr) 102px; }
 }
+
+/* Use the ordinary article hero and byline treatments for live updates. */
+.c-liveblog-redesign .c-liveblog-redesign__stage.c-liveblog--stage--header {
+  padding: 0;
+}
+.c-liveblog-redesign .liveblog-hero__status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 17px;
+  margin-top: 20px;
+  font: 600 14px/20px "articulat-cf", sans-serif;
+}
+.c-liveblog-redesign .liveblog-hero__status .c-article__published-at {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+}
+.c-liveblog-redesign .liveblog-hero__status .live-signal {
+  position: relative;
+  padding-left: 21px;
+  color: #055cb8;
+  font: 700 14px/20px "articulat-cf", sans-serif;
+}
+.c-liveblog-redesign .liveblog-hero__status .live-signal::before {
+  top: 5px;
+  left: 2px;
+  height: 10px;
+}
+[color-css-theme=dark] .c-liveblog-redesign .liveblog-hero__status .live-signal { color: #77c0d2; }
+.c-liveblog-redesign .liveblog-hero.ar-hero--full-bleed .liveblog-hero__status,
+.c-liveblog-redesign .liveblog-hero.ar-hero--left-full-bleed .liveblog-hero__status,
+.c-liveblog-redesign .liveblog-hero.ar-hero--right-full-bleed .liveblog-hero__status { color: #fff; }
+.c-liveblog-redesign .liveblog-hero.ar-hero--full-bleed .live-signal,
+.c-liveblog-redesign .liveblog-hero.ar-hero--left-full-bleed .live-signal,
+.c-liveblog-redesign .liveblog-hero.ar-hero--right-full-bleed .live-signal { color: #bce3f0; }
+.c-liveblog-redesign .liveblog-hero .ar-hero__media iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.c-liveblog-redesign .liveblog-hero .ar-hero__media:has(iframe) {
+  aspect-ratio: 16 / 9;
+}
+.c-liveblog-redesign .liveblog-hero.ar-hero--full-bleed .ar-hero__media:has(iframe),
+.c-liveblog-redesign .liveblog-hero.ar-hero--left-full-bleed .ar-hero__media:has(iframe),
+.c-liveblog-redesign .liveblog-hero.ar-hero--right-full-bleed .ar-hero__media:has(iframe) {
+  aspect-ratio: auto;
+}
+.c-liveblog-redesign .liveblog-main-byline .ar-main-byline { margin: 55px auto 0; }
+.c-liveblog-redesign .liveblog-main-byline .ar-main-byline__card { color: var(--live-text); }
+.c-liveblog-redesign .liveblog-main-byline .ar-main-byline__card a { color: inherit; }
+.c-liveblog-redesign .liveblog-main-byline .ar-share { color: var(--live-text); }
+.c-liveblog-redesign .liveblog-main-byline .ar-share img { filter: none; }
+[color-css-theme=dark] .c-liveblog-redesign .liveblog-main-byline .ar-share img { filter: invert(1); }
+
+/* The rich-text embed wrapper and bare iframes should occupy the story rail. */
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .responsive-object,
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 8px 0 26px;
+  padding: 0 !important;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .responsive-object iframe,
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content .liveblog-video iframe {
+  position: absolute;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  inset: 0;
+}
+.c-liveblog-redesign .o-liveblog-update .o-liveblog-update--content > iframe {
+  display: block;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 8px 0 26px;
+  aspect-ratio: 16 / 9;
+}
+.c-liveblog-redesign .o-liveblog-update--author-role::before {
+  content: " · ";
+  white-space: pre;
+}
+
+/* Election-only paired scroll rails share one aligned divider. */
+@media (min-width: 801px) {
+  .c-liveblog-redesign .c-article--election-results .election-results-layout {
+    height: calc(100vh - 110px);
+    min-height: 440px;
+    margin-top: 78px;
+    margin-bottom: 96px;
+  }
+  .c-liveblog-redesign .c-article--election-results .election-results,
+  .c-liveblog-redesign .c-article--election-results .election-results-layout > .article-content {
+    position: relative;
+    top: auto;
+    height: 100%;
+    min-height: 0;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto;
+    scrollbar-width: thin;
+  }
+  .c-liveblog-redesign .c-article--election-results .election-results {
+    border-top: 0;
+  }
+  .c-liveblog-redesign .c-article--election-results .election-results__scroll {
+    max-height: none;
+    overflow: visible;
+    padding-top: 0;
+  }
+  .c-liveblog-redesign .c-article--election-results .election-results__title {
+    display: flex;
+    align-items: flex-end;
+    box-sizing: border-box;
+    height: 52px;
+    margin: 0 0 16px;
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--live-rule);
+  }
+}
+
+/* The summary is an editorial briefing, not another Drummond body column. */
+.c-liveblog-redesign .c-liveblog-redesign__stage div.c-liveblog-summary {
+  margin-top: 38px;
+  padding: 28px 32px;
+  border-top: 2px solid var(--live-blue);
+}
+.c-liveblog-redesign .c-liveblog-summary h2 {
+  font: 650 27px/1.18 "meursault-variable", Georgia, serif;
+}
+.c-liveblog-redesign .c-liveblog-summary p,
+.c-liveblog-redesign .c-liveblog-summary li {
+  font: 500 18px/1.4 "meursault-variable", Georgia, serif;
+}
+.c-liveblog-redesign .c-liveblog-summary .caption,
+.c-liveblog-redesign .c-liveblog-summary figcaption {
+  font: italic 400 14px/1.35 "meursault-variable", Georgia, serif;
+}
+@media (max-width: 800px) {
+  .c-liveblog-redesign .liveblog-main-byline .ar-main-byline { margin: 34px 18px 0; }
+  .c-liveblog-redesign .c-liveblog-redesign__stage div.c-liveblog-summary { padding: 20px; }
+  .c-liveblog-redesign .c-liveblog-summary p,
+  .c-liveblog-redesign .c-liveblog-summary li { font-size: 16px; }
+}

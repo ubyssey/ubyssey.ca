@@ -97,7 +97,7 @@ export default function LiveblogUpdate({update, isAdmin, presentTime, isLive, co
                             <span key={`${author.author_link}-${index}`}>
                                 {index > 0 && ", "}
                                 <a className="o-liveblog-update--author-name" href={safeAuthorHref(author.author_link)}>{author.author_name}</a>
-                                {author.author_role && <span className="o-liveblog-update--author-role"> {author.author_role}</span>}
+                                {author.author_role && <span className="o-liveblog-update--author-role">{author.author_role}</span>}
                             </span>
                         )}
                     </div>
