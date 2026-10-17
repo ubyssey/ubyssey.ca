@@ -10,6 +10,8 @@
 {{ suggested_html|json_script:"suggested-html" }}
 {{ admin_view|json_script:"admin-view" }}
 {{ preview_mode|json_script:"preview-mode" }}
+{{ election_results_url|json_script:"election-results-url" }}
+{{ main_byline_html|json_script:"main-byline-html" }}
 <div class="c-liveblog-container" id="liveblog"></div>
-<script src="{% static 'ubyssey/js/liveblog.js' %}?v=live-updates-redesign-10" type="text/javascript"></script>
+<script src="{% static 'ubyssey/js/liveblog.js' %}?v=election-results-2" type="text/javascript"></script>
 {% endblock %}

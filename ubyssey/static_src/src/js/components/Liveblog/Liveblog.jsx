@@ -41,6 +41,7 @@ function ReportLinks() {
 
 export default function LiveBlog() {
     const electionResultsUrl = JSON.parse(document.getElementById("election-results-url")?.textContent || "null");
+    const bylineHtml = JSON.parse(document.getElementById("main-byline-html")?.textContent || "null");
     function getDefaultUpdateOrder(){
         if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
             return 1;
@@ -116,6 +117,11 @@ export default function LiveBlog() {
     const [connectionCount, setConnectionCount] = useState(1);
     const [isSorting, setIsSorting] = useState(false);
     const [viewMode, setViewMode] = useState("updates");
+    const [desktopResults, setDesktopResults] = useState(() => window.matchMedia("(min-width: 801px)").matches);
+
+    function resultsScrollPane() {
+        return electionResultsUrl && desktopResults ? document.querySelector(".election-results-layout > .article-content") : null;
+    }
 
     function getLiveblogRecentScrollHeight(updateOrder) {
         const liveblogElem = document.getElementById('liveblog-feed');
@@ -127,6 +133,16 @@ export default function LiveBlog() {
     }
 
     function scrollToRecent(updateOrder) {
+        const pane = resultsScrollPane();
+        if (pane) {
+            const feed = document.getElementById("liveblog-feed");
+            if (!feed) return;
+            const feedTop = feed.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop;
+            const target = updateOrder === -1 ? feedTop : feedTop + feed.offsetHeight - pane.clientHeight;
+            pane.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+            window.setTimeout(() => setCaughtUp(true), 1000);
+            return;
+        }
         if (updateOrder == -1) {
             window.scrollTo(0, getLiveblogRecentScrollHeight(updateOrder) - screen.height/2);
         } else {
@@ -137,6 +153,14 @@ export default function LiveBlog() {
     }
 
     function isAtRecent(updateOrder) {
+        const pane = resultsScrollPane();
+        if (pane) {
+            const feed = document.getElementById("liveblog-feed");
+            if (!feed) return true;
+            const feedTop = feed.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop;
+            const recent = updateOrder === -1 ? feedTop : feedTop + feed.offsetHeight - pane.clientHeight;
+            return updateOrder === -1 ? pane.scrollTop <= recent + 40 : pane.scrollTop >= recent - 40;
+        }
         if (updateOrder == -1) {
             if (window.scrollY < getLiveblogRecentScrollHeight(updateOrder) || window.scrollY <= 0) {
                 return true;
@@ -148,6 +172,10 @@ export default function LiveBlog() {
     }
 
     function onScroll(e, updateOrder) {
+        if (resultsScrollPane()) {
+            if (isAtRecent(updateOrder)) setCaughtUp(true);
+            return;
+        }
         if (updateOrder == -1) {
             if (window.scrollY < getLiveblogRecentScrollHeight(updateOrder) || window.scrollY <= 0) {
                 setCaughtUp(true);
@@ -160,15 +188,23 @@ export default function LiveBlog() {
     let chatSocket = null;
 
     useEffect(() => {
-
-        setInterval(() => setPresentTime(new Date()), 1000);
-        
-        window.onscroll = (e) => onScroll(e, updateOrder);
-
-        if (!caughtUp && isAtRecent(updateOrder)) {
-            setTimeout(() => setCaughtUp(true), 1000);
-        }
+        const timer = window.setInterval(() => setPresentTime(new Date()), 1000);
+        return () => window.clearInterval(timer);
     }, []);
+
+    useEffect(() => {
+        const breakpoint = window.matchMedia("(min-width: 801px)");
+        const update = () => setDesktopResults(breakpoint.matches);
+        breakpoint.addEventListener("change", update);
+        return () => breakpoint.removeEventListener("change", update);
+    }, []);
+
+    useEffect(() => {
+        const scrollTarget = resultsScrollPane() || window;
+        const handler = (event) => onScroll(event, updateOrder);
+        scrollTarget.addEventListener("scroll", handler, { passive: true });
+        return () => scrollTarget.removeEventListener("scroll", handler);
+    }, [updateOrder, electionResultsUrl, desktopResults]);
 
     useEffect(() => {
         if (isPreviewMode()) return;
@@ -263,7 +299,7 @@ export default function LiveBlog() {
 
     const articleContent = (
         <div className="article-content">
-            {(pageInfo.meta.layout!="split_view" || electionResultsUrl) && <ShareBar />}
+            {!bylineHtml && (pageInfo.meta.layout!="split_view" || electionResultsUrl) && <ShareBar />}
             <LiveBlogFeed meta={getMeta()} updates={[...updates].sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} toggleUpdateOrder={toggleUpdateOrder} viewMode={viewMode} toggleViewMode={toggleViewMode} isSorting={isSorting} />
         </div>
     );
@@ -271,9 +307,9 @@ export default function LiveBlog() {
     return (
         <>
         <div id="nav" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(navHtml() || "", liveblogHtmlOptions)}}></div>
-        <main id="main-content" className="article c-liveblog-redesign">
+        <main id="main-content" className={`article ar-page ar-page--${pageInfo.meta.header?.layout || "big-centered"} c-liveblog-redesign`}>
             <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout + (electionResultsUrl ? " c-article--election-results" : "")}>
-                    <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
+                    <LiveblogStage stage={pageInfo.stage} meta={getMeta()} bylineHtml={bylineHtml} />
                     {electionResultsUrl ? <div className="election-results-layout"><ElectionResults url={electionResultsUrl} />{articleContent}</div> : articleContent}
                     <ReportLinks />
                     {pageInfo.meta.layout == "default" && 
