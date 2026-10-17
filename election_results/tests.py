@@ -1,10 +1,9 @@
 import json
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, TestCase
-from wagtail.images import get_image_model
 from wagtail.models import Page, Site
 
-from .models import ElectionResultsSettings, ElectionResultsSnapshot
+from .models import ElectionResultsSnapshot
 from .services import MAYOR_NAMES, import_results, parse_results
 
 
@@ -36,17 +35,6 @@ def city_document():
 
 
 class ResultsParserTests(SimpleTestCase):
-    def test_editorial_image_fields_use_site_image_chooser(self):
-        image_model = get_image_model()
-        for name in (
-            "pete_fry_image", "ken_sim_image", "colleen_hardwick_image",
-            "kareem_allam_image", "rebecca_bligh_image", "cope_logo",
-            "onecity_logo", "vote_vancouver_logo", "vancouver_greens_logo",
-            "vancouver_liberals_logo", "team_logo", "abc_vancouver_logo",
-        ):
-            with self.subTest(field=name):
-                self.assertIs(ElectionResultsSettings._meta.get_field(name).remote_field.model, image_model)
-
     def test_parses_only_tracked_mayor_and_top_20_council(self):
         document = city_document()
         document["areaResults"][0]["2"]["contestResults"][0]["choiceResults"].append({

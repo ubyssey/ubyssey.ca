@@ -17,24 +17,24 @@ class ElectionResultsSettings(BaseSiteSetting):
         help_text="Off by default. When on, fetch every five minutes only while the linked article is live.",
     )
 
-    pete_fry_image = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    pete_fry_image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     pete_fry_profile = models.ForeignKey("wagtailcore.Page", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    ken_sim_image = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    ken_sim_image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     ken_sim_profile = models.ForeignKey("wagtailcore.Page", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    colleen_hardwick_image = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    colleen_hardwick_image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     colleen_hardwick_profile = models.ForeignKey("wagtailcore.Page", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    kareem_allam_image = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    kareem_allam_image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     kareem_allam_profile = models.ForeignKey("wagtailcore.Page", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    rebecca_bligh_image = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    rebecca_bligh_image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     rebecca_bligh_profile = models.ForeignKey("wagtailcore.Page", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
 
-    cope_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    onecity_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    vote_vancouver_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    vancouver_greens_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    vancouver_liberals_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    team_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    abc_vancouver_logo = models.ForeignKey("images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    cope_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    onecity_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    vote_vancouver_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    vancouver_greens_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    vancouver_liberals_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    team_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    abc_vancouver_logo = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
 
     panels = [
         MultiFieldPanel([FieldPanel("liveblog_page"), FieldPanel("automatic_updates_enabled")], heading="Results article and updates"),

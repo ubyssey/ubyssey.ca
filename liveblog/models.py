@@ -191,7 +191,7 @@ class LiveBlogArticlePage(ArticlePage):
 
     @property
     def redesign_header_layout(self):
-        return super().redesign_header_layout
+        return "big-centered"
 
     @property
     def full_bleed_nav_color(self):
@@ -296,38 +296,8 @@ class LiveBlogArticlePage(ArticlePage):
             "title": self.title,
             "lede": self.lede,
             "authors": authors,
-            "header": self.get_redesign_header_info(),
             "layout": self.layout,
             "live_policy": self.live_policy,
-        }
-
-    def get_redesign_header_info(self):
-        """The same CMS header and featured-media choices used by ordinary articles."""
-        from videos.templatetags.video_filters import youtube_embed_id
-
-        block = self.header[0] if self.header else None
-        value = block.value if block else {}
-        featured = self.featured_media.first()
-        image = featured.image if featured else None
-        alt_text = featured.alt_text if featured else ""
-        if value.get("overwrite_image"):
-            override = value["overwrite_image"][0]
-            image = override.get("image") or image
-            alt_text = override.get("alt_text") or alt_text
-
-        video_id = youtube_embed_id(value.get("youtube_url")) if block and block.block_type == "standard_header_with_youtube_video" else None
-        return {
-            "layout": self.redesign_header_layout,
-            "title": value.get("title") or self.title,
-            "subtitle": value.get("subtitle") or "",
-            "above_cut_lede": str(value.get("above_cut_lede") or ""),
-            "section": str(self.current_section or "News"),
-            "category": self.category_page.title if self.category_page else "",
-            "image_url": image.get_rendition("width-1800|format-webp").url if image else "",
-            "image_alt": alt_text or "",
-            "caption": str(featured.cover_caption) if featured else "",
-            "credit": featured.credit if featured else "",
-            "video_id": video_id or "",
         }
 
     def get_stage(self):
@@ -348,10 +318,6 @@ class LiveBlogArticlePage(ArticlePage):
         site = Site.find_for_request(request)
         election_config = ElectionResultsSettings.objects.filter(site=site, liveblog_page_id=self.id).first() if site else None
         context["election_results_url"] = reverse("election-results-data", args=[self.id]) if election_config else None
-        context["main_byline_html"] = loader.render_to_string(
-            "article/objects/redesign_main_byline.html",
-            {"article": self, "request": request},
-        )
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
         context['update_order'] = "asc"
         context['admin_view'] = False

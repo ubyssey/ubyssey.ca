@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 import DOMPurify from "dompurify";
 
 const liveblogHtmlOptions = {
@@ -6,36 +6,46 @@ const liveblogHtmlOptions = {
     ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "loading", "referrerpolicy"],
 };
 
-function LiveblogStageHeader({meta}) {
-    const header = meta.page.header || {};
-    const layout = header.layout || "big-centered";
-    const title = DOMPurify.sanitize(header.title || meta.page.title || "", { ALLOWED_TAGS: ["em", "strong", "i", "b"], ALLOWED_ATTR: [] });
-    const video = /^[A-Za-z0-9_-]{11}$/.test(header.video_id || "") ? `https://www.youtube-nocookie.com/embed/${header.video_id}` : null;
-    const updated = meta.updatedTime && new Intl.DateTimeFormat("en-CA", {
-        timeZone: "America/Vancouver", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
-    }).format(new Date(meta.updatedTime));
+function safeAuthorHref(url) {
+    try {
+        const parsed = new URL(url, window.location.origin);
+        const match = /^\/authors\/([-a-z0-9_]+)\/?$/i.exec(parsed.pathname);
 
-    return <section className={`ar-hero ar-hero--${layout} liveblog-hero`}>
-        <div className="ar-hero__copy">
-            <p className="ar-kicker">{header.section || "News"}{header.category && ` / ${header.category}`}</p>
-            <h1 dangerouslySetInnerHTML={{ __html: title }} />
-            {header.subtitle ? <p className="ar-deck">{header.subtitle}</p> : header.above_cut_lede ?
-                <div className="ar-deck" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(header.above_cut_lede) }} /> :
-                meta.page.lede && <p className="ar-deck">{meta.page.lede}</p>}
-            <div className="liveblog-hero__status">
-                {meta.live && <span className="live-signal">LIVE</span>}
-                {updated && <span className="c-article__published-at">Last updated <time className="liveblog_updated_at" dateTime={meta.updatedTime}>{updated}</time></span>}
+        if (parsed.origin !== window.location.origin || !match) {
+            return null;
+        }
+
+        return `/authors/${match[1]}/`;
+    } catch (_error) {
+        return null;
+    }
+}
+
+function LiveblogStageHeader({value, meta}) {
+    function showThrobber(meta) {
+        return meta.live && meta.page.layout != "split_view"; 
+    }
+
+    return (
+        <div className="headline-container headline-container--timely-style">
+            {showThrobber(meta) && <div className="live-signal">LIVE</div>}
+            <h1 className="o-headline o-headline--article">{meta.page.title}</h1>
+            {meta.updatedTime != null && 
+                <div className="c-article__published-at">Last updated <time className="liveblog_updated_at" dateTime={meta.updatedTime}>{new Intl.DateTimeFormat("en-CA", {month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(meta.updatedTime))}</time></div>
+            }
+
+            <div className="author-string">
+                {(meta.page.authors || []).map((author, index) => {
+                    const authorHref = safeAuthorHref(author.url);
+
+                    return <span key={`${author.url}-${index}`}>
+                        {index > 0 && ", "}
+                        {authorHref ? <a href={authorHref}>{author.name}</a> : author.name}
+                    </span>
+                })}
             </div>
         </div>
-        {(header.image_url || video) && <figure className="ar-hero__media">
-            {video ? <iframe src={video} title={`Video for ${meta.page.title}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> :
-                <img src={header.image_url} alt={header.image_alt || ""} />}
-            {(header.caption || header.credit) && <figcaption>
-                {header.caption && <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(header.caption) }} />}
-                {header.credit && <span className="credit">{header.credit}</span>}
-            </figcaption>}
-        </figure>}
-    </section>;
+    )
 }
 
 function LiveblogStageSummary({value}) {
@@ -60,21 +70,18 @@ function LiveblogStageItem({type, value, meta}) {
     }
 }
 
-function LiveblogStageItemList({list, meta, bylineHtml}) {
+function LiveblogStageItemList({list, meta}) {
     return (
         <>
-            {list.map((item, index) => <Fragment key={`${item.type}-${index}`}>
-                <LiveblogStageItem type={item.type} value={item.value} meta={meta}/>
-                {item.type === "header" && bylineHtml && <div className="liveblog-main-byline" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(bylineHtml) }} />}
-            </Fragment>)}
+            {list.map((item) => <LiveblogStageItem type={item.type} value={item.value} meta={meta}/>)}
         </>
     )
 }
 
-export default function LiveblogStage({stage, meta, bylineHtml}) {
+export default function LiveblogStage({stage, meta}) {
     return (
         <div className={"c-liveblog--stage c-liveblog-redesign__stage "+ (meta.page.layout=="default" ? "c-liveblog--stage--header" : "")}>
-            <LiveblogStageItemList list={stage} meta={meta} bylineHtml={bylineHtml} />
+            <LiveblogStageItemList list={stage} meta={meta} />
         </div>
     )
 }
