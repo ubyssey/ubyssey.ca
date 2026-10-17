@@ -7,6 +7,7 @@
   --bc-paper: #fff;
   --bc-accent: #253377;
   --bc-accent-soft: #eef3fb;
+  --bc-live-paper: #f5f7fa;
   color: var(--bc-ink);
 }
 
@@ -20,6 +21,7 @@
     --bc-paper: #091322;
     --bc-accent: #b9cfff;
     --bc-accent-soft: #17294c;
+    --bc-live-paper: #142139;
   }
 }
 
@@ -259,13 +261,15 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
 }
 
 .bc-live-story {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) minmax(180px, 30%);
   gap: 20px;
   align-items: center;
   min-height: 160px;
   margin: 20px 0 28px;
-  padding: 18px 0;
+  padding: 20px 24px;
+  background: var(--bc-live-paper);
 
   &__meta { align-self: start; color: var(--bc-muted); font: 700 12px/1.4 "articulat-cf", sans-serif; text-transform: uppercase; }
   &__live { display: inline-flex; align-items: center; gap: 6px; color: #bf272c; }
@@ -318,7 +322,7 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
   .bc-election-home__profiles { gap: 14px; }
   .bc-election-home__parties { display: block; }
   .bc-election-home__party-note { margin: 16px 0; padding: 0; }
-  .bc-live-story { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; }
+  .bc-live-story { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; padding: 18px; }
   .bc-live-story__meta { grid-column: 1 / -1; }
   .bc-live-story__image { grid-column: 2; grid-row: 2; height: 150px; }
   .bc-live-story:not(:has(.bc-live-story__image)) { grid-template-columns: 1fr; }
