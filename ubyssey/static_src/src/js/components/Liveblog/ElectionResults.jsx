@@ -17,8 +17,8 @@ function Contest({ title, candidates, compact = false }) {
                             {candidate.party && <span className="election-results__party">{candidate.party}</span>}
                         </div>
                         <div className="election-results__numbers">
-                            <span>{new Intl.NumberFormat("en-CA").format(candidate.votes)} votes</span>
-                            <span>{candidate.percentage}</span>
+                            <span><strong>{new Intl.NumberFormat("en-CA").format(candidate.votes)}</strong> votes</span>
+                            <strong>{candidate.percentage}</strong>
                             <span className="election-results__bar" aria-hidden="true"><span style={{ width: `${Math.max(0, Math.min(100, candidate.votes / leadVotes * 100))}%` }} /></span>
                         </div>
                     </li>

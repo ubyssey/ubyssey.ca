@@ -144,7 +144,7 @@
     background: var(--live-blue);
     color: #fff;
   }
-  .c-liveblog__sort-arrow { display: inline-block; width: 15px; height: 15px; margin-left: 8px; vertical-align: -3px; }
+  .c-liveblog__sort-arrow { display: inline-block; width: 11px; height: 11px; margin-left: 5px; vertical-align: -1px; }
   #liveblog-feed {
     position: relative;
     box-sizing: border-box;
@@ -548,6 +548,7 @@
   font: 400 11px/1.2 "meursault-variable", Georgia, serif;
   white-space: nowrap;
 }
+.c-liveblog-redesign .election-results__numbers strong { font-weight: 700; }
 .c-liveblog-redesign .election-results__bar { grid-column: 1 / 3; height: 7.5px; background: var(--live-summary); }
 .c-liveblog-redesign .election-results__bar > span { display: block; height: 100%; background: var(--election-bar); }
 .c-liveblog-redesign .election-results__list--compact .election-results__candidate { min-height: 52px; }
@@ -663,26 +664,26 @@
   white-space: pre;
 }
 
-/* Election-only paired scroll rails share one aligned divider. */
+/* The results stay sticky and scroll independently; updates follow the page. */
 @media (min-width: 801px) {
   .c-liveblog-redesign .c-article--election-results .election-results-layout {
     margin-top: 78px;
     margin-bottom: 96px;
   }
-  .c-liveblog-redesign .c-article--election-results .election-results,
-  .c-liveblog-redesign .c-article--election-results .election-results-layout > .article-content {
-    position: relative;
-    top: auto;
-    height: auto;
-    max-height: calc(100vh - 110px);
-    min-height: 0;
+  .c-liveblog-redesign .c-article--election-results .election-results {
+    position: sticky;
+    top: 84px;
+    max-height: calc(100dvh - 100px);
     overflow-x: hidden !important;
     overflow-y: auto !important;
     overscroll-behavior-y: contain;
     scrollbar-width: thin;
-  }
-  .c-liveblog-redesign .c-article--election-results .election-results {
     border-top: 0;
+  }
+  .c-liveblog-redesign .c-article--election-results .election-results-layout > .article-content {
+    height: auto;
+    max-height: none;
+    overflow: visible !important;
   }
   .c-liveblog-redesign .c-article--election-results .election-results__scroll {
     max-height: none;
