@@ -4,7 +4,27 @@ from unittest.mock import patch
 from django.template.loader import render_to_string
 from django.test import RequestFactory, SimpleTestCase
 
-from liveblog.models import LiveBlogUpdateAuthorBlock
+from liveblog.models import LiveBlogArticlePage, LiveBlogUpdateAuthorBlock
+
+
+class LiveBlogPageTests(SimpleTestCase):
+    def test_default_redesign_header_layout(self):
+        self.assertEqual(LiveBlogArticlePage().redesign_header_layout, 'big-centered')
+
+    def test_header_info_does_not_require_standard_article_header(self):
+        page = SimpleNamespace(
+            featured_media=SimpleNamespace(first=lambda: None),
+            redesign_header_layout='big-centered',
+            title='Election updates',
+            current_section=None,
+            category_page=None,
+        )
+
+        header = LiveBlogArticlePage.get_redesign_header_info(page)
+
+        self.assertEqual(header['layout'], 'big-centered')
+        self.assertEqual(header['title'], 'Election updates')
+        self.assertEqual(header['image_url'], '')
 
 
 class LiveBlogBylineTests(SimpleTestCase):

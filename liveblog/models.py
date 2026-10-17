@@ -189,9 +189,29 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
+    redesign_header_choice = models.CharField(
+        max_length=32,
+        choices=[
+            ("big-centered", "Standard"),
+            ("body-width", "Body width"),
+            ("left-aligned", "Image left"),
+            ("right-aligned", "Image right"),
+            ("full-bleed", "Full bleed"),
+            ("left-full-bleed", "Full bleed, headline left"),
+            ("right-full-bleed", "Full bleed, headline right"),
+        ],
+        default="big-centered",
+        help_text="Header layout for the redesigned live-updates page.",
+    )
+
     @property
     def redesign_header_layout(self):
-        return super().redesign_header_layout
+        return self.redesign_header_choice
+
+    @property
+    def primary_author_orderables(self):
+        authors = list(self.article_authors.filter(author_role="author"))
+        return authors or list(self.article_authors.all()[:1])
 
     @property
     def full_bleed_nav_color(self):
@@ -226,6 +246,7 @@ class LiveBlogArticlePage(ArticlePage):
     content_panels = [
             HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
             FieldPanel("stage"),
+            FieldPanel("redesign_header_choice"),
             FieldPanel(
                     "layout",
                     widget=Select(
@@ -302,25 +323,18 @@ class LiveBlogArticlePage(ArticlePage):
         }
 
     def get_redesign_header_info(self):
-        """The same CMS header and featured-media choices used by ordinary articles."""
+        """Use the liveblog's own header layout and its inherited featured media."""
         from videos.templatetags.video_filters import youtube_embed_id
 
-        block = self.header[0] if self.header else None
-        value = block.value if block else {}
         featured = self.featured_media.first()
         image = featured.image if featured else None
         alt_text = featured.alt_text if featured else ""
-        if value.get("overwrite_image"):
-            override = value["overwrite_image"][0]
-            image = override.get("image") or image
-            alt_text = override.get("alt_text") or alt_text
-
-        video_id = youtube_embed_id(value.get("youtube_url")) if block and block.block_type == "standard_header_with_youtube_video" else None
+        video_id = youtube_embed_id(featured.video) if featured and featured.video else None
         return {
             "layout": self.redesign_header_layout,
-            "title": value.get("title") or self.title,
-            "subtitle": value.get("subtitle") or "",
-            "above_cut_lede": str(value.get("above_cut_lede") or ""),
+            "title": self.title,
+            "subtitle": "",
+            "above_cut_lede": "",
             "section": str(self.current_section or "News"),
             "category": self.category_page.title if self.category_page else "",
             "image_url": image.get_rendition("width-1800|format-webp").url if image else "",
