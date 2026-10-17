@@ -311,6 +311,13 @@ class LiveBlogArticlePage(ArticlePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        from django.urls import reverse
+        from wagtail.models import Site
+        from election_results.models import ElectionResultsSettings
+
+        site = Site.find_for_request(request)
+        election_config = ElectionResultsSettings.objects.filter(site=site, liveblog_page_id=self.id).first() if site else None
+        context["election_results_url"] = reverse("election-results-data", args=[self.id]) if election_config else None
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
         context['update_order'] = "asc"
         context['admin_view'] = False

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import DOMPurify from "dompurify";
 import LiveblogStage from "./LiveblogStage.jsx";
 import LiveBlogFeed from "./LiveblogFeed.jsx";
+import ElectionResults from "./ElectionResults.jsx";
 import { convertToMilliseconds, timeDeltaString } from "../../utils/datetimeUtils.js";
 
 const liveblogHtmlOptions = {
@@ -39,6 +40,7 @@ function ReportLinks() {
 }
 
 export default function LiveBlog() {
+    const electionResultsUrl = JSON.parse(document.getElementById("election-results-url")?.textContent || "null");
     function getDefaultUpdateOrder(){
         if (JSON.parse(document.getElementById('update-order').textContent) == "asc") {
             return 1;
@@ -258,17 +260,21 @@ export default function LiveBlog() {
             <LiveBlogFeed meta={getMeta()} updates={updates} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} />
         ) 
     }
-    
+
+    const articleContent = (
+        <div className="article-content">
+            {(pageInfo.meta.layout!="split_view" || electionResultsUrl) && <ShareBar />}
+            <LiveBlogFeed meta={getMeta()} updates={[...updates].sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} toggleUpdateOrder={toggleUpdateOrder} viewMode={viewMode} toggleViewMode={toggleViewMode} isSorting={isSorting} />
+        </div>
+    );
+
     return (
         <>
         <div id="nav" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(navHtml() || "", liveblogHtmlOptions)}}></div>
         <main id="main-content" className="article c-liveblog-redesign">
-            <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout}>
+            <article className={"c-article c-article--liveblog clearfix c-article--liveblog--" + pageInfo.meta.layout + (electionResultsUrl ? " c-article--election-results" : "")}>
                     <LiveblogStage stage={pageInfo.stage} meta={getMeta()} />
-                    <div className="article-content">
-                        {pageInfo.meta.layout!="split_view" && <ShareBar />}
-                        <LiveBlogFeed meta={getMeta()} updates={[...updates].sort((a,b) => sortUpdates(a,b,updateOrder))} updateOrder={updateOrder} presentTime={presentTime} caughtUp={caughtUp} scrollToRecent={scrollToRecent} isAdmin={isAdmin} toggleUpdateOrder={toggleUpdateOrder} viewMode={viewMode} toggleViewMode={toggleViewMode} isSorting={isSorting} />
-                    </div>
+                    {electionResultsUrl ? <div className="election-results-layout"><ElectionResults url={electionResultsUrl} />{articleContent}</div> : articleContent}
                     <ReportLinks />
                     {pageInfo.meta.layout == "default" && 
                         <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(suggestedHtml() || "", liveblogHtmlOptions)}}></div>

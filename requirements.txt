@@ -28,6 +28,7 @@ google-cloud-storage>=2.10.0
 google-cloud-secret-manager==2.11.0
 django-environ==0.10.0
 requests==2.31.0
+paramiko==4.0.0
 whitenoise==6.5.0
 brotli==1.0.9
 django-extensions==3.2.3
