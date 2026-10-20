@@ -9,6 +9,7 @@ const WAGTAIL_EDITING_CLOSE_CODE = 4411;
 
 // Sends message that changes were merged in
 const PERSISTENCE_ACK_MESSAGE = 4;
+const PENDING_UPDATES_PERSIST_DELAY = 250;
 
 function pendingUpdatesStorageKey(collaborationId, userId) {
   return `stove-yjs-pending:${collaborationId}:${userId}`;
@@ -20,6 +21,14 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   const fallbackKey = fallbackCollaborationId ? pendingUpdatesStorageKey(fallbackCollaborationId, userId) : null;
   let pendingDoc = new Y.Doc();
   let restoredFallback = false;
+  let persistenceTimer = null;
+  let hasPendingUpdates = false;
+
+  // Prevents empty updates
+  function hasUpdate(update) {
+    const { structs, ds } = Y.decodeUpdate(update);
+    return structs.length > 0 || ds.clients.size > 0;
+  }
 
   try {
     for (const storageKey of [key, fallbackKey]) {
@@ -29,6 +38,7 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
       const update = buffer.fromBase64(stored);
       Y.applyUpdate(ydoc, update);
       Y.applyUpdate(pendingDoc, update);
+      hasPendingUpdates ||= hasUpdate(update);
       if (storageKey === fallbackKey) restoredFallback = true;
     }
   } catch (error) {
@@ -40,6 +50,30 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
       window.localStorage.setItem(key, buffer.toBase64(Y.encodeStateAsUpdate(pendingDoc)));
     } catch (error) {
       console.warn("Unable to preserve pending collaborative changes", error);
+    }
+  };
+
+  const cancelScheduledPersist = () => {
+    if (persistenceTimer === null) return;
+    window.clearTimeout(persistenceTimer);
+    persistenceTimer = null;
+  };
+
+  // Debounce to avoid lots of writes
+  const schedulePersist = () => {
+    cancelScheduledPersist();
+    persistenceTimer = window.setTimeout(() => {
+      persistenceTimer = null;
+      persist();
+    }, PENDING_UPDATES_PERSIST_DELAY);
+  };
+
+  const removePersistedUpdates = () => {
+    cancelScheduledPersist();
+    try {
+      window.localStorage.removeItem(key);
+    } catch (error) {
+      console.warn("Unable to clear persisted collaborative changes", error);
     }
   };
 
@@ -55,26 +89,37 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   return {
     record(update) {
       Y.applyUpdate(pendingDoc, update);
-      persist();
+      hasPendingUpdates = hasPendingUpdates || hasUpdate(update);
+      schedulePersist();
     },
+    // Removes server acknowledged updates from pendingDoc
     acknowledge(stateVector) {
-      if (Y.encodeStateAsUpdate(pendingDoc, stateVector).byteLength) return;
+      const remainingUpdate = Y.encodeStateAsUpdate(pendingDoc, stateVector);
+      
       pendingDoc.destroy();
       pendingDoc = new Y.Doc();
-      try {
-        window.localStorage.removeItem(key);
-      } catch (error) {
-        console.warn("Unable to clear persisted collaborative changes", error);
+      
+      if (!hasUpdate(remainingUpdate)) {
+        hasPendingUpdates = false;
+        removePersistedUpdates();
+        return;
       }
+
+      Y.applyUpdate(pendingDoc, remainingUpdate);
+      hasPendingUpdates = true;
+      schedulePersist();
+    },
+    // Flush bypasses the debounce and immediately persists
+    flush() {
+      cancelScheduledPersist();
+      if (hasPendingUpdates) persist();
+      else removePersistedUpdates();
     },
     clear() {
       pendingDoc.destroy();
       pendingDoc = new Y.Doc();
-      try {
-        window.localStorage.removeItem(key);
-      } catch (error) {
-        console.warn("Unable to clear persisted collaborative changes", error);
-      }
+      hasPendingUpdates = false;
+      removePersistedUpdates();
     },
   };
 }
@@ -122,7 +167,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       collaborationId: fallbackCollaborationId,
       userId: currentEditor.id,
     });
+    
     ydoc.on("update", (update) => pendingUpdates.record(update));
+    window.addEventListener("pagehide", () => pendingUpdates.flush(), { once: true });
+    
     return {
       ydoc,
       awareness: null,
@@ -210,6 +258,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   });
 
   window.addEventListener("pagehide", (event) => {
+    pendingUpdates.flush();
     updatePresence("release").catch(() => {});
     provider.awareness.setLocalState(null);
     if (event.persisted) provider.disconnect();
