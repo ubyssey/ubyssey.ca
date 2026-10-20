@@ -13,8 +13,8 @@
     <section class="bc-election-home__column bc-provincial-home__column--about" aria-labelledby="bc-provincial-about-title">
       <h3 id="bc-provincial-about-title">{{ self.bc_provincial_about_heading }}</h3>
       <div class="bc-provincial-home__about-grid">
-        <div>{% for item in bc_provincial_content.about|slice:':4' %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
-        <div>{% for item in bc_provincial_content.about|slice:'4:' %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+        <div>{% for item in bc_provincial_content.about|slice:':4' %}{% include "home/components/bc_election_story_card.html" with show_dek=True %}{% endfor %}</div>
+        <div>{% for item in bc_provincial_content.about|slice:'4:' %}{% include "home/components/bc_election_story_card.html" with show_dek=True %}{% endfor %}</div>
       </div>
     </section>
     {% endif %}
