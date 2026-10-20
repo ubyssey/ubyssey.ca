@@ -648,7 +648,15 @@
 .ar-body .responsive-object > iframe[src*="youtube.com/embed/"],
 .ar-body .responsive-object > iframe[src*="youtube-nocookie.com/embed/"],
 .ar-body .responsive-object > iframe[src*="player.vimeo.com/video/"]{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;border:0}
-/* Older and manually inserted videos may have no responsive wrapper. */
+/* Rich-text YouTube Live embeds can arrive in a plain, unclassed div with a
+   fixed 200px iframe instead of Wagtail's responsive-object wrapper. */
+.ar-body div:not([class]):has(> iframe[src*="youtube.com/embed/"]),
+.ar-body div:not([class]):has(> iframe[src*="youtube-nocookie.com/embed/"]),
+.ar-body div:not([class]):has(> iframe[src*="player.vimeo.com/video/"]){position:relative;display:block;box-sizing:border-box;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:16/9;overflow:hidden}
+.ar-body div:not([class]) > iframe[src*="youtube.com/embed/"],
+.ar-body div:not([class]) > iframe[src*="youtube-nocookie.com/embed/"],
+.ar-body div:not([class]) > iframe[src*="player.vimeo.com/video/"]{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;border:0}
+/* Older and manually inserted videos may have no wrapper at all. */
 .ar-body > iframe[src*="youtube.com/embed/"],
 .ar-body > iframe[src*="youtube-nocookie.com/embed/"],
 .ar-body > iframe[src*="player.vimeo.com/video/"],
