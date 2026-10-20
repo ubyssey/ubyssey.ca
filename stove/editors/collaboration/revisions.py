@@ -23,6 +23,11 @@ AUTOSAVE_REVISION_WINDOW_SECONDS = 60*15
 EMPTY_YJS_UPDATE = b"\x00\x00"
 STALE_AUTOSAVE = object()
 
+STOVE_AUTOSAVE_ACTION = "stove.autosave"
+STOVE_SAVE_ACTION = "stove.save"
+STOVE_SAVE_BEFORE_RESTORE_ACTION = "stove.restore.snapshot"
+STOVE_RESTORE_ACTION = "stove.restore"
+
 
 def _decode_collaboration_value(data, field_name):
     value = data.get(field_name)
@@ -106,6 +111,7 @@ def autosave_page_revision(page_id, data, user):
         try:
             revision = page.save_revision(
                 user=user,
+                log_action=STOVE_AUTOSAVE_ACTION,
                 overwrite_revision=previous_autosave if overwrite_previous else None,
             )
         except ValidationError:
@@ -156,7 +162,7 @@ def save_page_revision(page, action, user):
         return page, None, errors
 
     try:
-        revision = page.save_revision(user=user)
+        revision = page.save_revision(user=user, log_action=STOVE_SAVE_ACTION)
         if action == "publish":
             revision.publish(user=user)
             page = Page.objects.get(id=page.id).specific
@@ -173,9 +179,9 @@ def restore_page_revision(page, revision, submitted_data, user):
     current_data.pop("revision", None)
     current_page = page.get_latest_revision_as_object()
     process_editor_forms(current_page, current_data)
-    current_page.save_revision(user=user)
+    current_page.save_revision(user=user, log_action=STOVE_SAVE_BEFORE_RESTORE_ACTION)
 
-    saved_revision = restored_page.save_revision(user=user)
+    saved_revision = restored_page.save_revision(user=user, log_action=STOVE_RESTORE_ACTION)
 
     PageCollaboration.objects.filter(page_id=page.id).delete()
     channel_layer = get_channel_layer()
