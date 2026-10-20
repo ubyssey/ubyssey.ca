@@ -1,0 +1,22 @@
+<section class="bc-election-home bc-provincial-home page-shell" aria-labelledby="bc-provincial-home-title">
+  <h2 class="bc-election-heading" id="bc-provincial-home-title"><a href="{{ bc_provincial_page.url }}">{{ self.bc_provincial_panel_heading }} {% include "home/components/bc_election_arrow.html" %}</a></h2>
+  {% if self.bc_provincial_panel_description %}<p class="bc-election-home__description">{{ self.bc_provincial_panel_description|linebreaksbr }}</p>{% endif %}
+  {% if self.bc_provincial_show_featured %}{% include "home/components/bc_provincial_featured_story.html" with article=bc_provincial_content.featured_article label=bc_provincial_page.featured_label %}{% endif %}
+  <div class="bc-provincial-home__columns">
+    {% if self.bc_provincial_show_parties %}
+    <section class="bc-election-home__column bc-election-home__column--explainers" aria-labelledby="bc-provincial-party-title">
+      <h3 id="bc-provincial-party-title">{{ self.bc_provincial_party_heading }}</h3>
+      <div class="bc-election-home__explainers">{% for item in bc_provincial_content.parties %}{% include "home/components/bc_election_story_card.html" with show_dek=True %}{% endfor %}</div>
+    </section>
+    {% endif %}
+    {% if self.bc_provincial_show_about %}
+    <section class="bc-election-home__column bc-provincial-home__column--about" aria-labelledby="bc-provincial-about-title">
+      <h3 id="bc-provincial-about-title">{{ self.bc_provincial_about_heading }}</h3>
+      <div class="bc-provincial-home__about-grid">
+        <div>{% for item in bc_provincial_content.about|slice:':4' %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+        <div>{% for item in bc_provincial_content.about|slice:'4:' %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</section>

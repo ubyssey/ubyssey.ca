@@ -141,6 +141,7 @@ class HomePage(Page):
         'join.JoinLandingPage',
         'specialfeaturelanding.RedesignAuxiliaryPage',
         'home.BCLocalElectionsPage',
+        'home.BCProvincialElectionsPage',
     ]
 
     tagline = models.CharField(
@@ -283,6 +284,30 @@ class HomePage(Page):
     bc_elections_show_vancouver = models.BooleanField(default=True)
     bc_elections_show_parties = models.BooleanField(default=True)
     bc_elections_show_live_results = models.BooleanField(default=True)
+
+    bc_provincial_elections_page = models.ForeignKey(
+        "home.BCProvincialElectionsPage", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+        help_text="Select the provincial elections page whose stories feed the homepage feature.",
+    )
+    bc_provincial_banner_enabled = models.BooleanField(default=False)
+    bc_provincial_banner_text = models.CharField(
+        max_length=150, default="2026 BC PROVINCIAL ELECTIONS",
+    )
+    bc_provincial_panel_enabled = models.BooleanField(default=False)
+    bc_provincial_panel_heading = models.CharField(
+        max_length=150, default="2026 BC Provincial Elections",
+    )
+    bc_provincial_panel_description = models.TextField(blank=True, default="")
+    bc_provincial_party_heading = models.CharField(
+        max_length=100, default="Party Explainers",
+    )
+    bc_provincial_about_heading = models.CharField(
+        max_length=100, default="About the Provincial Elections",
+    )
+    bc_provincial_show_featured = models.BooleanField(default=True)
+    bc_provincial_show_parties = models.BooleanField(default=True)
+    bc_provincial_show_about = models.BooleanField(default=True)
 
     newsletter_action_url = models.URLField(
         blank=True,
@@ -448,6 +473,23 @@ class HomePage(Page):
         ),
         MultiFieldPanel(
             [
+                FieldPanel("bc_provincial_elections_page"),
+                FieldPanel("bc_provincial_banner_enabled"),
+                FieldPanel("bc_provincial_banner_text"),
+                FieldPanel("bc_provincial_panel_enabled"),
+                FieldPanel("bc_provincial_panel_heading"),
+                FieldPanel("bc_provincial_panel_description"),
+                FieldPanel("bc_provincial_party_heading"),
+                FieldPanel("bc_provincial_about_heading"),
+                FieldPanel("bc_provincial_show_featured"),
+                FieldPanel("bc_provincial_show_parties"),
+                FieldPanel("bc_provincial_show_about"),
+            ],
+            heading="2026 BC provincial elections: homepage banner and panel",
+            help_text="Create and publish the provincial election page first. The banner and panel are independently off by default; story slots are edited on the linked page.",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("redesign_hero_top_left"),
                 FieldPanel("redesign_hero_bottom_left"),
                 FieldPanel("redesign_hero_centre"),
@@ -491,6 +533,8 @@ class HomePage(Page):
         super().clean()
         if (self.bc_elections_banner_enabled or self.bc_elections_panel_enabled) and not self.bc_elections_page_id:
             raise ValidationError("Choose the BC local elections page before enabling its homepage banner or panel.")
+        if (self.bc_provincial_banner_enabled or self.bc_provincial_panel_enabled) and not self.bc_provincial_elections_page_id:
+            raise ValidationError("Choose the BC provincial elections page before enabling its homepage banner or panel.")
         hero_fields = (
             "redesign_hero_top_left",
             "redesign_hero_bottom_left",
@@ -514,6 +558,8 @@ class HomePage(Page):
 
         context["bc_elections_page"] = None
         context["bc_elections_content"] = None
+        context["bc_provincial_page"] = None
+        context["bc_provincial_content"] = None
         election_panel_story_ids = set()
         if self.bc_elections_page_id and (
             self.bc_elections_banner_enabled or self.bc_elections_panel_enabled
@@ -541,6 +587,28 @@ class HomePage(Page):
                             )
                     if election_content["live_article"]:
                         election_panel_story_ids.add(election_content["live_article"].pk)
+
+        if self.bc_provincial_elections_page_id and (
+            self.bc_provincial_banner_enabled or self.bc_provincial_panel_enabled
+        ):
+            provincial_page = BCProvincialElectionsPage.objects.live().public().filter(
+                pk=self.bc_provincial_elections_page_id,
+            ).first()
+            if provincial_page:
+                context["bc_provincial_page"] = provincial_page
+                if self.bc_provincial_panel_enabled:
+                    provincial_content = provincial_page.get_election_content(
+                        include_featured=self.bc_provincial_show_featured,
+                        include_parties=self.bc_provincial_show_parties,
+                        include_about=self.bc_provincial_show_about,
+                    )
+                    context["bc_provincial_content"] = provincial_content
+                    for group in ("parties", "about"):
+                        election_panel_story_ids.update(
+                            item.article.pk for item in provincial_content[group]
+                        )
+                    if provincial_content["featured_article"]:
+                        election_panel_story_ids.add(provincial_content["featured_article"].pk)
 
         context["ams_election_stories"] = []
         if (self.ams_election_enabled and self.ams_election_story_left_id
@@ -864,3 +932,83 @@ class BCElectionPartyProfile(BCElectionStorySlot):
 
 class BCElectionMetroProfile(BCElectionStorySlot):
     page = ParentalKey("home.BCLocalElectionsPage", on_delete=models.CASCADE, related_name="metro_profiles")
+
+
+class BCProvincialElectionsPage(Page):
+    """Editor-curated hub for the 2026 BC provincial elections."""
+
+    template = "home/bc_provincial_elections_page.html"
+    parent_page_types = ["home.HomePage"]
+    subpage_types = []
+    show_in_menus_default = False
+
+    intro_kicker = models.CharField(max_length=100, default="The Ubyssey · Election coverage")
+    election_summary = models.TextField(blank=True, default="", help_text="Short description below the page title.")
+    featured_article = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="How to vote story shown above the two story sections.",
+    )
+    featured_label = models.CharField(max_length=100, default="How to vote")
+    party_heading = models.CharField(max_length=100, default="Party Explainers")
+    about_heading = models.CharField(max_length=100, default="About the Provincial Elections")
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [FieldPanel("intro_kicker"), FieldPanel("election_summary"),
+             FieldPanel("featured_article"), FieldPanel("featured_label")],
+            heading="Introduction and featured story",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("party_heading"), InlinePanel("party_explainers", max_num=4, label="Party explainer")],
+            heading="Party explainers: up to four stories",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("about_heading"), InlinePanel("about_explainers", max_num=7, label="Topic explainer")],
+            heading="About the Provincial Elections: up to seven stories",
+        ),
+    ]
+
+    def clean(self):
+        super().clean()
+        if self.slug != "2026-bc-provincial-elections":
+            raise ValidationError({"slug": "Use 2026-bc-provincial-elections for the public election URL."})
+
+    def get_election_content(self, *, include_featured=True, include_parties=True, include_about=True):
+        """Resolve only selected, live and public articles in one bounded query."""
+        relations = {}
+        if include_parties:
+            relations["parties"] = self.party_explainers
+        if include_about:
+            relations["about"] = self.about_explainers
+        rows = {name: list(relation.order_by("sort_order")) for name, relation in relations.items()}
+        story_ids = {row.article_id for group in rows.values() for row in group if row.article_id}
+        if include_featured and self.featured_article_id:
+            story_ids.add(self.featured_article_id)
+        stories = {
+            story.pk: story for story in ArticlePage.objects.live().public()
+            .filter(pk__in=story_ids).specific()
+        } if story_ids else {}
+        return {
+            "featured_article": stories.get(self.featured_article_id) if include_featured else None,
+            "parties": [
+                SimpleNamespace(article=stories[row.article_id], label=row.display_label, special=False)
+                for row in rows.get("parties", []) if row.article_id in stories
+            ],
+            "about": [
+                SimpleNamespace(article=stories[row.article_id], label=row.display_label, special=False)
+                for row in rows.get("about", []) if row.article_id in stories
+            ],
+        }
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["election_content"] = self.get_election_content()
+        return context
+
+
+class BCProvincialPartyExplainer(BCElectionStorySlot):
+    page = ParentalKey("home.BCProvincialElectionsPage", on_delete=models.CASCADE, related_name="party_explainers")
+
+
+class BCProvincialAboutExplainer(BCElectionStorySlot):
+    page = ParentalKey("home.BCProvincialElectionsPage", on_delete=models.CASCADE, related_name="about_explainers")
