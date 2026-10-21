@@ -12,7 +12,7 @@ from pycrdt.websocket.django_channels_consumer import (
 
 from wagtail.models import Page
 from stove.models import PageCollaboration
-from stove.editors.collaboration.wagtail import WAGTAIL_EDITING_CLOSE_CODE, page_is_being_edited_in_wagtail
+from stove.editors.collaboration.wagtail import WAGTAIL_EDITING_CLOSE_CODE
 from stove.editors.collaboration.presence import PRESENCE_REFRESH_SECONDS, refresh_page_presence
 
 # Formerly was 0.25
@@ -67,9 +67,6 @@ class PageYjsConsumer(YjsConsumer):
             return
         if not await self._page_exists():
             await self.close(code=4404)
-            return
-        if await self._page_is_being_edited_in_wagtail():
-            await self.close(code=WAGTAIL_EDITING_CLOSE_CODE)
             return
         if not await self._refresh_stove_presence():
             await self.close(code=4400)
@@ -193,10 +190,6 @@ class PageYjsConsumer(YjsConsumer):
     @database_sync_to_async
     def _page_exists(self):
         return Page.objects.filter(pk=self.page_id).exists()
-
-    @database_sync_to_async
-    def _page_is_being_edited_in_wagtail(self):
-        return page_is_being_edited_in_wagtail(self.page_id)
 
     @database_sync_to_async
     def _refresh_stove_presence(self):

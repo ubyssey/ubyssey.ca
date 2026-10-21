@@ -193,10 +193,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       body: initialUpdate,
     });
 
-    if (response.status === 409) {
-      return { blockedByWagtail: true };
-    }
-
     if (!response.ok) throw new Error(`Collaboration initialization failed (${response.status})`);
     Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
     collaborationId = response.headers.get("X-Stove-Collaboration-Id");
