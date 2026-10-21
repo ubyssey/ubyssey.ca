@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'dashboard',
     'infinitefeed',
     'liveblog',
+    'election_results',
     'events',
     'tests_ubyssey',
     'publishing_analytics',
@@ -356,6 +357,7 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_SECRET_KEY')
 
 CRONJOBS = [
     ('*/5 * * * *', 'ubyssey.views.main.publish_scheduled'),
+    ('*/5 * * * *', 'election_results.services.scheduled_refresh'),
     ('0 */6 * * *', 'events.views.update_events')
 ]
 
