@@ -1,0 +1,22 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block content %}
+  {% include "wagtailadmin/shared/header.html" with title="Election results" icon="doc-full" %}
+  <div class="nice-padding">
+    <p><a href="/admin/settings/election_results/electionresultssettings/">Configure the live article, portraits, profile links, logos and automatic-update switch</a>.</p>
+    {% if config.liveblog_page %}<p>Linked article: {{ config.liveblog_page.title }}</p>{% else %}<p>No live-updates article is linked yet.</p>{% endif %}
+    <p>Automatic SFTP updates: <strong>{% if config.automatic_updates_enabled %}enabled{% else %}off{% endif %}</strong>. This is independent of manual imports.</p>
+    {% if snapshot %}
+      <p>Last good data: {{ snapshot.source_timestamp }} ({{ snapshot.get_source_display }}; checked {{ snapshot.imported_at }}).</p>
+    {% else %}
+      <p>No results have been imported. The public sidebar will show a waiting message.</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="button button-primary" name="action" value="upload">Import uploaded JSON</button>
+      <button type="submit" class="button" name="action" value="fetch">Fetch from City SFTP now</button>
+    </form>
+    <p>Leave the file empty to fetch from SFTP. A malformed or older file does not replace the last good snapshot.</p>
+  </div>
+{% endblock %}

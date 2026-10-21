@@ -640,6 +640,27 @@
    rules, and responsive behaviour without changing their CMS data. */
 .ar-body .attachment,.ar-body .o-article-promo,.ar-body .o-card-container,.ar-body .o-extra-article-info,.ar-body .gallery-attachment,.ar-body .carousel,.ar-body .header-menu{box-sizing:border-box;max-width:100%;margin:34px 0}
 .ar-body .attachment img,.ar-body .attachment video,.ar-body .attachment iframe{display:block;max-width:100%;height:auto}
+/* Wagtail rich-text videos retain small iframe width/height attributes unless
+   the player is sized to its responsive wrapper. Keep the wrapper's own ratio. */
+.ar-body .responsive-object:has(> iframe[src*="youtube.com/embed/"]),
+.ar-body .responsive-object:has(> iframe[src*="youtube-nocookie.com/embed/"]),
+.ar-body .responsive-object:has(> iframe[src*="player.vimeo.com/video/"]){position:relative;display:block;box-sizing:border-box;width:100%!important;max-width:none!important;height:0;overflow:hidden}
+.ar-body .responsive-object > iframe[src*="youtube.com/embed/"],
+.ar-body .responsive-object > iframe[src*="youtube-nocookie.com/embed/"],
+.ar-body .responsive-object > iframe[src*="player.vimeo.com/video/"]{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;border:0}
+/* Rich-text YouTube Live embeds can arrive in a plain, unclassed div with a
+   fixed 200px iframe instead of Wagtail's responsive-object wrapper. */
+.ar-body div:not([class]):has(> iframe[src*="youtube.com/embed/"]),
+.ar-body div:not([class]):has(> iframe[src*="youtube-nocookie.com/embed/"]),
+.ar-body div:not([class]):has(> iframe[src*="player.vimeo.com/video/"]){position:relative;display:block;box-sizing:border-box;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:16/9;overflow:hidden}
+.ar-body div:not([class]) > iframe[src*="youtube.com/embed/"],
+.ar-body div:not([class]) > iframe[src*="youtube-nocookie.com/embed/"],
+.ar-body div:not([class]) > iframe[src*="player.vimeo.com/video/"]{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;border:0}
+/* Older and manually inserted videos may have no wrapper at all. */
+.ar-body > iframe[src*="youtube.com/embed/"],
+.ar-body > iframe[src*="youtube-nocookie.com/embed/"],
+.ar-body > iframe[src*="player.vimeo.com/video/"],
+.ar-body iframe.yt-video{display:block;box-sizing:border-box;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:16/9;border:0}
 .ar-body .attachment .caption,.ar-body .caption{margin-top:8px;color:#4c5260;font:400 13px/18px "articulat-cf",sans-serif}.ar-body .caption .credit{font-weight:700}
 .ar-body .audio{padding:18px;border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a}.ar-body .audio audio{width:100%;margin-top:10px}
 .ar-body .drop-cap:first-letter{float:left;margin:5px 8px 0 0;color:#253273;font:700 4.25em/.68 "meursault-variable",Georgia,serif}

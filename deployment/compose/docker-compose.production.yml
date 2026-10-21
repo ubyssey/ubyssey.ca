@@ -86,6 +86,9 @@ services:
       - GS_SECRET_ACCESS_KEY
       - GOOGLE_APPLICATION_CREDENTIALS
       - EMAIL_HOST_PASSWORD
+      - ELECTION_SFTP_USERNAME
+      - ELECTION_SFTP_PASSWORD
+      - ELECTION_SFTP_HOST_KEY_SHA256
 
     networks:
       - proxy-shared
@@ -312,4 +315,10 @@ secrets:
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json
   EMAIL_HOST_PASSWORD:
+    external: true
+  ELECTION_SFTP_USERNAME:
+    external: true
+  ELECTION_SFTP_PASSWORD:
+    external: true
+  ELECTION_SFTP_HOST_KEY_SHA256:
     external: true
