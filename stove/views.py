@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from wagtail.models import Page, Site
@@ -51,7 +51,11 @@ from stove.editors.collaboration.revisions import (
     save_manual_page_revision,
     STALE_AUTOSAVE,
 )
-from stove.editors.collaboration.wagtail import hand_page_to_wagtail, page_is_being_edited_in_wagtail
+from stove.editors.collaboration.wagtail import (
+    active_wagtail_editing_sessions,
+    hand_page_to_wagtail,
+    page_is_being_edited_in_wagtail,
+)
 from stove.editors.collaboration.presence import claim_page_presence, release_page_presence
 
 
@@ -290,9 +294,6 @@ def update_article_status(page, status, user):
 @login_required
 @require_POST
 def update_content_tracker(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = json.loads(request.body.decode('utf-8'))
 
@@ -370,12 +371,6 @@ def page_collaboration(request, page_id):
     if not request.body or len(request.body) > 10 * 1024 * 1024:
         return HttpResponse(status=400)
 
-    if page_is_being_edited_in_wagtail(page_id):
-        return JsonResponse(
-            {"detail": "This page is currently being edited in Wagtail."},
-            status=409,
-        )
-
     presence_id = request.GET.get("presence")
     if presence_id is None:
         return HttpResponseBadRequest("Missing collaboration presence id")
@@ -404,25 +399,38 @@ def page_collaboration_presence(request, page_id):
     if request.POST.get("action") != "claim":
         return HttpResponseBadRequest("Unknown collaboration presence action")
 
-    if page_is_being_edited_in_wagtail(page_id):
-        return JsonResponse(
-            {"detail": "This page is currently being edited in Wagtail."},
-            status=409,
-        )
-
     if claim_page_presence(page_id, presence_id):
         return HttpResponse(status=204)
     return HttpResponse(status=404)
 
+
+def wagtail_editing_warning(request, page_id):
+    users = []
+    seen_user_ids = set()
+
+    for editing_session in active_wagtail_editing_sessions(page_id).select_related("user"):
+        if editing_session.user_id in seen_user_ids:
+            continue
+        seen_user_ids.add(editing_session.user_id)
+        user = editing_session.user
+        users.append(get_user_display_name(user) or user.get_username())
+
+    return render(
+        request,
+        "editors/wagtail_editing.html",
+        {
+            "page_id": page_id,
+            "wagtail_users": users,
+        },
+    )
+
+
 @login_required
 def manuscript_editor(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return render(
-            request,
-            "editors/wagtail_editing.html",
-            {"page_id": page_id},
-            status=409,
-        )
+    if request.method == "GET" and request.GET.get("continue") == "1":
+        if page_is_being_edited_in_wagtail(page_id):
+            return wagtail_editing_warning(request, page_id)
+        return redirect("stove:manuscript_editor", page_id=page_id)
 
     page = get_latest_page(page_id)
     editor_errors = {}
@@ -555,14 +563,6 @@ def manuscript_page_options(request, page_id):
 @login_required
 def homepage_editor(request):
     site = Site.find_for_request(request)
-    if page_is_being_edited_in_wagtail(site.root_page_id):
-        return render(
-            request,
-            "editors/wagtail_editing.html",
-            {"page_id": site.root_page_id},
-            status=409,
-        )
-
     page = get_object_or_404(HomePage, pk=site.root_page_id).specific
     last_saved_page = PageCollaboration.objects.filter(page_id=site.root_page_id).only("updated_at").first()
     context = page.get_context(request)
@@ -663,9 +663,6 @@ def editor_page_revisions(request, page_id):
 @login_required
 @require_POST
 def editor_page_save_revision(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
     if saved_revision is STALE_AUTOSAVE:
         return JsonResponse({"errors": errors}, status=409)
@@ -687,9 +684,6 @@ def editor_page_save_revision(request, page_id):
 @login_required
 @require_POST
 def editor_page_restore(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_latest_page(page_id)
     revision_id = request.POST.get("revision")
     if not revision_id:
@@ -713,9 +707,6 @@ def editor_page_restore(request, page_id):
 @login_required
 @require_POST
 def editor_page_preview(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_latest_page(page_id)
     revision = None
     revision_id = request.POST.get("revision")
@@ -766,9 +757,6 @@ def editor_page_preview(request, page_id):
 @login_required
 @require_POST
 def editor_page_full_preview(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return HttpResponse("This page is currently being edited in Wagtail.", status=409)
-
     page = get_latest_page(page_id)
 
     editor_errors, _, _, _ = process_editor_forms(page, request.POST)
@@ -818,10 +806,3 @@ def article_media_response(request, page, item):
         "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
         "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
     })
-
-
-def wagtail_editing_error_response():
-    return JsonResponse(
-        {"errors": {"__all__": ["This page is currently being edited in Wagtail."]}},
-        status=409,
-    )

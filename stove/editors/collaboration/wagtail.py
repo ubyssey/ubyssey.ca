@@ -11,12 +11,17 @@ from stove.editors.collaboration.presence import page_is_being_edited_in_stove
 
 WAGTAIL_EDITING_CLOSE_CODE = 4411
 
-def page_is_being_edited_in_wagtail(page_id):
+
+def active_wagtail_editing_sessions(page_id):
     return EditingSession.objects.filter(
         content_type=get_default_page_content_type(),
         object_id=str(page_id),
         last_seen_at__gte=timezone.now() - EditingSession.IDLE_TIMEOUT,
-    ).exists()
+    )
+
+
+def page_is_being_edited_in_wagtail(page_id):
+    return active_wagtail_editing_sessions(page_id).exists()
 
 
 # only_if_stove_is_inactive is false for "View in Wagtail" button, which forces the handoff even if Stove is active

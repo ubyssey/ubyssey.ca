@@ -5,7 +5,11 @@
 {% block content %}
 <section class="page-editor-message">
     <h1>This page is being edited in Wagtail</h1>
-    <p>Return to the content tracker and try again after the Wagtail editor is closed.</p>
+    {% if wagtail_users %}
+    <p>Currently in Wagtail: {{ wagtail_users|join:", " }}.</p>
+    {% endif %}
+    <p>You can continue in Stove, but simultaneous edits may conflict and changes may be lost. Check with the Wagtail editors first.</p>
+    <p><a href="{% url 'stove:manuscript_editor' page_id %}">Continue to Stove</a></p>
     <p><a href="{% url 'wagtailadmin_pages:edit' page_id %}">Go to Wagtail Page</a></p>
     <p><a href="{% url 'stove:content_tracker_base' %}">Return to content tracker</a></p>
 </section>
