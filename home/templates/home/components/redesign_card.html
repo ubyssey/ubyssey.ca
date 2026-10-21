@@ -7,7 +7,7 @@
   <div class="hp-card__copy">
     {% if variant != "lead" %}<a class="hp-beat" href="{% if article.category_page %}{{ article.category_page.url }}{% else %}/{{ article.current_section }}/{% endif %}">{% if article.category_page %}{{ article.category_page.title }}{% else %}{{ article.current_section }}{% endif %}</a>{% endif %}
     {% if article.is_live %}<span class="hp-live" aria-label="Live updates are active">Live</span>{% endif %}
-    <h2><a class="hover-swipe" href="{{ article.url }}">{{ article.title }}</a></h2>
+    <h2><a class="hover-swipe" href="{{ article.url }}">{{ article.title|safe_headline_markup }}</a></h2>
     {% if variant != "lead" and article.lede %}<p class="hp-card__summary">{{ article.lede|truncatewords:26 }}</p>{% endif %}
     <div class="hp-byline"><span class="hp-byline__prefix">By</span> {{ article|redesign_card_byline|normalize_redesign_byline|safe }}</div>
   </div>

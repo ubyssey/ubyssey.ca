@@ -1531,23 +1531,6 @@ class StandardArticlePage(ArticlePage):
     show_in_menus_default = True
     show_in_menus = True
 
-    STORY_TYPE_DEFINITIONS = {
-        "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
-        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
-        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
-        "qa": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
-        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
-        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
-        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
-        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
-        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
-        "letter-to-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
-        "letter-from-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
-        "psa": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
-        "other": "This article uses another approved story type.",
-    }
     standpoint_disclosure = RichTextField(
         blank=True,
         default="",
@@ -1567,6 +1550,7 @@ class StandardArticlePage(ArticlePage):
         ("review", "Review"),
         ("game-analysis", "Game Analysis"),
         ("commentary", "Commentary"),
+        ("analysis", "Analysis"),
         ("essay", "Essay"),
         ("column", "Column"),
         ("editorial", "Editorial"),
@@ -1576,19 +1560,20 @@ class StandardArticlePage(ArticlePage):
     ]
     STORY_FORM_STATEMENTS = {
         "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
-        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
-        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
-        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
-        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
-        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
-        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
-        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
-        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
-        "letter-to-the-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
-        "letter-from-the-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
-        "public-service-announcement": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+        "live-update": "This article is a live update, which we define as a series of brief reports from journalists on the ground while news is happening.",
+        "feature": "This article is a feature, which we define as a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "This article is a profile, which we define as a story about individuals and their worldviews, written from a reporter's perspective.",
+        "q-and-a": "This article is a Q&A, which we define as a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity, written from a reporter's perspective.",
+        "review": "This article is a review, which we define as a story about art or culture, written from a critical perspective.",
+        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from a reporter's perspective.",
+        "commentary": "This article is a commentary, which we define as a story that takes a position on an event or topic relevant to a sport, and suggests a course of action — either in the future or the past — written from a reporter's perspective.",
+        "analysis": "This article is an analysis, which we define as a perspective piece on a topic relevant to a sport, explaining the reasoning and mechanics behind that specific phenomenon, written from a reporter's perspective.",
+        "essay": "This article is an essay, but it's different from the kind of essays students write for class. We define opinion essays as an author's view on the news, written from their own perspective but based on reporting.",
+        "column": "This article is a column, which we define as a story written by a columnist — an opinion journalist who makes abstract judgments about the news and the way the world should be.",
+        "editorial": "This article is an editorial, which we define as an opinion essay by the Ubyssey Editorial Board, the body of the newspaper's staff who debates and decides positions on the news of the day.",
+        "letter-to-the-editor": "This article is a letter to the editor, which we define as a 250-word response to stories published in The Ubyssey, written by readers like you.",
+        "letter-from-the-editor": "This article is a letter from the editor, which we define as a message to readers from The Ubyssey's Senior Masthead.",
+        "public-service-announcement": "This article is a public service announcement, which we define as a piece sharing public interest information with imminent relevance, such as extreme weather or threats to public safety.",
     }
     story_form = models.CharField(
         max_length=50,
@@ -1962,10 +1947,6 @@ class StandardArticlePage(ArticlePage):
             "no-image": "body-width",
             "video-banner": "full-bleed",
         }.get(base, "big-centered")
-
-    @property
-    def story_type_description(self):
-        return self.STORY_TYPE_DEFINITIONS.get(self.story_type or "report", self.STORY_TYPE_DEFINITIONS["report"])
 
     @property
     def primary_author_orderable(self):

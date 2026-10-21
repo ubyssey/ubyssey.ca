@@ -1,0 +1,344 @@
+{
+  "statistics": {
+    "timeStamp": "2026-09-23 13:18:51",
+    "globPolls": 149,
+    "globClosedPolls": 25
+  },
+  "areaResults": [
+    {
+      "2": {
+        "contestResults": [
+          {
+            "contestName": "MAYOR",
+            "choiceResults": [
+              {
+                "choiceName": "1 FRY, Pete",
+                "votes": 1200,
+                "percentage": "21.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Greens"
+                  }
+                ]
+              },
+              {
+                "choiceName": "2 SIM, Ken",
+                "votes": 2400,
+                "percentage": "42.9%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "ABC Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "3 HARDWICK, Colleen",
+                "votes": 800,
+                "percentage": "14.3%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "TEAM"
+                  }
+                ]
+              },
+              {
+                "choiceName": "4 ALLAM, Kareem",
+                "votes": 500,
+                "percentage": "8.9%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Liberals"
+                  }
+                ]
+              },
+              {
+                "choiceName": "5 BLIGH, Rebecca",
+                "votes": 700,
+                "percentage": "12.5%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "VOTE Vancouver"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "contestName": "COUNCILLOR",
+            "choiceResults": [
+              {
+                "choiceName": "10 CANDIDATE1, Test",
+                "votes": 2000,
+                "percentage": "7.0%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "COPE"
+                  }
+                ]
+              },
+              {
+                "choiceName": "11 CANDIDATE2, Test",
+                "votes": 1945,
+                "percentage": "6.8%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "OneCity"
+                  }
+                ]
+              },
+              {
+                "choiceName": "12 CANDIDATE3, Test",
+                "votes": 1890,
+                "percentage": "6.6%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "VOTE Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "13 CANDIDATE4, Test",
+                "votes": 1835,
+                "percentage": "6.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Greens"
+                  }
+                ]
+              },
+              {
+                "choiceName": "14 CANDIDATE5, Test",
+                "votes": 1780,
+                "percentage": "6.2%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Liberals"
+                  }
+                ]
+              },
+              {
+                "choiceName": "15 CANDIDATE6, Test",
+                "votes": 1725,
+                "percentage": "6.0%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "TEAM"
+                  }
+                ]
+              },
+              {
+                "choiceName": "16 CANDIDATE7, Test",
+                "votes": 1670,
+                "percentage": "5.8%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "ABC Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "17 CANDIDATE8, Test",
+                "votes": 1615,
+                "percentage": "5.6%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "COPE"
+                  }
+                ]
+              },
+              {
+                "choiceName": "18 CANDIDATE9, Test",
+                "votes": 1560,
+                "percentage": "5.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "OneCity"
+                  }
+                ]
+              },
+              {
+                "choiceName": "19 CANDIDATE10, Test",
+                "votes": 1505,
+                "percentage": "5.2%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "VOTE Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "20 CANDIDATE11, Test",
+                "votes": 1450,
+                "percentage": "5.0%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Greens"
+                  }
+                ]
+              },
+              {
+                "choiceName": "21 CANDIDATE12, Test",
+                "votes": 1395,
+                "percentage": "4.8%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Liberals"
+                  }
+                ]
+              },
+              {
+                "choiceName": "22 CANDIDATE13, Test",
+                "votes": 1340,
+                "percentage": "4.6%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "TEAM"
+                  }
+                ]
+              },
+              {
+                "choiceName": "23 CANDIDATE14, Test",
+                "votes": 1285,
+                "percentage": "4.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "ABC Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "24 CANDIDATE15, Test",
+                "votes": 1230,
+                "percentage": "4.2%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "COPE"
+                  }
+                ]
+              },
+              {
+                "choiceName": "25 CANDIDATE16, Test",
+                "votes": 1175,
+                "percentage": "4.0%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "OneCity"
+                  }
+                ]
+              },
+              {
+                "choiceName": "26 CANDIDATE17, Test",
+                "votes": 1120,
+                "percentage": "3.8%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "VOTE Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "27 CANDIDATE18, Test",
+                "votes": 1065,
+                "percentage": "3.6%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Greens"
+                  }
+                ]
+              },
+              {
+                "choiceName": "28 CANDIDATE19, Test",
+                "votes": 1010,
+                "percentage": "3.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "Vancouver Liberals"
+                  }
+                ]
+              },
+              {
+                "choiceName": "29 CANDIDATE20, Test",
+                "votes": 955,
+                "percentage": "3.2%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "TEAM"
+                  }
+                ]
+              },
+              {
+                "choiceName": "30 CANDIDATE21, Test",
+                "votes": 900,
+                "percentage": "3.0%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "ABC Vancouver"
+                  }
+                ]
+              },
+              {
+                "choiceName": "31 CANDIDATE22, Test",
+                "votes": 845,
+                "percentage": "2.8%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "COPE"
+                  }
+                ]
+              },
+              {
+                "choiceName": "32 CANDIDATE23, Test",
+                "votes": 790,
+                "percentage": "2.6%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "OneCity"
+                  }
+                ]
+              },
+              {
+                "choiceName": "33 CANDIDATE24, Test",
+                "votes": 735,
+                "percentage": "2.4%",
+                "isWinner": 2,
+                "partyBreakdown": [
+                  {
+                    "partyName": "VOTE Vancouver"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
