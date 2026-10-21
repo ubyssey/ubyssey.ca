@@ -16,7 +16,7 @@ def active_wagtail_editing_sessions(page_id):
     return EditingSession.objects.filter(
         content_type=get_default_page_content_type(),
         object_id=str(page_id),
-        last_seen_at__gte=timezone.now() - EditingSession.IDLE_TIMEOUT,
+        last_seen_at__gte=timezone.now() - timezone.timedelta(seconds=30),
     )
 
 

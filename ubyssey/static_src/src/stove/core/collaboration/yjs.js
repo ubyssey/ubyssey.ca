@@ -249,7 +249,9 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     }
     if (event?.code === WAGTAIL_EDITING_CLOSE_CODE) {
       pendingUpdates.clear();
-      window.location.assign(document.querySelector("[data-page-form]").dataset.stoveHomeUrl || "/stove/");
+      const form = document.querySelector("[data-page-form]");
+      if (form.dataset.wagtailHandoffPending) return;
+      window.location.assign(form.dataset.stoveHomeUrl || "/stove/");
     }
   });
 
