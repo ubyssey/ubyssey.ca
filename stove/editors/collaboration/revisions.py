@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 from wagtail.models import Page
+from wagtail.log_actions import LogContext
 from pycrdt import Doc
 
 from stove.models import PageCollaboration
@@ -109,11 +110,12 @@ def autosave_page_revision(page_id, data, user):
         )
 
         try:
-            revision = page.save_revision(
-                user=user,
-                log_action=STOVE_AUTOSAVE_ACTION,
-                overwrite_revision=previous_autosave if overwrite_previous else None,
-            )
+            with LogContext(user=user):
+                revision = page.save_revision(
+                    user=user,
+                    log_action=STOVE_AUTOSAVE_ACTION,
+                    overwrite_revision=previous_autosave if overwrite_previous else None,
+                )
         except ValidationError:
             return None
 
