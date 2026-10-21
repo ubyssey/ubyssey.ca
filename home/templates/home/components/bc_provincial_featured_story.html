@@ -1,0 +1,12 @@
+{% load wagtailimages_tags articletags %}
+{% if article %}
+<article class="bc-live-story bc-live-story--standard" aria-label="{{ label }}">
+  <div class="bc-live-story__meta">{{ label }}</div>
+  <div class="bc-live-story__copy">
+    <h2><a href="{{ article.url }}">{{ article.title|safe_headline_markup }}</a></h2>
+    <div class="bc-election-byline"><span class="bc-election-byline__prefix">By</span> {{ article|redesign_card_byline|normalize_redesign_byline|safe }}</div>
+  </div>
+  {% if article.preview_image %}<a class="bc-live-story__image" href="{{ article.url }}"><img src="{{ article.preview_image }}" alt="{{ article.image_alt|default:'' }}" loading="lazy"></a>
+  {% else %}{% with featured=article.featured_media.first %}{% if featured.image %}<a class="bc-live-story__image" href="{{ article.url }}">{% image featured.image fill-750x540-c100 loading="lazy" alt=featured.alt_text %}</a>{% endif %}{% endwith %}{% endif %}
+</article>
+{% endif %}

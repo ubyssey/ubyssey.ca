@@ -56,8 +56,17 @@ def import_calendar(calendar):
     elif "b" in getattr(calendar, "mode", "b"):
         calendar = TextIOWrapper(calendar, encoding="utf-8-sig", newline="")
 
+    rows = list(csv.DictReader(calendar))
+    # A calendar can contain two games against the same opponent on adjacent
+    # days. Reserve every source key in this upload before reconciling changed
+    # dates/times, so one game cannot take over another game's existing row.
+    incoming_source_events = {
+        f"{row['Event']}|{row['Start Date']}|{row.get('Start Time') or ''}"
+        for row in rows
+        if row.get("Category") in SPORT_MAP and row.get("Event") and row.get("Start Date")
+    }
     imported = skipped = reconciled = 0
-    for row in csv.DictReader(calendar):
+    for row in rows:
         sport = SPORT_MAP.get(row.get("Category", ""))
         if not sport:
             continue
@@ -87,7 +96,7 @@ def import_calendar(calendar):
                 away_name=away,
                 home_name=home,
                 starts_at__range=(starts_at - timedelta(days=14), starts_at + timedelta(days=14)),
-            )
+            ).exclude(source_event__in=incoming_source_events)
             if candidates.count() == 1:
                 fixture = candidates.first()
                 fixture.source_event = source_event

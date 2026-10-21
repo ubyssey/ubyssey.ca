@@ -24,6 +24,7 @@ from events.views import update_events_http, create_ical, EventsFeed, EventsView
 from events.urls import urlpatterns as events_urls
 from navigation.views import nav_search
 from home.views import game_analysis_filter, homepage_curated_api, publish_committee_workflow_api, articlepage_drafts_api, articlepage_drafts_api_list
+from election_results.views import results_data
 
 from infinitefeed.views import infinitefeed
 
@@ -83,6 +84,7 @@ if settings.DEBUG:
         urlpatterns += static("/redesign-sample/", document_root=redesign_sample_root)
 
 urlpatterns += [
+    path("election-results/data/<int:page_id>/", results_data, name="election-results-data"),
     path("game-analysis/filter/", game_analysis_filter, name="game-analysis-filter"),
     # Redesigned support pages are production routes. The fixture previews
     # above remain DEBUG-only, but these contexts are backed by live CMS data.

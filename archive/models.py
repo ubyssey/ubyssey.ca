@@ -320,7 +320,7 @@ class ArchivePage(RoutablePageMixin, Page):
             # Search results should surface the public profile itself as well
             # as every story to which that person is credited. Wagtail's
             # full-text index does not reliably include relational bylines.
-            author_results = AuthorPage.objects.live().public().filter(
+            author_results = AuthorPage.objects.live().public().select_related('image').filter(
                 Q(full_name__icontains=search_query)
                 | Q(title__icontains=search_query)
             ).order_by('-last_activity', 'full_name')
