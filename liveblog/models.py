@@ -189,9 +189,29 @@ class LiveBlogUpdate(ClusterableModel):
 class LiveBlogArticlePage(ArticlePage):
     template = "liveblog/liveblog_page.html"
 
+    redesign_header_choice = models.CharField(
+        max_length=32,
+        choices=[
+            ("big-centered", "Standard"),
+            ("body-width", "Body width"),
+            ("left-aligned", "Image left"),
+            ("right-aligned", "Image right"),
+            ("full-bleed", "Full bleed"),
+            ("left-full-bleed", "Full bleed, headline left"),
+            ("right-full-bleed", "Full bleed, headline right"),
+        ],
+        default="big-centered",
+        help_text="Header layout for the redesigned live-updates page.",
+    )
+
     @property
     def redesign_header_layout(self):
-        return "big-centered"
+        return self.redesign_header_choice
+
+    @property
+    def primary_author_orderables(self):
+        authors = list(self.article_authors.filter(author_role="author"))
+        return authors or list(self.article_authors.all()[:1])
 
     @property
     def full_bleed_nav_color(self):
@@ -226,6 +246,7 @@ class LiveBlogArticlePage(ArticlePage):
     content_panels = [
             HelpPanel(template="liveblog/objects/liveblog-nav-link.html"),
             FieldPanel("stage"),
+            FieldPanel("redesign_header_choice"),
             FieldPanel(
                     "layout",
                     widget=Select(
@@ -296,8 +317,31 @@ class LiveBlogArticlePage(ArticlePage):
             "title": self.title,
             "lede": self.lede,
             "authors": authors,
+            "header": self.get_redesign_header_info(),
             "layout": self.layout,
             "live_policy": self.live_policy,
+        }
+
+    def get_redesign_header_info(self):
+        """Use the liveblog's own header layout and its inherited featured media."""
+        from videos.templatetags.video_filters import youtube_embed_id
+
+        featured = self.featured_media.first()
+        image = featured.image if featured else None
+        alt_text = featured.alt_text if featured else ""
+        video_id = youtube_embed_id(featured.video) if featured and featured.video else None
+        return {
+            "layout": self.redesign_header_layout,
+            "title": self.title,
+            "subtitle": "",
+            "above_cut_lede": "",
+            "section": str(self.current_section or "News"),
+            "category": self.category_page.title if self.category_page else "",
+            "image_url": image.get_rendition("width-1800|format-webp").url if image else "",
+            "image_alt": alt_text or "",
+            "caption": str(featured.cover_caption) if featured else "",
+            "credit": featured.credit if featured else "",
+            "video_id": video_id or "",
         }
 
     def get_stage(self):
@@ -311,6 +355,17 @@ class LiveBlogArticlePage(ArticlePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        from django.urls import reverse
+        from wagtail.models import Site
+        from election_results.models import ElectionResultsSettings
+
+        site = Site.find_for_request(request)
+        election_config = ElectionResultsSettings.objects.filter(site=site, liveblog_page_id=self.id).first() if site else None
+        context["election_results_url"] = reverse("election-results-data", args=[self.id]) if election_config else None
+        context["main_byline_html"] = loader.render_to_string(
+            "article/objects/redesign_main_byline.html",
+            {"article": self, "request": request},
+        )
         context['updates'] = LiveBlogUpdate.objects.filter(room_name=self.id).order_by("publish_date")
         context['update_order'] = "asc"
         context['admin_view'] = False

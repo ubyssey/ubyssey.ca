@@ -31,11 +31,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     websocketUrl: protocol + "//" + window.location.host + "/ws/stove/manuscript/" + pageId,
   });
 
-  if (collaboration.blockedByWagtail) {
-    window.location.assign(form.dataset.stoveHomeUrl || "/stove/");
-    return;
-  }
-
   pageEditorState.awareness = collaboration.awareness;
   pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
   const preview = createPagePreview({ form, pageRoot, blockTypeLabel, createBlockEditor, createStreamBlockDraft, collaboration });

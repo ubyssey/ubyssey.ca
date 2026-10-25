@@ -1,0 +1,28 @@
+{% extends 'ubyssey/base.html' %}
+{% load static %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=bc-provincial-elections-1"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block page_wrapper %}listing-redesign{% endblock %}
+{% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
+{% block content %}
+<main id="main-content" class="bc-election-page bc-provincial-page">
+  <header class="bc-election-page__intro page-shell">
+    <p class="bc-election-page__kicker">{{ self.intro_kicker }}</p>
+    <h1>{{ self.title }}</h1>
+    {% if self.election_summary %}<p>{{ self.election_summary|linebreaksbr }}</p>{% endif %}
+  </header>
+  <nav class="bc-election-page__nav page-shell" aria-label="{{ self.title }}">
+    <a href="#party-explainers">{{ self.party_heading }}</a>
+    <a href="#about-the-provincial-elections">{{ self.about_heading }}</a>
+  </nav>
+  <div class="page-shell">{% include "home/components/bc_provincial_featured_story.html" with article=election_content.featured_article label=self.featured_label %}</div>
+  <section class="bc-election-page__section page-shell" aria-labelledby="party-explainers">
+    <h2 class="bc-election-heading" id="party-explainers">{{ self.party_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--four">{% for item in election_content.parties %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+  </section>
+  <section class="bc-election-page__section page-shell" aria-labelledby="about-the-provincial-elections">
+    <h2 class="bc-election-heading" id="about-the-provincial-elections">{{ self.about_heading }}</h2>
+    <div class="bc-election-page__grid bc-election-page__grid--four">{% for item in election_content.about %}{% include "home/components/bc_election_story_card.html" %}{% endfor %}</div>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{% static 'ubyssey/js/article_content.js' %}?v=redesign-nav-stable-1"></script>{% endblock %}

@@ -62,7 +62,7 @@
             {% for p in pages%}
             <tr class="content-row" id="content-row-{{ p.id }}">
             <td class="slug-cell">
-                <a class="slug-link" href="{% url 'stove:manuscript_editor' p.id %}">
+                <a class="slug-link" href="{% url 'stove:manuscript_editor' p.id %}?continue=1">
                     {{ p.title }}
                 </a>
                 <button class="edit-icon" id="edit-icon-{{ p.id }}">✎</button>
