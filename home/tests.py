@@ -18,7 +18,7 @@ from home.game_analysis_queries import (
     panel_active_sports,
     six_month_cutoff,
 )
-from home.models import BCLocalElectionsPage, HomePage, ThunderbirdFixture
+from home.models import BCLocalElectionsPage, BCProvincialElectionsPage, HomePage, ThunderbirdFixture
 from home.sports_calendar import import_calendar
 from home.views import game_analysis_filter
 
@@ -36,6 +36,10 @@ class HomepageRedesignTests(SimpleTestCase):
             "home/components/bc_election_party.html",
             "home/components/bc_election_live_story.html",
             "home/bc_local_elections_page.html",
+            "home/bc_provincial_elections_page.html",
+            "home/components/bc_provincial_banner.html",
+            "home/components/bc_provincial_panel.html",
+            "home/components/bc_provincial_featured_story.html",
             "home/components/game_analysis_story.html",
             "home/components/redesign_story_row.html",
             "home/stream_blocks/game_analysis.html",
@@ -113,6 +117,44 @@ class HomepageRedesignTests(SimpleTestCase):
         self.assertIn("home.BCLocalElectionsPage", HomePage.subpage_types)
         self.assertEqual(BCLocalElectionsPage.template, "home/bc_local_elections_page.html")
 
+    def test_bc_provincial_feature_is_opt_in_and_editor_managed(self):
+        homepage = HomePage()
+        self.assertFalse(homepage.bc_provincial_banner_enabled)
+        self.assertFalse(homepage.bc_provincial_panel_enabled)
+        self.assertIn("home.BCProvincialElectionsPage", HomePage.subpage_types)
+        self.assertEqual(BCProvincialElectionsPage.template, "home/bc_provincial_elections_page.html")
+        self.assertEqual(BCProvincialElectionsPage().party_heading, "Party Explainers")
+        self.assertEqual(BCProvincialElectionsPage().about_heading, "About the Provincial Elections")
+
+    def test_empty_provincial_slots_do_not_query_articles(self):
+        class EmptySlots:
+            def order_by(self, *_args):
+                return []
+
+        page = SimpleNamespace(
+            party_explainers=EmptySlots(),
+            about_explainers=EmptySlots(),
+            featured_article_id=None,
+        )
+        with patch("home.models.ArticlePage") as articles:
+            content = BCProvincialElectionsPage.get_election_content(page)
+        articles.objects.live.assert_not_called()
+        self.assertEqual(content, {"featured_article": None, "parties": [], "about": []})
+
+    def test_provincial_page_renders_editable_navigation_and_four_column_sections(self):
+        template = get_template("home/bc_provincial_elections_page.html").template.source
+        self.assertIn('href="#party-explainers">{{ self.party_heading }}', template)
+        self.assertIn('href="#about-the-provincial-elections">{{ self.about_heading }}', template)
+        self.assertEqual(template.count("bc-election-page__grid--four"), 2)
+        self.assertIn("election_content.featured_article", template)
+        self.assertNotIn("bc_election_live_story.html", template)
+
+    def test_provincial_panel_preserves_four_then_three_column_order(self):
+        template = get_template("home/components/bc_provincial_panel.html").template.source
+        self.assertIn("bc_provincial_content.about|slice:':4'", template)
+        self.assertIn("bc_provincial_content.about|slice:'4:'", template)
+        self.assertIn("bc_provincial_content.parties", template)
+
     def test_empty_election_slots_do_not_query_articles(self):
         class EmptySlots:
             def order_by(self, *_args):
@@ -169,6 +211,32 @@ class HomepageRedesignTests(SimpleTestCase):
             [story.pk for story in context["redesign_articles"]],
             [1, 2, 3, 4, 5, 7],
         )
+
+    def test_visible_provincial_panel_stories_stay_out_of_below_fold_stream(self):
+        stories = []
+        for story_id in range(1, 10):
+            story = SimpleNamespace(pk=story_id, story_form="standard")
+            story.specific = story
+            stories.append(story)
+        provincial_content = {
+            "featured_article": stories[5],
+            "parties": [SimpleNamespace(article=stories[6])],
+            "about": [SimpleNamespace(article=stories[7])],
+        }
+        provincial_page = SimpleNamespace(get_election_content=lambda **_kwargs: provincial_content)
+        homepage = HomePage(
+            bc_provincial_elections_page_id=43,
+            bc_provincial_panel_enabled=True,
+            game_analysis_enabled=False,
+        )
+        with patch("wagtail.models.Page.get_context", return_value={}), \
+                patch.object(homepage, "get_curated_articles", return_value=stories), \
+                patch("home.models.BCProvincialElectionsPage.objects") as election_pages, \
+                patch("home.models.ArticlePage"), \
+                patch("home.models.settings.DEBUG", False):
+            election_pages.live.return_value.public.return_value.filter.return_value.first.return_value = provincial_page
+            context = homepage.get_context(RequestFactory().get("/"))
+        self.assertEqual([story.pk for story in context["redesign_articles"]], [1, 2, 3, 4, 5, 9])
 
     def test_disabled_panel_skips_homepage_game_queries(self):
         homepage = HomePage(game_analysis_enabled=False)

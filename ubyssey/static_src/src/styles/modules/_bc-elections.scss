@@ -7,6 +7,7 @@
   --bc-paper: #fff;
   --bc-accent: #253377;
   --bc-accent-soft: #eef3fb;
+  --bc-live-paper: #f5f7fa;
   color: var(--bc-ink);
 }
 
@@ -20,6 +21,7 @@
     --bc-paper: #091322;
     --bc-accent: #b9cfff;
     --bc-accent-soft: #17294c;
+    --bc-live-paper: #142139;
   }
 }
 
@@ -185,6 +187,35 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
   }
 }
 
+.bc-provincial-home {
+  .bc-election-home__column > h3 {
+    color: var(--bc-ink);
+    border-color: var(--bc-ink);
+    text-align: center;
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 24px;
+  }
+
+  &__columns:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+
+  &__about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    > div { display: grid; align-content: start; gap: 18px; }
+  }
+
+  &__column--about .bc-election-card__image { aspect-ratio: 2.2 / 1; }
+  &__column--about .bc-election-card h3 { font-size: 21px; }
+}
+
 .bc-election-card {
   min-width: 0;
 
@@ -259,13 +290,15 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
 }
 
 .bc-live-story {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) minmax(180px, 30%);
   gap: 20px;
   align-items: center;
   min-height: 160px;
   margin: 20px 0 28px;
-  padding: 18px 0;
+  padding: 20px 24px;
+  background: var(--bc-live-paper);
 
   &__meta { align-self: start; color: var(--bc-muted); font: 700 12px/1.4 "articulat-cf", sans-serif; text-transform: uppercase; }
   &__live { display: inline-flex; align-items: center; gap: 6px; color: #bf272c; }
@@ -317,8 +350,11 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
   .bc-election-home__column:last-child { border-bottom: 0; }
   .bc-election-home__profiles { gap: 14px; }
   .bc-election-home__parties { display: block; }
+  .bc-provincial-home__columns,
+  .bc-provincial-home__columns:has(> :only-child) { display: block; }
+  .bc-provincial-home__about-grid { gap: 14px; }
   .bc-election-home__party-note { margin: 16px 0; padding: 0; }
-  .bc-live-story { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; }
+  .bc-live-story { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; padding: 18px; }
   .bc-live-story__meta { grid-column: 1 / -1; }
   .bc-live-story__image { grid-column: 2; grid-row: 2; height: 150px; }
   .bc-live-story:not(:has(.bc-live-story__image)) { grid-template-columns: 1fr; }
@@ -332,6 +368,7 @@ html:has(.bc-election-page) { scroll-behavior: smooth; }
 @media (max-width: 480px) {
   .bc-election-home__profiles, .bc-election-page__grid--three, .bc-election-page__grid--four { grid-template-columns: 1fr; }
   .bc-election-home__profiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bc-provincial-home__about-grid { grid-template-columns: 1fr; }
   .bc-election-page__nav { grid-template-columns: 1fr; }
   .bc-election-page__grid--parties .bc-party__name { font-size: 19px; }
 }

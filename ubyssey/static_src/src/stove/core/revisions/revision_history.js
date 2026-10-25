@@ -147,6 +147,7 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
 
   wagtailButton.addEventListener("click", async () => {
     const originalText = wagtailButton.textContent;
+    let handoffSucceeded = false;
     wagtailButton.disabled = true;
     wagtailButton.textContent = "Saving...";
 
@@ -154,6 +155,7 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
       await beforeSave();
       const formData = formDataForSave();
       formData.set("handoff_to_wagtail", "1");
+      form.dataset.wagtailHandoffPending = "1";
       const payload = await saveRevision(form.dataset.saveRevisionUrl, formData);
       
       if (payload.errors) {
@@ -167,12 +169,14 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
         return;
       }
 
+      handoffSucceeded = true;
       form.dispatchEvent(new CustomEvent("editor:revision-saved"));
       window.location.assign(wagtailButton.dataset.wagtailUrl);
     } catch (error) {
       console.error(error);
       alert("Failed to save revision");
     } finally {
+      if (!handoffSucceeded) delete form.dataset.wagtailHandoffPending;
       wagtailButton.textContent = originalText;
       wagtailButton.disabled = false;
     }

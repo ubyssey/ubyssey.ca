@@ -5,6 +5,22 @@ from wagtail import hooks
 from home.models import HomePage
 from stove.models import PageCollaboration
 from stove.editors.collaboration.wagtail import hand_page_to_wagtail
+from stove.editors.collaboration.revisions import (
+    STOVE_AUTOSAVE_ACTION,
+    STOVE_RESTORE_ACTION,
+    STOVE_SAVE_ACTION,
+    STOVE_SAVE_BEFORE_RESTORE_ACTION,
+)
+
+
+# Allows Wagtail to display Stove manuscript revisions in the history panel
+# https://docs.wagtail.org/en/latest/reference/hooks.html#register-log-actions
+@hooks.register("register_log_actions")
+def register_stove_log_actions(actions):
+    actions.register_action(STOVE_AUTOSAVE_ACTION, "Autosaved in Stove", "Autosaved in Stove")
+    actions.register_action(STOVE_SAVE_ACTION, "Saved in Stove", "Saved in Stove")
+    actions.register_action(STOVE_SAVE_BEFORE_RESTORE_ACTION, "Saved most recent version before restore in Stove", "Saved most recent version before restore in Stove")
+    actions.register_action(STOVE_RESTORE_ACTION, "Restored old version in Stove", "Restored old version in Stove")
 
 
 @hooks.register("before_edit_page")
