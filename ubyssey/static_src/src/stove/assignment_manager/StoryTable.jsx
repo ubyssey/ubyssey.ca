@@ -318,7 +318,7 @@ export default function StoryTable({updatePage, selectedArticleId, setSelectedAr
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
   const [ordering, setOrdering] = useState(ORDER.LAST_MODIFIED)
   const [isLoading, setLoading] = useState(true);
-  return <><h1>{pageSection} Articles</h1>
+  return <><h1 className="story-table-title">{pageSection}</h1>
         <QueryFilterPanel 
           isOnlyUserFilter={isOnlyUserFilter} 
           setOnlyUserFilter={setOnlyUserFilter}

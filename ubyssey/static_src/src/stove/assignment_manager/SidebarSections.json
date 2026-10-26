@@ -1,6 +1,6 @@
 [
     {
-        "name": "Sections", 
+        "name": "SECTIONS", 
         "sections": [
             {"name": "Arts", "path": "/stove/stories/arts" },
             {"name": "Culture", "path": "/stove/stories/culture" },
@@ -10,7 +10,7 @@
         ]   
     },
     {
-        "name": "Visuals", 
+        "name": "VISUALS", 
         "sections": [
             {"name": "Graphics", "path": "/stove/assignments/graphics", "disabled": true },
             {"name": "Photo", "path": "/stove/assignemnts/photo", "disabled": true },
@@ -18,16 +18,17 @@
         ]   
     },
     {
-        "name": "Product", 
+        "name": "PRODUCT", 
         "sections": [
             {"name": "Audio", "path": "/stove/views/audio", "disabled": true },
             {"name": "Digital", "path": "/stove/views/digital", "disabled": true },
+            {"name": "Newsletter", "path": "/stove/views/newsletter"},
             {"name": "Print", "path": "/stove/views/print", "disabled": true },
             {"name": "Socials", "path": "/stove/views/socials", "disabled": true }
         ]   
     },
     {
-        "name": "More", 
+        "name": "MORE", 
         "sections": [
             {"name": "Copy", "path": "/stove/views/copy" },
             {"name": "Games", "path": "/stove/games", "disabled": true },

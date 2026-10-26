@@ -9,7 +9,7 @@ const roleColours = {
     "published_author":  "#c0e5bd"
 }
 
-function findAuthorName(authorId) {
+export function findAuthorName(authorId) {
   for (let entry in authors) {
     const author = authors[entry]
     if (author["value"] == authorId) {
@@ -17,6 +17,15 @@ function findAuthorName(authorId) {
     }
   }
   return "";
+}
+
+export function findAuthorRole(authorId) {
+  for (let entry in authors) {
+    const author = authors[entry]
+    if (author["value"] == authorId) {
+      return author["role"]
+    }
+  }
 }
 
 
