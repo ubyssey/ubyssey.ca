@@ -3,6 +3,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'ubyssey/css/stove/content_tracker_react.css' %}"></link>
+<link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css"></link>
 <script defer src="{% static 'ubyssey/js/stove/story_tracker.js' %}"></script>
 
 {# Temporarily adding this here since it doesn't extend stove base #}
@@ -33,7 +34,7 @@
     let allSections = {{ sections }}
     
     {% for a in authors %}
-    authors.push({ value: {{a.id}}, label: `{{a.full_name}}` })
+    authors.push({ value: {{a.id}}, label: `{{a.full_name}}`, role: `{{a.ubyssey_role}}` })
     {% endfor %}
     
 

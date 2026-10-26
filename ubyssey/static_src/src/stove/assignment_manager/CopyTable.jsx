@@ -234,7 +234,7 @@ function QueryFilterPanel({isOnlyUserFilter, setOnlyUserFilter, isLoading}) {
 export default function StoryTable({updatePage, clearPages, allPages, addPages}) {
   const [isOnlyUserFilter, setOnlyUserFilter] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  return <><h1>Copy View</h1>
+  return <><h1 className="story-table-title">Copy</h1>
         <QueryFilterPanel 
           isOnlyUserFilter={isOnlyUserFilter} 
           setOnlyUserFilter={setOnlyUserFilter}

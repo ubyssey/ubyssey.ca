@@ -101,6 +101,35 @@ def copy(request, section="all"):
     return render(request, "view_copy_department.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
 
 @login_required
+def newsletter(request, section="all"):
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
+
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
+
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
+    
+
+    return render(request, "view_newsletter.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+
+@login_required
+def homepage_scheduled_stories(request):
+    site = Site.find_for_request(request)
+    homepage = get_object_or_404(HomePage, pk=site.root_page_id).specific.get_latest_revision()
+    curatedStories = homepage.as_object().get_context(request)['curated_articles']
+
+    return JsonResponse({"curated": curatedStories, "homepageSchedule": homepage.approved_go_live_at}, safe=False)
+
+
+@login_required
 @require_POST
 def create_page(request, section_id):
     data = request.body.decode('utf-8')
@@ -222,6 +251,22 @@ def load_page(request, page_id):
             pageJson = json.dumps(pageJson)
     return JsonResponse(pageJson, safe=False)
 
+@login_required 
+def load_newsletter_stories(request, page=1):
+    qs = ArticlePage.objects
+    qs = qs.filter(Q(article_status=5) | Q(live=True))
+    qs = qs.order_by("live", "-latest_revision_created_at", "-last_published_at")
+    paginator = Paginator(qs, 20)
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    return JsonResponse(build_partial_stories_json(pages), safe=False)
+
+@login_required
+def featured_image_url(request, page_id):
+    articlePage = get_object_or_404(ArticlePage, pk=page_id)
+    return JsonResponse({"media-url": articlePage.get_featured_media_image_url()})
+
+
 @login_required
 def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
@@ -232,11 +277,7 @@ def load_partial_stories(request, section="all", page=1):
     qs = ArticlePage.objects
     
     if (article_status != -1):
-        print(article_status)
-        print(type(article_status))
-        print(type(int(article_status)))
         qs = qs.filter(article_status=4)
-        print(list(qs))
     qs = qs.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
@@ -256,6 +297,10 @@ def load_partial_stories(request, section="all", page=1):
     paginator = Paginator(qs, 20)
 
     pages = paginator.get_page(request.GET.get("article-page", page))
+    
+    return JsonResponse(build_partial_stories_json(pages), safe=False)
+
+def build_partial_stories_json(pages):
     result="[]"
     if (len(pages) > 0):
         result = "["
@@ -277,7 +322,8 @@ def load_partial_stories(request, section="all", page=1):
             result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
 
         result = result[:-1] + "]"
-    return JsonResponse(result, safe=False)
+    return result
+
 
 def update_article_status(page, status, user):
     if page.article_status == status: return page

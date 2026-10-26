@@ -2,7 +2,7 @@ import Select from 'react-select';
 
 
 
-function findSection(sectionSlug) {
+export function findSection(sectionSlug) {
     for (const s of allSections) {
       if (s.slug == sectionSlug) return s
     }

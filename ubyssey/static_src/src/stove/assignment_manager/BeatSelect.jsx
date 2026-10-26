@@ -27,7 +27,7 @@ const groupBadgeStyles = {
 
 
 
-function beatLabel(beatPk) {
+export function beatLabel(beatPk) {
 
   for (const {label, options} of beatOptions) {
     for (const beat of options) {
