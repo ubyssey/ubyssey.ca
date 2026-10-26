@@ -52,14 +52,14 @@ function ArticleRow({page, updatePage, scheduled = false, scheduledPublish}) {
                   delayHide={50}
                   clickable={true}
                 >
-                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(page.title, "Section | Beat")}
+                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(page.title, "Headline")}
                     ><strong>Headline</strong><br/>{page.title}</div>
-                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(getDeck(page), "Section | Beat")}
+                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(getDeck(page), "Deck")}
                     ><strong>Deck</strong><br/><span
                     dangerouslySetInnerHTML={{__html: getDeck(page)}}></span></div>
-                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(page.lede, "Section | Beat")}
+                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(page.lede, "Standfirst")}
                     ><strong>Standfirst</strong><br/>{page.lede}</div>
-                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(getPublishedUrl(page), "Section | Beat")}
+                  <div className="tooltip-selection-option" onClick={() => copyToClipboard(getPublishedUrl(page), "Published Url")}
                     ><strong>Published Url</strong><br/>{getPublishedUrl(page)}</div>
                   {page.featured_media ? 
                     <div className="tooltip-selection-option" onClick={() => downloadFeaturedImage(page)}
@@ -89,7 +89,7 @@ function ArticleRow({page, updatePage, scheduled = false, scheduledPublish}) {
                   <div className="tooltip-selection-option" onClick={() => copyToClipboard(sectionBeatString(page), "Section | Beat")}
                     dangerouslySetInnerHTML={{__html: sectionBeatString(page)}}
                     ></div>
-                  { page.live ? <div className="tooltip-selection-option" onClick={() => copyToClipboard(sectionDateString(page), "Section | Beat")}
+                  { page.live ? <div className="tooltip-selection-option" onClick={() => copyToClipboard(sectionDateString(page), "Section | Date")}
                     dangerouslySetInnerHTML={{__html: sectionDateString(page)}}
 
                     ></div> : ""}
@@ -111,7 +111,11 @@ async function downloadFeaturedImage(page) {
             return response.json()
           }})
         .then((json) => {
-          if (json["media-url"]) return window.location.protocol + "//" + window.location.host + json["media-url"]
+          if (json["media-url"]) {
+            console.log(json["media-url"])
+            if (json["media-url"].contains("https://") || json["media-url"].contains("http://")) return json["media-url"];
+            else return window.location.protocol + "//" + window.location.host + json["media-url"];
+          }
           throw new Error("No featured image")
         })
         .then((url) => {
