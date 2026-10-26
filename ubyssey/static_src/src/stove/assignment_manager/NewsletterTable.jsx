@@ -285,9 +285,10 @@ function ArticleList({allPages, updatePage, currentlyCurated, scheduledPublish})
   const rows = []
 
   for (const id of currentlyCurated) {
-    rows.push(
-      ArticleRow({updatePage: updatePage, page: allPages.get(id), scheduled: true, scheduledPublish: scheduledPublish})
-    )
+    if (allPages.get(id))
+      rows.push(
+        ArticleRow({updatePage: updatePage, page: allPages.get(id), scheduled: true, scheduledPublish: scheduledPublish})
+      )
   }
   
   for (const [id, page] of allPages) {
