@@ -26,6 +26,7 @@
 
 .pm-link-bubble a {
     padding: 6px 8px;
+    padding-right: 1px;
     color: var(--color-ubyssey_blue);
     text-decoration: underline;
     overflow-wrap: anywhere;
@@ -38,7 +39,6 @@
 .pm-link-bubble__action {
     border: none;
     border-radius: 0;
-    border-left: 1px solid #000;
     background: #fcf9f8;
     color: #1b1b1b;
     font: inherit;
