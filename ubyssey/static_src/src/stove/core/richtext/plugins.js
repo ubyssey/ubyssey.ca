@@ -26,6 +26,7 @@ export { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestion
 
 export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
 export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
+export const TRAILING_SUGGESTION_SPACE_STORAGE_KEY = "manuscript-trailing-suggestion-space";
 
 export function isArialModeEnabled() {
   return window.localStorage.getItem(ARIAL_MODE_STORAGE_KEY) === "true";
@@ -33,6 +34,10 @@ export function isArialModeEnabled() {
 
 export function areInvisibleCharactersEnabled() {
   return window.localStorage.getItem(INVISIBLE_CHARACTERS_STORAGE_KEY) === "true";
+}
+
+export function isTrailingSuggestionSpaceEnabled() {
+  return window.localStorage.getItem(TRAILING_SUGGESTION_SPACE_STORAGE_KEY) !== "false";
 }
 
 export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo, allowAnnotations = true} = {}) {
@@ -166,7 +171,12 @@ function suggestionPlugin(schema) {
     const isWholeWord = !isWordCharacter(leadingCharacter) && !isWordCharacter(trailingCharacter);
     if (!isWholeWord) return { from, to, spacePosition: null };
 
-    if (trailingCharacter === " ") return { from, to: to + 1, spacePosition: "trailing" };
+    if (trailingCharacter === " ") {
+      if(isTrailingSuggestionSpaceEnabled()) {
+       return { from, to: to + 1, spacePosition: "trailing" }
+      }
+      return { from, to, spacePosition: null };
+    }
     if (leadingCharacter === " ") return { from: from - 1, to, spacePosition: "leading" };
 
     return null;
