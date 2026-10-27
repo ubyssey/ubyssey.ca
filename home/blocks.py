@@ -61,6 +61,14 @@ class GameAnalysisPanel(blocks.StructBlock):
     )
     articles = blocks.ListBlock(GameAnalysisArticle(), required=False)
 
+    def get_articles(self, values):
+        entries = []
+        try: 
+            entries = [item.get("value").get("article") for item in values["articles"] if item.get("value").get("article")]
+        except:
+            entries = []
+        return entries
+
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
 
