@@ -113,7 +113,7 @@ async function downloadFeaturedImage(page) {
         .then((json) => {
           if (json["media-url"]) {
             console.log(json["media-url"])
-            if (json["media-url"].contains("https://") || json["media-url"].contains("http://")) return json["media-url"];
+            if (json["media-url"].includes("https://") || json["media-url"].includes("http://")) return json["media-url"];
             else return window.location.protocol + "//" + window.location.host + json["media-url"];
           }
           throw new Error("No featured image")
