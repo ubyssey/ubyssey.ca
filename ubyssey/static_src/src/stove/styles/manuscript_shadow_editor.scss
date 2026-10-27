@@ -14,7 +14,9 @@
 .pm-link-bubble {
     position: absolute;
     z-index: 30;
-    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
     border: 1px solid #c4c6cf;
     border-radius: 4px;
     background: #fcf9f8;
@@ -23,9 +25,36 @@
 }
 
 .pm-link-bubble a {
+    padding: 6px 8px;
     color: var(--color-ubyssey_blue);
     text-decoration: underline;
     overflow-wrap: anywhere;
+}
+
+.pm-link-bubble a:hover {
+    color: #00508d;;
+}
+
+.pm-link-bubble__action {
+    border: none;
+    border-radius: 0;
+    border-left: 1px solid #000;
+    background: #fcf9f8;
+    color: #1b1b1b;
+    font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 2px 3px;
+    padding-right: 1px;
+    margin: 0;
+}
+
+.pm-link-bubble__action:hover {
+    background: #eeeff2;
+}
+
+.pm-link-bubble__action--remove {
+    color: #a11f1f;
 }
 
 .pm-selection-comment-bubble {

@@ -643,12 +643,37 @@ function linkBubblePlugin(schema) {
     view(editorView) {
       const bubble = document.createElement("div");
       const link = document.createElement("a");
+      const editButton = document.createElement("button");
+      const removeButton = document.createElement("button");
       
       bubble.className = "pm-link-bubble";
       bubble.hidden = true;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
+      editButton.type = "button";
+      editButton.className = "pm-link-bubble__action";
+      editButton.textContent = "Edit";
+      removeButton.type = "button";
+      removeButton.className = "pm-link-bubble__action pm-link-bubble__action--remove";
+      removeButton.textContent = "Remove";
+
+      // Keep text selection on link when clicking buttons
+      [editButton, removeButton].forEach((button) => button.addEventListener("mousedown", (event) => event.preventDefault()));
+      
+      editButton.addEventListener("click", () => {
+        promptLinkCommand(linkMark)(editorView.state, editorView.dispatch, editorView);
+      });
+      
+      removeButton.addEventListener("click", () => {
+        const range = markRangeAtCursor(editorView.state, linkMark);
+        if (!range) return;
+        editorView.dispatch(editorView.state.tr.removeMark(range.from, range.to, linkMark));
+        editorView.focus();
+      });
+
       bubble.appendChild(link);
+      bubble.appendChild(editButton);
+      bubble.appendChild(removeButton);
       editorView.dom.parentNode.appendChild(bubble);
       const pageBlock = editorView.dom.closest("[data-article-block]");
 
