@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
+import { useViewport } from 'react-viewport-hooks';
 
-import { Group, Panel, Separator} from "react-resizable-panels";
+
+import { Group, Panel, Separator, usePanelRef} from "react-resizable-panels";
 
 
 import Tab from 'react-bootstrap/Tab';
@@ -65,6 +67,10 @@ function StoriesTracker() {
     pages
   );
   const [activeSidebar, setActiveSidebar] = useState(SIDEBAR_TYPES.CREATE);
+  const [editSidebarCollapsed, setEditSidebarCollapsed] = useState(true);
+
+  const sidebarRef = usePanelRef()
+  const tableRef = usePanelRef()
 
   function updatePage(newPage) {
     const updatedPages = new Map(allPages)
@@ -91,11 +97,45 @@ function StoriesTracker() {
     -1
   );
 
+  const { vw } = useViewport();
+
+  let layout = 'standard';
+  if (vw < 1200) {
+      layout = 'collapsed';
+  }
+
+  const openSidebar = () => {
+    const sidebarPanel = sidebarRef.current;
+    sidebarPanel.resize("450px");
+  }
+  const closeSidebar = () => {
+    const sidebarPanel = sidebarRef.current;
+    const tablePanel = tableRef.current;
+    tablePanel?.expand();
+    sidebarPanel?.collapse();
+  }
+  const toggle = () => {
+    const sidebarPanel = sidebarRef.current;
+    console.log(sidebarPanel?.isCollapsed())
+    if (sidebarPanel?.isCollapsed()) {
+      openSidebar()
+    } else {
+      closeSidebar()
+    }
+  };
+
+  useEffect(openSidebar, [selectedArticleId])
+
   return (
       <div className="content-tracker">
         <Group className="grouping">
         <NavigationSidebar/>
-        <Panel className="panel main-content-panel" minSize="1100px" defaultSize="80%">
+        <Panel className="panel main-content-panel" 
+            minSize={ layout == 'standard' ? "900px" : "0px" }
+            collapsible = {layout == 'collapsed'}
+            collapsedSize={"0px"}
+            defaultSize="80%"
+            panelRef={tableRef}>
             <MainPanel 
               allPages={allPages} 
               addPages={addPages}
@@ -106,8 +146,13 @@ function StoriesTracker() {
               setActiveSidebar={setActiveSidebar}
             />
         </Panel>
-        <Separator className="sidebar-resize-handle"/>
-        <Panel className="panel content-sidebar" collapsible minSize={275} maxSize={"40vw"}>
+        <button onClick={toggle} className="sidebar-button">{!editSidebarCollapsed ? "X" : "+"}</button>
+        { layout == 'standard' ? <Separator className="sidebar-resize-handle"/> : ''}
+        <Panel className={layout == 'standard' ? `panel content-sidebar` : `panel content-sidebar content-sidebar--overtop`}
+          collapsible minSize={275 }
+          onResize={(size) => setEditSidebarCollapsed(size.inPixels === 0)}
+          panelRef={sidebarRef}
+          defaultSize={"450px"}>
           <StorySidebar 
             selectedPage={allPages.get(selectedArticleId)}
             updatePage={updatePage}

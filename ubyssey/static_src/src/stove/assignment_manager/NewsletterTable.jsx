@@ -97,6 +97,14 @@ function ArticleRow({page, updatePage, scheduled = false, scheduledPublish}) {
                 </>
 }
 
+const sectionCodes = {
+  "arts": "ARTS",
+  "culture": "CULT",
+  "news": "NEWS",
+  "opinion": "OPIN",
+  "sports": "SPRT"
+}
+
 async function downloadFeaturedImage(page) {
   let headers = {content_type: "application/json"}
 
@@ -118,10 +126,14 @@ async function downloadFeaturedImage(page) {
           }
           throw new Error("No featured image")
         })
-        .then((url) => {
+        .then(async (url) => {
+          const image = await fetch(url)
+          const imageBlog = await image.blob()
+          const imageURL = URL.createObjectURL(imageBlog)
+
           const a = document.createElement('a');
-          a.href = url;
-          a.download = "download"; 
+          a.href = imageURL;
+          a.download = (sectionCodes[page.current_section] ?? "UBSY") + "_IMG_" + page.slug.charAt(0).toUpperCase() + page.slug.slice(1).replace(/(-)(\S)/g, s=>s.toUpperCase().replace("-", "")) + "_" + new Date().getFullYear() + "-" + String(new Date().getMonth()).padStart(2, "0") + "-" + String(new Date().getDate()).padStart(2, "0"); 
           
           document.body.appendChild(a);
           a.click();
