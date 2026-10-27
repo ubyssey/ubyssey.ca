@@ -61,6 +61,7 @@ class ArticleRedesignMappingTests(SimpleTestCase):
         self.assertIn("data-video-open", rendered)
         self.assertIn("data-video-player", rendered)
         self.assertIn("data-full-video-kind=\"youtube\"", rendered)
+        self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', rendered)
 
     def test_standard_article_editor_exposes_covered_sport(self):
         front_page = next(
