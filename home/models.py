@@ -526,9 +526,18 @@ class HomePage(Page):
         articles = []
         for child in self.curated_stream:
             articles = articles + child.block.get_articles(child.get_prep_value()["value"])
+        for child in self.game_analysis:
+            articles = articles + child.block.get_articles(child.get_prep_value()["value"])
 
         return articles
 
+    def get_articles_above_fold(self):
+        articles = []
+        for child in self.curated_stream:
+            articles = articles + child.block.get_articles(child.get_prep_value()["value"])
+
+        return articles
+    
     def clean(self):
         super().clean()
         if (self.bc_elections_banner_enabled or self.bc_elections_panel_enabled) and not self.bc_elections_page_id:
@@ -643,7 +652,7 @@ class HomePage(Page):
                 for article in chronological_articles(covered_sports)
             ]
 
-        context["curated_articles"] = self.get_curated_articles()
+        context["curated_articles"] = self.get_articles_above_fold()
 
         # Preserve the exact editorial ordering from the existing curated stream.
         # Add recent stories only when a preview/homepage has fewer than the cards
