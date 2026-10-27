@@ -1,0 +1,66 @@
+.main:has(.visual-tracker) {
+    .visual-tracker {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        color: var(--w-color-text-label);
+    }
+
+    .visual-tracker__header,
+    .visual-tracker__filters {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .visual-tracker__header {
+        border-bottom: 1px solid var(--w-color-border-furniture);
+        padding-bottom: 1.5rem;
+    }
+
+    .visual-tracker__eyebrow {
+        margin: 0 0 .25rem;
+        color: var(--w-color-text-meta);
+        font-size: .8rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .visual-tracker h1 { margin: 0; }
+    .visual-tracker__header p:last-child { margin-bottom: 0; color: var(--w-color-text-meta); }
+    .visual-tracker__filters { justify-content: start; padding: 1.5rem 0; }
+    .visual-tracker__filters label { display: grid; gap: .35rem; font-weight: 700; }
+    .visual-tracker__filters select { min-width: 10rem; }
+    .visual-tracker__count { margin-left: auto; color: var(--w-color-text-meta); }
+    .visual-tracker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .visual-tracker-card { display: flex; flex-direction: column; min-height: 250px; padding: 1.25rem; border: 1px solid var(--w-color-border-furniture); border-radius: .25rem; background: var(--w-color-surface-page); }
+    .visual-tracker-card.is-late { border-left: 4px solid var(--w-color-critical-200); }
+    .visual-tracker-card__topline, .visual-tracker-card__actions { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .visual-tracker-card__type { color: var(--w-color-text-meta); font-size: .85rem; }
+    .visual-tracker-card h2 { margin: 1rem 0 .5rem; font-size: 1.15rem; }
+    .visual-tracker-card__request { flex-grow: 1; margin: 0; color: var(--w-color-text-meta); }
+    .visual-tracker-card__details { display: flex; gap: 1.5rem; margin: 1rem 0; }
+    .visual-tracker-card__details dt { color: var(--w-color-text-meta); font-size: .75rem; }
+    .visual-tracker-card__details dd { margin: .2rem 0 0; }
+    .visual-tracker-card__details strong { color: var(--w-color-critical-200); }
+    .visual-tracker-card__assignees { margin: 0 0 1rem; font-size: .85rem; }
+    .visual-tracker-card__assignees span { color: var(--w-color-text-meta); }
+    .visual-tracker-card__actions { justify-content: start; border-top: 1px solid var(--w-color-border-furniture); padding-top: 1rem; font-weight: 700; }
+    .visual-tracker__message { padding: 3rem 1rem; text-align: center; }
+    .visual-tracker__message--error { color: var(--w-color-critical-200); }
+    .visual-tracker--form { max-width: 760px; }
+    .visual-tracker-form { display: grid; gap: 1.25rem; max-width: 620px; padding-top: 2rem; }
+    .visual-tracker-form__field { display: grid; gap: .35rem; }
+    .visual-tracker-form__field label { font-weight: 700; }
+    .visual-tracker-form__field textarea { resize: vertical; }
+    .visual-tracker-form__field ul.errorlist { margin: 0; padding: 0; color: var(--w-color-critical-200); list-style: none; }
+
+    @media (max-width: 700px) {
+        .visual-tracker { padding: 1rem; }
+        .visual-tracker__header { align-items: start; flex-direction: column; }
+        .visual-tracker__filters { align-items: start; flex-direction: column; }
+        .visual-tracker__count { margin-left: 0; }
+    }
+}

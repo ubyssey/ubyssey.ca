@@ -1,0 +1,33 @@
+{% extends "stove_base.html" %}
+{% load static %}
+
+{% block title %}New visual request{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/stove/visual_tracker.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class="visual-tracker visual-tracker--form">
+        <header class="visual-tracker__header">
+            <div>
+                <p class="visual-tracker__eyebrow">Visual tracker</p>
+                <h1>New visual request</h1>
+                <p>Create a request for photography, illustration, video, or web design.</p>
+            </div>
+            <a href="{% url 'stove:visual_tracker' %}">Back to visual tracker</a>
+        </header>
+        <form method="post" class="visual-tracker-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="visual-tracker-form__field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button class="button button-primary" type="submit">Create visual request</button>
+        </form>
+    </main>
+{% endblock %}

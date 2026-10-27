@@ -8,6 +8,8 @@ app_name = "stove"
 
 urlpatterns = [
     path("", views.content_tracker_react, name="content_tracker_base"),
+    path("visuals", views.visual_tracker, name="visual_tracker"),
+    path("visuals/new", views.visual_assignment_create, name="visual_assignment_create"),
     re_path(r"^stories/((?P<section>\w+)/)?$", views.content_tracker_react, name="story_tracker"),
     re_path(r"^stories/(?P<section>\w+)/(?P<page>\d+)$", views.load_partial_stories, name="content_tracker_load_pages"),
     path("stories/<int:page_id>", views.load_page, name="content_tracker_load_page"),

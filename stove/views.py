@@ -59,6 +59,8 @@ from stove.editors.collaboration.wagtail import (
     page_is_being_edited_in_wagtail,
 )
 from stove.editors.collaboration.presence import claim_page_presence, release_page_presence
+from django import forms
+from content_tracker.models import VisualAssignment
 
 
 # include editors, copy editors
@@ -80,6 +82,38 @@ def content_tracker_react(request, section="all"):
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
     return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+
+
+@login_required
+def visual_tracker(request):
+    return render(request, "visual_tracker.html")
+
+
+class VisualAssignmentForm(forms.ModelForm):
+    class Meta:
+        model = VisualAssignment
+        fields = (
+            "story_assignment",
+            "memo",
+            "request",
+            "deadline",
+            "intended_use",
+            "visual_type",
+        )
+        widgets = {
+            "deadline": forms.DateInput(attrs={"type": "date"}),
+            "request": forms.Textarea(attrs={"rows": 5}),
+        }
+
+
+@login_required
+def visual_assignment_create(request):
+    form = VisualAssignmentForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect("stove:visual_tracker")
+    return render(request, "visual_assignment_form.html", {"form": form})
+
 
 @login_required
 def copy(request, section="all"):

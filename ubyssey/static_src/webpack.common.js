@@ -40,6 +40,7 @@ module.exports = {
     'widgets/auto-update-suggested-bar-choice': './src/js/widgets/auto-update-suggested-bar-choice.js',
     'passing-2025': './src/js/passing-2025.js',
     'contentTracker': './src/js/ContentTracker.jsx',
+    'stove/visual_tracker': './src/stove/assignment_manager/VisualTracker.jsx',
     'liveblog': './src/js/liveblog.jsx',
     'stove/manuscript_editor': './src/stove/manuscript_editor/app.js',
     'stove/story_tracker': './src/stove/assignment_manager/StoryTracker.jsx',

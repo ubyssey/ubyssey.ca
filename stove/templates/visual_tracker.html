@@ -1,0 +1,16 @@
+{% extends "stove_base.html" %}
+{% load static %}
+
+{% block title %}Visual tracker{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'ubyssey/css/stove/visual_tracker.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id="visual-tracker"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script defer src="{% static 'ubyssey/js/stove/visual_tracker.js' %}"></script>
+{% endblock %}
