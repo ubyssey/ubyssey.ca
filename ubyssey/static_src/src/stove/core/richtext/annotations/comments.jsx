@@ -107,6 +107,21 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     update();
   };
 
+  const cancelActiveThread = () => {
+    const thread = currentThreads().find((item) => item.threadId === activeThreadId);
+    if (!thread) {
+      clearActiveThread();
+      return;
+    }
+
+    commentDrafts.delete(thread.threadId);
+    if (thread.pending) {
+      if (thread.remove) thread.remove();
+      else removeAnnotationThread(thread);
+    }
+    setActiveThread(null, null);
+  };
+
   const update = () => {
     const threads = currentThreads();
     if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
@@ -119,6 +134,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
           activeThreadId={activeThreadId}
           focusActiveReply={focusActiveReply}
           setActiveThread={setActiveThread}
+          cancelActiveThread={cancelActiveThread}
           commentDrafts={commentDrafts}
         />,
       );
@@ -265,6 +281,14 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   pageShadow?.shadowRoot?.addEventListener("mousedown", selectCommentBlock, true);
   pageShadow?.shadowRoot?.addEventListener("click", onCommentMarkClick);
   pageShadow?.shadowRoot?.addEventListener("keydown", () => { clickedAnnotationThreadId = null; });
+  
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !activeThreadId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    cancelActiveThread();
+  }, true);
+  
   window.addEventListener("resize", scheduleCommentPositions);
   update();
 
@@ -372,7 +396,7 @@ function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   block?.classList?.add("pm-page-block--comment-active");
 }
 
-function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiveReply, setActiveThread, commentDrafts }) {
+function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiveReply, setActiveThread, cancelActiveThread, commentDrafts }) {
   if (!threads.length) return null;
 
   return (
@@ -386,6 +410,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiv
           active={thread.threadId === activeThreadId}
           focusReply={thread.threadId === activeThreadId && focusActiveReply}
           setActiveThread={setActiveThread}
+          cancelActiveThread={cancelActiveThread}
           commentDrafts={commentDrafts}
         />
       ))}
@@ -393,7 +418,7 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiv
   );
 }
 
-function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, commentDrafts }) {
+function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, cancelActiveThread, commentDrafts }) {
   const suggestion = thread.kind === "suggestion";
   const suggestionType = commentSuggestion(thread.comments);
   const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
@@ -477,14 +502,7 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
           focusOnMount={focusReply && !suggestion}
           setStoredDraft={(value) => { commentDrafts.set(thread.threadId, value); }}
           close={() => { setActiveThread(null, null); }}
-          cancel={() => {
-            commentDrafts.delete(thread.threadId);
-            if (thread.pending) {
-              if (thread.remove) thread.remove();
-              else removeAnnotationThread(thread);
-            }
-            setActiveThread(null, null);
-          }}
+          cancel={cancelActiveThread}
         />
       )}
     </section>
