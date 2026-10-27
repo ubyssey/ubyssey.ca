@@ -125,6 +125,7 @@ function initializeArticleVideoHero() {
             fullVideo.title = 'Full article video';
             fullVideo.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
             fullVideo.allowFullscreen = true;
+            fullVideo.referrerPolicy = 'strict-origin-when-cross-origin';
             fullVideo.src = url;
         } else {
             fullVideo = document.createElement('video');

@@ -11,7 +11,7 @@
     {% if preview_image_url %}<img src="{{ preview_image_url }}" alt="{{ featured.alt_text }}">{% elif featured.image %}{% image featured.image width-1800 format-webp as hero_image %}<img src="{{ hero_image.url }}" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="{{ featured.alt_text }}">{% endif %}
     {% if article.video_header_enabled %}
       {% if article.video_preview_youtube_url %}
-        <iframe class="ar-video-hero__preview" data-video-preview src="{{ article.video_preview_embed_url }}" title="Muted looping video preview" tabindex="-1" aria-hidden="true" allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <iframe class="ar-video-hero__preview" data-video-preview src="{{ article.video_preview_embed_url }}" title="Muted looping video preview" tabindex="-1" aria-hidden="true" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       {% elif article.video_preview_file %}
         <video class="ar-video-hero__preview" data-video-preview src="{{ article.video_preview_file_url }}" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       {% endif %}
