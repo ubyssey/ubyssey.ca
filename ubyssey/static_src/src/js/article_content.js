@@ -82,6 +82,86 @@ function initializeArticleNavigation() {
     }, { passive: true });
 }
 
+function initializeArticleVideoHero() {
+    const hero = document.querySelector('[data-video-hero]');
+    const player = document.querySelector('[data-video-player]');
+    if (!hero || !player) return;
+    const openButton = hero.querySelector('[data-video-open]');
+    const closeButton = player.querySelector('[data-video-close]');
+    const stage = player.querySelector('[data-video-stage]');
+    const preview = hero.querySelector('[data-video-preview]');
+    const previewIframeUrl = preview?.tagName === 'IFRAME' ? preview.src : '';
+    let enteredFullscreen = false;
+
+    const resumePreview = () => {
+        if (!preview) return;
+        if (preview.tagName === 'IFRAME') preview.src = previewIframeUrl;
+        else preview.play().catch(() => {});
+    };
+    const close = () => {
+        if (player.hidden) return;
+        player.hidden = true;
+        stage.querySelector('video')?.pause();
+        stage.replaceChildren(); // Removing the iframe stops YouTube playback too.
+        document.body.classList.remove('ar-video-player-open');
+        if (document.fullscreenElement && player.contains(document.fullscreenElement)) {
+            document.exitFullscreen().catch(() => {});
+        }
+        enteredFullscreen = false;
+        resumePreview();
+        openButton.focus({ preventScroll: true });
+    };
+    const open = () => {
+        const url = hero.dataset.fullVideoUrl;
+        if (!url || !player.hidden) return;
+        preview?.pause?.();
+        if (preview?.tagName === 'IFRAME') preview.removeAttribute('src');
+        player.hidden = false;
+        document.body.classList.add('ar-video-player-open');
+
+        let fullVideo;
+        if (hero.dataset.fullVideoKind === 'youtube') {
+            fullVideo = document.createElement('iframe');
+            fullVideo.title = 'Full article video';
+            fullVideo.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+            fullVideo.allowFullscreen = true;
+            fullVideo.src = url;
+        } else {
+            fullVideo = document.createElement('video');
+            fullVideo.src = url;
+            fullVideo.controls = true;
+            fullVideo.playsInline = true;
+            fullVideo.autoplay = true;
+        }
+        stage.replaceChildren(fullVideo);
+        if (player.requestFullscreen) {
+            player.requestFullscreen().then(() => { enteredFullscreen = true; }).catch(() => {});
+        }
+        if (fullVideo.tagName === 'VIDEO') {
+            fullVideo.play().catch(() => {});
+            fullVideo.addEventListener('webkitendfullscreen', close);
+        }
+        closeButton.focus({ preventScroll: true });
+    };
+
+    openButton.addEventListener('click', open);
+    closeButton.addEventListener('click', close);
+    document.addEventListener('fullscreenchange', () => {
+        if (enteredFullscreen && !document.fullscreenElement) close();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (player.hidden) return;
+        if (event.key === 'Escape') close();
+        if (event.key === 'Tab' && event.shiftKey && document.activeElement === closeButton) {
+            event.preventDefault();
+            stage.firstElementChild?.focus();
+        } else if (event.key === 'Tab' && !event.shiftKey && document.activeElement === stage.firstElementChild) {
+            event.preventDefault();
+            closeButton.focus();
+        }
+    });
+}
+
 function formatCaptionCredits() {
     document.querySelectorAll('.ar-page figcaption .credit, .ar-page .caption .credit').forEach((credit) => {
         if (credit.querySelector('.credit-name')) return;
@@ -278,6 +358,7 @@ function initializeAuthorGallery() {
 }
 
 initializeArticleNavigation();
+initializeArticleVideoHero();
 initializeArticleSharing();
 initializeKeepReading();
 initializeArticleImageCarousels();
