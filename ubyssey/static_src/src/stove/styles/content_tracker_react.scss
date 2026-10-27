@@ -30,6 +30,17 @@ table, th, td {
   padding-left: 8px;
   padding-right: 8px;
 }
+
+.sidebar-button {
+  position: fixed;
+  width: 35px;
+  height: 35px;
+  top: 10;
+  right: 10;
+  border: none;
+  z-index: 100;
+}
+
 // .grouping
 .stove-logo-container {
   width: 100%;
@@ -602,6 +613,13 @@ input:checked + .slider:before {
 
 .sidebar-resize-handle:hover {
   background-color: hsl(192, 50%, 85%);
+}
+
+.content-sidebar--overtop {
+  // position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 50;
 }
 
 .panel {
