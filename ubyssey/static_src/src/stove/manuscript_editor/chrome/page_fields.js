@@ -6,9 +6,11 @@ import {
   ARIAL_MODE_STORAGE_KEY,
   INVISIBLE_CHARACTERS_STORAGE_KEY,
   TRAILING_SUGGESTION_SPACE_STORAGE_KEY,
+  SELECTION_COMMENT_BUTTON_STORAGE_KEY,
   areInvisibleCharactersEnabled,
   isArialModeEnabled,
   isTrailingSuggestionSpaceEnabled,
+  isSelectionCommentButtonEnabled,
 } from "../../core/richtext/plugins.js";
 
 const FREEZE_FOOTNOTES_STORAGE_KEY = "manuscript-freeze-footnotes";
@@ -20,8 +22,10 @@ export function useCopyEditingToggles() {
     const invisibleCharactersToggle = document.querySelector("#invisible-characters-toggle");
     const freezeFootnotesToggle = document.querySelector("#freeze-footnotes-toggle");
     const trailingSuggestionSpaceToggle = document.querySelector("#trailing-suggestion-space-toggle");
+    const selectionCommentButtonToggle = document.querySelector("#selection-comment-button-toggle");
+    
     const pageShadow = document.querySelector("[data-page-shadow]");
-    if (!arialToggle || !invisibleCharactersToggle || !freezeFootnotesToggle || !trailingSuggestionSpaceToggle || !pageShadow) return undefined;
+    if (!arialToggle || !invisibleCharactersToggle || !freezeFootnotesToggle || !trailingSuggestionSpaceToggle || !selectionCommentButtonToggle || !pageShadow) return undefined;
 
     const setArial = () => {
       window.localStorage.setItem(ARIAL_MODE_STORAGE_KEY, String(arialToggle.checked));
@@ -44,20 +48,29 @@ export function useCopyEditingToggles() {
       window.localStorage.setItem(TRAILING_SUGGESTION_SPACE_STORAGE_KEY, String(trailingSuggestionSpaceToggle.checked));
     };
 
+    const setSelectionCommentButton = () => {
+      window.localStorage.setItem(SELECTION_COMMENT_BUTTON_STORAGE_KEY, String(selectionCommentButtonToggle.checked));
+      pageEditorState.currentPageTextViews().forEach((view) => view.dispatch(view.state.tr));
+    };
+
     arialToggle.checked = isArialModeEnabled();
     invisibleCharactersToggle.checked = areInvisibleCharactersEnabled();
     freezeFootnotesToggle.checked = window.localStorage.getItem(FREEZE_FOOTNOTES_STORAGE_KEY) === "true";
     trailingSuggestionSpaceToggle.checked = isTrailingSuggestionSpaceEnabled();
+    selectionCommentButtonToggle.checked = isSelectionCommentButtonEnabled();
+    
     setArial();
     setInvisibleCharacters();
     setFootnotesFrozen();
     setTrailingSuggestionSpace();
+    setSelectionCommentButton();
 
     const cleanups = [
       addListener(arialToggle, "change", setArial),
       addListener(invisibleCharactersToggle, "change", setInvisibleCharacters),
       addListener(freezeFootnotesToggle, "change", setFootnotesFrozen),
       addListener(trailingSuggestionSpaceToggle, "change", setTrailingSuggestionSpace),
+      addListener(selectionCommentButtonToggle, "change", setSelectionCommentButton),
     ];
     return () => cleanups.forEach((cleanup) => cleanup());
   }, []);
