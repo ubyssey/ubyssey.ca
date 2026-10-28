@@ -14,7 +14,9 @@
 .pm-link-bubble {
     position: absolute;
     z-index: 30;
-    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
     border: 1px solid #c4c6cf;
     border-radius: 4px;
     background: #fcf9f8;
@@ -23,29 +25,56 @@
 }
 
 .pm-link-bubble a {
+    padding: 6px 8px;
+    padding-right: 1px;
     color: var(--color-ubyssey_blue);
     text-decoration: underline;
     overflow-wrap: anywhere;
 }
 
+.pm-link-bubble a:hover {
+    color: #00508d;;
+}
+
+.pm-link-bubble__action {
+    border: none;
+    border-radius: 0;
+    background: #fcf9f8;
+    color: #1b1b1b;
+    font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 2px 3px;
+    padding-right: 1px;
+    margin: 0;
+}
+
+.pm-link-bubble__action:hover {
+    background: #eeeff2;
+}
+
+.pm-link-bubble__action--remove {
+    color: #a11f1f;
+}
+
 .pm-selection-comment-bubble {
     position: absolute;
     z-index: 30;
-    transform: translate(6px, 6px);
+    transform: translate(0px, 0px);
 }
 
 .pm-selection-comment-bubble button {
-    padding: 6px 10px;
-    border: 1px solid #a17a00;
+    padding: 6px 2px;
+    border: 1px solid #dbdbdb;
     border-radius: 4px;
-    background: #ffe066;
+    background: #f7f6f6 !important;
     color: #1b1b1b;
     font: 600 12px/1 sans-serif;
     cursor: pointer;
 }
 
 .pm-selection-comment-bubble button:hover {
-    background: #ffd43b;
+    background: #d6d6d6 !important;
 }
 
 .page-shadow-preview {
