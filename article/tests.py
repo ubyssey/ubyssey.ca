@@ -3,11 +3,66 @@ from django.test import SimpleTestCase
 from types import SimpleNamespace
 
 from article.models import ArticleFeaturedMediaOrderable, ArticlePage, StandardArticlePage
+from article.video_header import supported_video_file, youtube_embed_url, youtube_video_id
 from article.templatetags.articletags import format_redesign_extended_byline, normalize_redesign_byline
 from article.views import _author_fixture, _fixture_credit_contributors, _sample_story
 
 
 class ArticleRedesignMappingTests(SimpleTestCase):
+    def test_full_bleed_video_header_is_available_in_the_editor(self):
+        panel = next(
+            panel for panel in StandardArticlePage.content_panels
+            if getattr(panel, "heading", None) == "Full-bleed video header"
+        )
+        fields = [child.field_name for child in panel.children]
+        self.assertEqual(fields, [
+            "video_header_enabled", "video_preview_file", "video_preview_youtube_url",
+            "video_full_file", "video_full_youtube_url",
+        ])
+
+    def test_video_header_uses_existing_full_bleed_layout(self):
+        article = SimpleNamespace(video_header_enabled=True)
+        self.assertEqual(StandardArticlePage.redesign_header_layout.fget(article), "full-bleed")
+
+    def test_youtube_header_links_are_restricted_to_youtube(self):
+        video_id = "dQw4w9WgXcQ"
+        for url in (
+            f"https://www.youtube.com/watch?v={video_id}",
+            f"https://youtu.be/{video_id}",
+            f"https://www.youtube.com/live/{video_id}",
+            f"https://www.youtube-nocookie.com/embed/{video_id}",
+        ):
+            with self.subTest(url=url):
+                self.assertEqual(youtube_video_id(url), video_id)
+        self.assertIsNone(youtube_video_id(f"https://youtube.com.evil.example/watch?v={video_id}"))
+        self.assertIsNone(youtube_video_id("https://www.youtube.com/watch?v=invalid"))
+        self.assertIn("mute=1&loop=1&playlist=", youtube_embed_url(f"https://youtu.be/{video_id}", preview=True))
+        self.assertNotIn("mute=1", youtube_embed_url(f"https://youtu.be/{video_id}"))
+
+    def test_native_header_uploads_use_browser_video_formats(self):
+        self.assertTrue(supported_video_file(SimpleNamespace(file=SimpleNamespace(name="headers/preview.MP4"))))
+        self.assertTrue(supported_video_file(SimpleNamespace(file=SimpleNamespace(name="headers/full.webm"))))
+        self.assertFalse(supported_video_file(SimpleNamespace(file=SimpleNamespace(name="headers/full.mov"))))
+
+    def test_video_hero_renders_youtube_preview_and_fullscreen_control(self):
+        featured = SimpleNamespace(image=None, alt_text="", cover_caption="", credit="")
+        article = SimpleNamespace(
+            featured_media=SimpleNamespace(first=lambda: featured),
+            header=[SimpleNamespace(value={})],
+            redesign_header_layout="full-bleed", video_header_enabled=True,
+            current_section="News", category_page=None, title="Video story", lede="",
+            video_preview_youtube_url="https://youtu.be/dQw4w9WgXcQ",
+            video_preview_embed_url=youtube_embed_url("https://youtu.be/dQw4w9WgXcQ", preview=True),
+            video_full_youtube_url="https://youtu.be/dQw4w9WgXcQ",
+            video_full_embed_url=youtube_embed_url("https://youtu.be/dQw4w9WgXcQ"),
+        )
+        rendered = render_to_string("article/components/redesign_hero.html", {"article": article})
+        self.assertIn("data-video-preview", rendered)
+        self.assertIn("data-video-open", rendered)
+        self.assertIn("data-video-player", rendered)
+        self.assertIn("data-full-video-kind=\"youtube\"", rendered)
+        self.assertIn('referrerpolicy="strict-origin-when-cross-origin"', rendered)
+
     def test_standard_article_editor_exposes_covered_sport(self):
         front_page = next(
             panel for panel in StandardArticlePage.content_panels

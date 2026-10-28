@@ -8,6 +8,7 @@ from dbtemplates.models import Template as DBTemplate
 from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.db.models import fields, Q, Max
 from django.db.models.fields import CharField
 from django.shortcuts import render
@@ -33,6 +34,7 @@ from ubyssey.validators import validate_youtube_url
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from article import blocks_inner_article as blocks_inner_article
 from article import blocks_storystream
+from article.video_header import supported_video_file, youtube_embed_url, youtube_video_id
 
 from wagtail.admin.panels import (
     # Panels
@@ -1597,11 +1599,42 @@ class StandardArticlePage(ArticlePage):
             raise ValidationError({
                 "game_fixture": "A fixture can only be linked when Story form is Game Analysis."
             })
+        if self.video_header_enabled:
+            errors = {}
+            for part in ("preview", "full"):
+                file = getattr(self, f"video_{part}_file")
+                youtube_url = getattr(self, f"video_{part}_youtube_url")
+                if bool(file) == bool(youtube_url):
+                    errors[f"video_{part}_youtube_url"] = "Choose exactly one source: an uploaded video or a YouTube URL."
+                if file and not supported_video_file(file):
+                    errors[f"video_{part}_file"] = "Upload an MP4 or WebM video."
+                if youtube_url and not youtube_video_id(youtube_url):
+                    errors[f"video_{part}_youtube_url"] = "Enter a valid YouTube video URL."
+            if errors:
+                raise ValidationError(errors)
     full_bleed_nav_color = models.CharField(
         max_length=5,
         choices=(("white", "White"), ("black", "Black")),
         default="white",
         help_text="Full-bleed articles only: choose the navigation colour that contrasts with the hero image.",
+    )
+    video_header_enabled = models.BooleanField(
+        default=False,
+        help_text="Show a full-bleed looping video preview instead of the article cover image. Keep a featured image for story cards and as a fallback.",
+    )
+    video_preview_file = models.ForeignKey(
+        "wagtaildocs.Document", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Upload an MP4 or WebM for the muted, looping preview. Leave empty if using a YouTube link.",
+    )
+    video_preview_youtube_url = models.URLField(
+        blank=True, default="", help_text="Alternatively, paste a YouTube URL for the muted, looping preview.",
+    )
+    video_full_file = models.ForeignKey(
+        "wagtaildocs.Document", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Upload an MP4 or WebM for fullscreen playback. Leave empty if using a YouTube link.",
+    )
+    video_full_youtube_url = models.URLField(
+        blank=True, default="", help_text="Alternatively, paste the YouTube URL for fullscreen playback.",
     )
 
     #-----Field attributes-----
@@ -1836,6 +1869,18 @@ class StandardArticlePage(ArticlePage):
         ), # Optional Header/Banner Fields
         MultiFieldPanel(
             [
+                FieldPanel("video_header_enabled"),
+                FieldPanel("video_preview_file"),
+                FieldPanel("video_preview_youtube_url"),
+                FieldPanel("video_full_file"),
+                FieldPanel("video_full_youtube_url"),
+            ],
+            heading="Full-bleed video header",
+            help_text="Enable this layout, then provide one preview source and one full-video source. They may be different videos or use different source types.",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
                 HelpPanel(
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
@@ -1923,12 +1968,30 @@ class StandardArticlePage(ArticlePage):
     @property
     def redesign_header_layout(self):
         """Map every legacy header choice onto the five redesign layouts."""
+        if self.video_header_enabled:
+            return "full-bleed"
         layout = "bottom-image"
         if self.header:
             first = self.header[0]
             if first.block_type in ("standard_header", "standard_header_with_youtube_video"):
                 layout = first.value.get("layout") or layout
         return self.redesign_layout_for_header(layout)
+
+    @property
+    def video_preview_file_url(self):
+        return self.video_preview_file.file.url if self.video_preview_file_id else ""
+
+    @property
+    def video_preview_embed_url(self):
+        return youtube_embed_url(self.video_preview_youtube_url, preview=True)
+
+    @property
+    def video_full_file_url(self):
+        return self.video_full_file.file.url if self.video_full_file_id else ""
+
+    @property
+    def video_full_embed_url(self):
+        return youtube_embed_url(self.video_full_youtube_url)
 
     @staticmethod
     def redesign_layout_for_header(layout):
