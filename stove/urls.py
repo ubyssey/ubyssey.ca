@@ -14,6 +14,11 @@ urlpatterns = [
     path("stories/<int:section_id>/create", views.create_page, name="content_tracker_create_page"),
     path("stories/<int:page_id>/update", views.update_content_tracker, name="update_content_tracker"),
     path("views/copy", views.copy, name="view_copy_department"),
+    path("views/newsletter", views.newsletter, name="view_newsletter"),
+    re_path(r"^views/newsletter/(?P<page>\d+)$", views.load_newsletter_stories, name="content_tracker_load_newsletter"),
+    path("views/newsletter/featured-media/<int:page_id>", views.featured_image_url, name="content_tracker_featured_media"),
+    path("homepage/scheduled", views.homepage_scheduled_stories, name="homepage_scheduled_stories"),
+
 
     path("page/<int:page_id>", views.manuscript_editor, name="manuscript_editor"),
     path("page/<int:page_id>/authors", views.manuscript_authors, name="manuscript_authors"),
