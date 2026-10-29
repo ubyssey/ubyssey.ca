@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.urls import re_path
 
 from . import views
@@ -35,4 +35,6 @@ urlpatterns = [
     path("section/<int:page_id>", views.section_editor, name="section_editor"),
     path("liveblog/<int:page_id>", views.liveblog_editor, name="liveblog_editor"),
     path("api/v2/", api_router.urls),
+    
+    path("notifications/", include("notifications.urls")),
 ]

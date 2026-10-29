@@ -65,7 +65,9 @@ if settings.DEBUG:
         path("archive/", auxiliary_preview, {"page_key": "archive"}, name="archive-redesign-preview"),
         path("about/our-journalism/", auxiliary_preview, {"page_key": "our-journalism"}, name="journalism-redesign-preview"),
         path("contact/masthead/", auxiliary_preview, {"page_key": "masthead"}, name="masthead-redesign-preview"),
+        path("webpush/", include("webpush.urls")),
         path("about/ups-board/", auxiliary_preview, {"page_key": "ups-board"}, name="board-redesign-preview"),
+        
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
         # tricks for testing error page, which is otherwise not viewable with DEBUG on. inspired by https://spapas.github.io/2015/04/29/django-show-404-page/ (which is outdated)
         # and https://stackoverflow.com/questions/42882243/how-do-you-pass-exception-argument-to-403-view for the need for kwargs

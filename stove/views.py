@@ -25,6 +25,8 @@ from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
 from django.db.models import Min
 
+from notifications.stove_notifcations import StoryCreated, send_stove_notification
+
 from django.core.exceptions import ValidationError
 
 from stove.editors.collaboration.persistence import (
@@ -167,8 +169,12 @@ def create_page(request, section_id):
         newPage.delete()
         return HttpResponseBadRequest(err.messages) 
     
-
-    return JsonResponse(newPage.get_latest_revision_as_object().to_json(), safe=False)
+    latest_revision_data = newPage.get_latest_revision_as_object()
+    
+    for index, item in enumerate(data["article_authors"] or []):
+        send_stove_notification(item["author"], StoryCreated(item["author_role"], data["title"], latest_revision_data.pk))
+    
+    return JsonResponse(latest_revision_data.to_json(), safe=False)
 
 @login_required
 def load_page(request, page_id):

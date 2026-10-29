@@ -1,4 +1,5 @@
 {% load static %}
+{% load webpush_notifications %}
 
 
 {% block stylesheet %}
@@ -8,12 +9,16 @@
 {# Temporarily adding this here since it doesn't extend stove base #}
 <link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
 
+{% webpush_header %}
+
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
-<div id="content-tracker">
 
+
+{% webpush_button %}
+<div id="content-tracker">
 </div>
 
 

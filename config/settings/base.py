@@ -143,6 +143,8 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+
+    'webpush',
 ]
 
 if DEBUG:
@@ -276,6 +278,12 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
+}
+
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "BPT6TuEGSl5gWC2nii2J-P80tFywt4X7AI9Ijw0q_k4PyS0waE3gfCG8gLPR_z-m7x-G62lcF5MBuK_pAcFhbiY",
+    "VAPID_PRIVATE_KEY": env("VAPID_PRIVATE_KEY"),
+    "VAPID_ADMIN_EMAIL": "mailto: <bfaraone920@gmail.com>"
 }
 
 GS_LOCATION = None
