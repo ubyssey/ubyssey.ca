@@ -1,0 +1,7 @@
+{% extends "games_base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Games</h2>
+<a href="{% url 'games:crosswords' 1 %}">Crossword</a>
+{% endblock %}
