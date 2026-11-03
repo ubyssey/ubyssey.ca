@@ -18,11 +18,16 @@ from stove.editors.collaboration.presence import PRESENCE_REFRESH_SECONDS, refre
 # Formerly was 0.25
 PERSISTENCE_BATCH_DELAY_SECONDS = 0.1
 
+# Websocket close codes https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/code
+# TODO make them all constants probably
+
 # Used in collabaration.js, code sent which tells clients to reload vs applying local YJS state (maybe a bad move)
 RESTORE_CLOSE_CODE = 4410
 
 # Sent after changes are merged in
 PERSISTENCE_ACK_MESSAGE = 4
+# Sent when persistence fails, so client can retry
+PERSISTENCE_ERROR_MESSAGE = 5
 
 
 # This channel is used to tell all connected editors that a restore happened
@@ -90,6 +95,7 @@ class PageYjsConsumer(YjsConsumer):
         )
         
         await self._websocket_shim.send(create_sync_message(self.ydoc))
+        await self.send(bytes_data=create_persistence_ack_message(self.ydoc.get_state()))
 
     async def disconnect(self, code):
         if self._presence_refresh_task:
@@ -167,6 +173,11 @@ class PageYjsConsumer(YjsConsumer):
                 await self._persist_updates(updates, messages)
                 del self._pending_updates[:batch_size]
                 del self._pending_messages[:batch_size]
+        except Exception:
+            self._pending_updates = []
+            self._pending_messages = []
+            await self.send(bytes_data=bytes([PERSISTENCE_ERROR_MESSAGE]))
+            await self.close(code=1011)
         finally:
             self._persistence_task = None
 

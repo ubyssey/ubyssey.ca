@@ -153,10 +153,16 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     const currentPreviewId = ++previewId;
     const requestRevision = previewRevision;
     const controller = new AbortController();
+    const syncCheckpoint = collaboration?.createSyncCheckpoint?.();
     activePreviewRequest = controller;
 
     try {
-      const html = await fetchPreviewHtml(form.dataset.previewUrl, formData, controller.signal);
+      const { html, syncing } = await fetchPreviewHtml(form.dataset.previewUrl, formData, controller.signal);
+      if (syncing) {
+        syncCheckpoint.waitForRemoteUpdate().then((synchronized) => {
+          if (synchronized) schedulePreview({ immediate: true });
+        });
+      }
       
       // Checks that preview matches YJS snapshot
       const currentStreamDocs = snapshotStreamDocuments(pageEditorState.streamEditors);
@@ -166,6 +172,7 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
         || !html
         || !previewMatchesYjsSnapshot(pageRoot, html, currentStreamDocs)
       ) return;
+      
       if (renderOnly && focusedPageRichText(pageRoot)) {
         deferredPagePreview = true;
         deferredRenderOnly = true;
@@ -231,7 +238,7 @@ export function setupHistoryPreviewButtons(pageRoot, cancelPreview) {
 
         if (!isCurrent) formData.set("revision", revisionId);
 
-        const html = await fetchPreviewHtml(form.dataset.previewUrl, formData);
+        const { html } = await fetchPreviewHtml(form.dataset.previewUrl, formData);
         const currentStreamDocs = isCurrent ? snapshotStreamDocuments(pageEditorState.streamEditors) : null;
         if (
           currentPreviewId !== historyPreviewId

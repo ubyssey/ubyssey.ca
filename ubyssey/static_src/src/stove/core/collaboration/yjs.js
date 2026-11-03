@@ -9,6 +9,7 @@ const WAGTAIL_EDITING_CLOSE_CODE = 4411;
 
 // Sends message that changes were merged in
 const PERSISTENCE_ACK_MESSAGE = 4;
+const PERSISTENCE_ERROR_MESSAGE = 5;
 const PENDING_UPDATES_PERSIST_DELAY = 250;
 
 function pendingUpdatesStorageKey(collaborationId, userId) {
@@ -95,19 +96,21 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
     // Removes server acknowledged updates from pendingDoc
     acknowledge(stateVector) {
       const remainingUpdate = Y.encodeStateAsUpdate(pendingDoc, stateVector);
-      
+      const hadPendingUpdates = hasPendingUpdates;
+
       pendingDoc.destroy();
       pendingDoc = new Y.Doc();
       
       if (!hasUpdate(remainingUpdate)) {
         hasPendingUpdates = false;
         removePersistedUpdates();
-        return;
+        return hadPendingUpdates;
       }
 
       Y.applyUpdate(pendingDoc, remainingUpdate);
       hasPendingUpdates = true;
       schedulePersist();
+      return false;
     },
     // Flush bypasses the debounce and immediately persists
     flush() {
@@ -128,6 +131,42 @@ export function collaborationSnapshot(ydoc) {
   return {
     stateVector: buffer.toBase64(Y.encodeStateVector(ydoc)),
     update: buffer.toBase64(Y.encodeStateAsUpdate(ydoc)),
+  };
+}
+
+function createRemoteUpdateTracker(ydoc, provider) {
+  let updateVersion = 0;
+  const pendingCheckpoints = new Set();
+
+  ydoc.on("update", (_update, origin) => {
+    if (origin !== provider) return;
+
+    updateVersion += 1;
+    for (const checkpoint of [...pendingCheckpoints]) {
+      if (updateVersion > checkpoint.version) checkpoint.resolve(true);
+    }
+  });
+
+  return () => {
+    const version = updateVersion;
+    return {
+      waitForRemoteUpdate(timeoutMs = 10000) {
+        if (updateVersion > version) return Promise.resolve(true);
+
+        return new Promise((resolve) => {
+          const checkpoint = {
+            version,
+            resolve(value) {
+              window.clearTimeout(timeout);
+              pendingCheckpoints.delete(checkpoint);
+              resolve(value);
+            },
+          };
+          const timeout = window.setTimeout(() => checkpoint.resolve(false), timeoutMs);
+          pendingCheckpoints.add(checkpoint);
+        });
+      },
+    };
   };
 }
 
@@ -176,6 +215,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       awareness: null,
       provider: null,
       collaborationSnapshot: () => collaborationSnapshot(ydoc),
+      createSyncCheckpoint: () => null,
     };
   };
 
@@ -221,12 +261,18 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     { params: { presence: presenceId } },
   );
 
+  const createSyncCheckpoint = createRemoteUpdateTracker(ydoc, provider);
+
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
     // Ignore old server style acks
     if (!decoding.hasContent(decoder)) return;
     const stateVector = decoding.readTailAsUint8Array(decoder);
     pendingUpdates.acknowledge(stateVector);
     provider.emit("persistence-ack", []);
+  };
+
+  provider.messageHandlers[PERSISTENCE_ERROR_MESSAGE] = () => {
+    provider.emit("persistence-error", []);
   };
 
   ydoc.on("update", (update, origin) => {
@@ -278,5 +324,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     awareness: provider.awareness,
     provider,
     collaborationSnapshot: () => collaborationSnapshot(ydoc),
+    createSyncCheckpoint,
   };
 }
