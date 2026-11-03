@@ -17,11 +17,9 @@ function pendingUpdatesStorageKey(collaborationId, userId) {
 }
 
 // Stores local updates that haven't been confirmed by server in localstorage
-function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackCollaborationId = null }) {
+function createPendingUpdatesStore({ ydoc, collaborationId, userId }) {
   const key = pendingUpdatesStorageKey(collaborationId, userId);
-  const fallbackKey = fallbackCollaborationId ? pendingUpdatesStorageKey(fallbackCollaborationId, userId) : null;
   let pendingDoc = new Y.Doc();
-  let restoredFallback = false;
   let persistenceTimer = null;
   let hasPendingUpdates = false;
 
@@ -32,15 +30,12 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   }
 
   try {
-    for (const storageKey of [key, fallbackKey]) {
-      if (!storageKey || (storageKey === key && fallbackKey === key)) continue;
-      const stored = window.localStorage.getItem(storageKey);
-      if (!stored) continue;
+    const stored = window.localStorage.getItem(key);
+    if (stored) {
       const update = buffer.fromBase64(stored);
       Y.applyUpdate(ydoc, update);
       Y.applyUpdate(pendingDoc, update);
-      hasPendingUpdates ||= hasUpdate(update);
-      if (storageKey === fallbackKey) restoredFallback = true;
+      hasPendingUpdates = hasUpdate(update);
     }
   } catch (error) {
     console.warn("Unable to restore pending collaborative changes", error);
@@ -77,15 +72,6 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
       console.warn("Unable to clear persisted collaborative changes", error);
     }
   };
-
-  if (restoredFallback && fallbackKey && fallbackKey !== key) {
-    persist();
-    try {
-      window.localStorage.removeItem(fallbackKey);
-    } catch (error) {
-      console.warn("Unable to migrate pending collaborative changes", error);
-    }
-  }
 
   return {
     record(update) {
@@ -190,6 +176,16 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
   let collaborationId = null;
 
+  let recovery = null;
+  try {
+    const recoveryKey = pendingUpdatesStorageKey(fallbackCollaborationId, currentEditor.id);
+    const update = window.localStorage.getItem(recoveryKey);
+    recovery = update ? { key: recoveryKey, format: "yjs-update", update } : null;
+  } catch (error) {
+    console.warn("Unable to read collaborative recovery data", error);
+  }
+
+
   const updatePresence = (action) => fetch(presenceUrl, {
     method: "POST",
     credentials: "same-origin",
@@ -216,6 +212,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       provider: null,
       collaborationSnapshot: () => collaborationSnapshot(ydoc),
       createSyncCheckpoint: () => null,
+      recovery,
     };
   };
 
@@ -250,7 +247,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   const pendingUpdates = createPendingUpdatesStore({
     ydoc,
     collaborationId,
-    fallbackCollaborationId,
     userId: currentEditor.id,
   });
 
@@ -258,7 +254,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     websocketUrl,
     "yjs",
     ydoc,
-    { params: { presence: presenceId } },
+    { params: { presence: presenceId, collaboration: collaborationId } },
   );
 
   const createSyncCheckpoint = createRemoteUpdateTracker(ydoc, provider);
@@ -325,5 +321,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     provider,
     collaborationSnapshot: () => collaborationSnapshot(ydoc),
     createSyncCheckpoint,
+    recovery,
   };
 }

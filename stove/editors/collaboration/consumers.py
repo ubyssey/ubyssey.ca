@@ -35,8 +35,8 @@ def page_restore_group_name(page_id):
     return f"stove_yjs_restore_{page_id}"
 
 
-def page_yjs_group_name(page_id):
-    return f"stove_yjs_{page_id}"
+def page_yjs_group_name(page_id, collaboration_id):
+    return f"stove_yjs_{page_id}_{collaboration_id}"
 
 
 # State vector contains clock for each client ID
@@ -66,13 +66,27 @@ class PageYjsConsumer(YjsConsumer):
         self.page_id = int(self.scope["url_route"]["kwargs"]["page_id"])
         query_params = parse_qs(self.scope["query_string"].decode())
         self.presence_id = query_params.get("presence", [None])[0]
+        expected_collaboration_id = query_params.get("collaboration", [None])[0]
 
         if self.presence_id is None:
             await self.close(code=4400)
             return
+
+        try:
+            expected_collaboration_id = int(expected_collaboration_id)
+        except (TypeError, ValueError):
+            await self.close(code=RESTORE_CLOSE_CODE)
+            return
+
         if not await self._page_exists():
             await self.close(code=4404)
             return
+
+        self.collaboration_id, saved_document = await self._load_document()
+        if self.collaboration_id != expected_collaboration_id:
+            await self.close(code=RESTORE_CLOSE_CODE)
+            return
+
         if not await self._refresh_stove_presence():
             await self.close(code=4400)
             return
@@ -84,7 +98,6 @@ class PageYjsConsumer(YjsConsumer):
         await self.channel_layer.group_add(self.room_name, self.channel_name)
         await self.channel_layer.group_add(page_restore_group_name(self.page_id), self.channel_name)
 
-        self.collaboration_id, saved_document = await self._load_document()
         if saved_document:
             self.ydoc.apply_update(saved_document)
 
@@ -120,7 +133,7 @@ class PageYjsConsumer(YjsConsumer):
             await self._persist_updates(updates, messages)
 
     def make_room_name(self):
-        return page_yjs_group_name(self.page_id)
+        return page_yjs_group_name(self.page_id, self.collaboration_id)
 
     async def page_restored(self, event):
         await self.close(code=RESTORE_CLOSE_CODE)
@@ -184,6 +197,7 @@ class PageYjsConsumer(YjsConsumer):
     async def _persist_updates(self, updates, messages):
         state_vector = await self._merge_document(updates)
         if state_vector is None:
+            await self.close(code=RESTORE_CLOSE_CODE)
             return
 
         for message in messages:

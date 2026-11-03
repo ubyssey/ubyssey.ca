@@ -45,6 +45,6 @@ def _close_stove_clients(page_id):
         return
 
     async_to_sync(channel_layer.group_send)(
-        f"stove_yjs_{page_id}",
+        f"stove_yjs_restore_{page_id}",
         {"type": "page.wagtail_edit_started"},
     )

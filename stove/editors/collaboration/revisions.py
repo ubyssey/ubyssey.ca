@@ -74,12 +74,12 @@ def _merge_collaboration_snapshot(session, data):
             session.save(update_fields=["document", "updated_at"])
             if recovered_update != EMPTY_YJS_UPDATE:
                 transaction.on_commit(
-                    lambda: send_page_update(session.page_id, recovered_update)
+                    lambda: send_page_update(session.page_id, session.pk, recovered_update)
                 )
 
     if missing_update_to_sync is not None:
         transaction.on_commit(
-            lambda update=missing_update_to_sync: send_page_update(session.page_id, update)
+            lambda update=missing_update_to_sync: send_page_update(session.page_id, session.pk, update)
         )
 
     return missing_update_to_sync is not None

@@ -80,12 +80,12 @@ def update_page_collaboration(page, data):
 
         collaboration.document = document.get_update()
         collaboration.save(update_fields=["document", "updated_at"])
-        transaction.on_commit(lambda: send_page_update(page.pk, update))
+        transaction.on_commit(lambda: send_page_update(page.pk, collaboration.pk, update))
 
 
-def send_page_update(page_id, update):
+def send_page_update(page_id, collaboration_id, update):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        page_yjs_group_name(page_id),
+        page_yjs_group_name(page_id, collaboration_id),
         {"type": "send_message", "message": create_update_message(update)},
     )
