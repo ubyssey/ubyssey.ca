@@ -9,6 +9,7 @@ const WAGTAIL_EDITING_CLOSE_CODE = 4411;
 
 // Sends message that changes were merged in
 const PERSISTENCE_ACK_MESSAGE = 4;
+const PERSISTENCE_ERROR_MESSAGE = 5;
 const PENDING_UPDATES_PERSIST_DELAY = 250;
 
 function pendingUpdatesStorageKey(collaborationId, userId) {
@@ -16,11 +17,9 @@ function pendingUpdatesStorageKey(collaborationId, userId) {
 }
 
 // Stores local updates that haven't been confirmed by server in localstorage
-function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackCollaborationId = null }) {
+function createPendingUpdatesStore({ ydoc, collaborationId, userId }) {
   const key = pendingUpdatesStorageKey(collaborationId, userId);
-  const fallbackKey = fallbackCollaborationId ? pendingUpdatesStorageKey(fallbackCollaborationId, userId) : null;
   let pendingDoc = new Y.Doc();
-  let restoredFallback = false;
   let persistenceTimer = null;
   let hasPendingUpdates = false;
 
@@ -31,15 +30,12 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   }
 
   try {
-    for (const storageKey of [key, fallbackKey]) {
-      if (!storageKey || (storageKey === key && fallbackKey === key)) continue;
-      const stored = window.localStorage.getItem(storageKey);
-      if (!stored) continue;
+    const stored = window.localStorage.getItem(key);
+    if (stored) {
       const update = buffer.fromBase64(stored);
       Y.applyUpdate(ydoc, update);
       Y.applyUpdate(pendingDoc, update);
-      hasPendingUpdates ||= hasUpdate(update);
-      if (storageKey === fallbackKey) restoredFallback = true;
+      hasPendingUpdates = hasUpdate(update);
     }
   } catch (error) {
     console.warn("Unable to restore pending collaborative changes", error);
@@ -77,15 +73,6 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
     }
   };
 
-  if (restoredFallback && fallbackKey && fallbackKey !== key) {
-    persist();
-    try {
-      window.localStorage.removeItem(fallbackKey);
-    } catch (error) {
-      console.warn("Unable to migrate pending collaborative changes", error);
-    }
-  }
-
   return {
     record(update) {
       Y.applyUpdate(pendingDoc, update);
@@ -95,19 +82,21 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
     // Removes server acknowledged updates from pendingDoc
     acknowledge(stateVector) {
       const remainingUpdate = Y.encodeStateAsUpdate(pendingDoc, stateVector);
-      
+      const hadPendingUpdates = hasPendingUpdates;
+
       pendingDoc.destroy();
       pendingDoc = new Y.Doc();
       
       if (!hasUpdate(remainingUpdate)) {
         hasPendingUpdates = false;
         removePersistedUpdates();
-        return;
+        return hadPendingUpdates;
       }
 
       Y.applyUpdate(pendingDoc, remainingUpdate);
       hasPendingUpdates = true;
       schedulePersist();
+      return false;
     },
     // Flush bypasses the debounce and immediately persists
     flush() {
@@ -131,6 +120,42 @@ export function collaborationSnapshot(ydoc) {
   };
 }
 
+function createRemoteUpdateTracker(ydoc, provider) {
+  let updateVersion = 0;
+  const pendingCheckpoints = new Set();
+
+  ydoc.on("update", (_update, origin) => {
+    if (origin !== provider) return;
+
+    updateVersion += 1;
+    for (const checkpoint of [...pendingCheckpoints]) {
+      if (updateVersion > checkpoint.version) checkpoint.resolve(true);
+    }
+  });
+
+  return () => {
+    const version = updateVersion;
+    return {
+      waitForRemoteUpdate(timeoutMs = 10000) {
+        if (updateVersion > version) return Promise.resolve(true);
+
+        return new Promise((resolve) => {
+          const checkpoint = {
+            version,
+            resolve(value) {
+              window.clearTimeout(timeout);
+              pendingCheckpoints.delete(checkpoint);
+              resolve(value);
+            },
+          };
+          const timeout = window.setTimeout(() => checkpoint.resolve(false), timeoutMs);
+          pendingCheckpoints.add(checkpoint);
+        });
+      },
+    };
+  };
+}
+
 const date = new Date().getDate();
 const EDITOR_COLOURS = [
   "#9ec756",
@@ -150,6 +175,16 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   const presenceId = crypto.randomUUID();
   const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
   let collaborationId = null;
+
+  let recovery = null;
+  try {
+    const recoveryKey = pendingUpdatesStorageKey(fallbackCollaborationId, currentEditor.id);
+    const update = window.localStorage.getItem(recoveryKey);
+    recovery = update ? { key: recoveryKey, format: "yjs-update", update } : null;
+  } catch (error) {
+    console.warn("Unable to read collaborative recovery data", error);
+  }
+
 
   const updatePresence = (action) => fetch(presenceUrl, {
     method: "POST",
@@ -176,6 +211,8 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       awareness: null,
       provider: null,
       collaborationSnapshot: () => collaborationSnapshot(ydoc),
+      createSyncCheckpoint: () => null,
+      recovery,
     };
   };
 
@@ -210,7 +247,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   const pendingUpdates = createPendingUpdatesStore({
     ydoc,
     collaborationId,
-    fallbackCollaborationId,
     userId: currentEditor.id,
   });
 
@@ -218,8 +254,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     websocketUrl,
     "yjs",
     ydoc,
-    { params: { presence: presenceId } },
+    { params: { presence: presenceId, collaboration: collaborationId } },
   );
+
+  const createSyncCheckpoint = createRemoteUpdateTracker(ydoc, provider);
 
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
     // Ignore old server style acks
@@ -227,6 +265,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     const stateVector = decoding.readTailAsUint8Array(decoder);
     pendingUpdates.acknowledge(stateVector);
     provider.emit("persistence-ack", []);
+  };
+
+  provider.messageHandlers[PERSISTENCE_ERROR_MESSAGE] = () => {
+    provider.emit("persistence-error", []);
   };
 
   ydoc.on("update", (update, origin) => {
@@ -278,5 +320,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     awareness: provider.awareness,
     provider,
     collaborationSnapshot: () => collaborationSnapshot(ydoc),
+    createSyncCheckpoint,
+    recovery,
   };
 }

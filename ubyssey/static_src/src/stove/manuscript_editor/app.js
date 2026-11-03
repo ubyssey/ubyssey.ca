@@ -158,6 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupManualRevisionSave(form, {
     formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    collaboration,
   });
 
   setupWagtailHandoff(form, {

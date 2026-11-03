@@ -50,18 +50,19 @@ def _merge_collaboration_snapshot(session, data):
     if session.document:
         document.apply_update(bytes(session.document))
 
-    is_stale = False
+    missing_update_to_sync = None
     if state_vector is not None:
         missing_update = document.get_update(state_vector)
         if missing_update != EMPTY_YJS_UPDATE:
             if submitted_update is None:
-                is_stale = True
+                missing_update_to_sync = missing_update
             else:
                 submitted_document = Doc()
                 submitted_document.apply_update(submitted_update)
                 submitted_state = submitted_document.get_update()
                 submitted_document.apply_update(missing_update)
-                is_stale = submitted_document.get_update() != submitted_state
+                if submitted_document.get_update() != submitted_state:
+                    missing_update_to_sync = missing_update
 
     if submitted_update is not None:
         previous_state = document.get_state()
@@ -73,10 +74,15 @@ def _merge_collaboration_snapshot(session, data):
             session.save(update_fields=["document", "updated_at"])
             if recovered_update != EMPTY_YJS_UPDATE:
                 transaction.on_commit(
-                    lambda: send_page_update(session.page_id, recovered_update)
+                    lambda: send_page_update(session.page_id, session.pk, recovered_update)
                 )
 
-    return is_stale
+    if missing_update_to_sync is not None:
+        transaction.on_commit(
+            lambda update=missing_update_to_sync: send_page_update(session.page_id, session.pk, update)
+        )
+
+    return missing_update_to_sync is not None
 
 
 # Saves editor data as a draft, combining autosave revisions within the window into a single revision

@@ -57,13 +57,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     async onPreviewRevision(revisionId, isCurrent) {
       const formData = new FormData(form);
       if (!isCurrent) formData.set("revision", revisionId);
-      const html = await fetchPreviewHtml(form.dataset.previewUrl, formData);
+      const { html } = await fetchPreviewHtml(form.dataset.previewUrl, formData);
       if (html) replacePagePreviewHtml(pageRoot, html);
     },
   });
 
   setupManualRevisionSave(form, {
     formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    collaboration,
   });
 
   setupWagtailHandoff(form, {

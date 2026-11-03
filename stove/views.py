@@ -716,7 +716,7 @@ def editor_page_revisions(request, page_id):
 def editor_page_save_revision(request, page_id):
     saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
     if saved_revision is STALE_AUTOSAVE:
-        return JsonResponse({"errors": errors}, status=409)
+        return JsonResponse({"errors": errors, "syncing": True}, status=409)
     if errors or saved_revision is None:
         return JsonResponse({"errors": errors or {"__all__": ["Failed to save revision."]}}, status=422)
 
@@ -798,9 +798,14 @@ def editor_page_preview(request, page_id):
     autosaved = False
     if revision is None and not render_only:
         saved_revision = autosave_page_revision(page.id, request.POST, request.user)
+        if saved_revision is STALE_AUTOSAVE:
+            return JsonResponse(
+                {"errors": {"__all__": ["The document is synchronizing. Please try again."]}, "syncing": True},
+                status=409,
+            )
         if saved_revision is None:
             return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
-        autosaved = saved_revision is not STALE_AUTOSAVE
+        autosaved = True
 
     return JsonResponse({"errors": editor_errors, "html": html, "autosaved": autosaved})
 
@@ -821,6 +826,8 @@ def editor_page_full_preview(request, page_id):
         return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
 
     saved_revision = autosave_page_revision(page.id, request.POST, request.user)
+    if saved_revision is STALE_AUTOSAVE:
+        return HttpResponse("Document is synchronizing. Please try View Preview again.", status=409)
     if saved_revision is None:
         return HttpResponse("Failed to save. Please try again.", status=422)
 

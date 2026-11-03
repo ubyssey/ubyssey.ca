@@ -72,9 +72,11 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
     const originalText = restoreButton.textContent;
     restoreButton.disabled = true;
     restoreButton.textContent = "Restoring...";
+
     try {
       const formData = formDataBeforeRestore();
       formData.set("revision", revisionId);
+      
       const payload = await restoreRevision(form.dataset.restoreUrl, formData);
       if (payload.errors) {
         const message = Object.entries(payload.errors)
@@ -100,7 +102,7 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
   }
 }
 
-export function setupManualRevisionSave(form, { formDataForSave }) {
+export function setupManualRevisionSave(form, { formDataForSave, collaboration = null }) {
   const saveButton = form?.querySelector("[data-save-revision]");
   if (!saveButton || !form.dataset.saveRevisionUrl) return;
 
@@ -111,7 +113,23 @@ export function setupManualRevisionSave(form, { formDataForSave }) {
     saveButton.textContent = "Saving...";
 
     try {
-      const payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+      let syncCheckpoint = collaboration.createSyncCheckpoint();
+      let payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+      let syncRetries = 0;
+
+      while (payload.syncing && syncRetries < 3) {
+        saveButton.textContent = "Syncing...";
+        const synchronized = await syncCheckpoint.waitForRemoteUpdate();
+        if (!synchronized) {
+          alert("The document is still synchronizing. Please try saving again once the connection recovers.");
+          return;
+        }
+
+        syncRetries += 1;
+        syncCheckpoint = collaboration.createSyncCheckpoint();
+        payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+      }
+
       if (payload.errors) {
         const message = Object.entries(payload.errors)
           .map(([field, messages]) => {
