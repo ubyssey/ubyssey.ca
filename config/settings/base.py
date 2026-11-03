@@ -144,6 +144,8 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+
+    'games',
 ]
 
 if DEBUG:
