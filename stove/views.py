@@ -25,7 +25,7 @@ from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
 from django.db.models import Min
 
-from notifications.stove_notifcations import StoryCreated, send_stove_notification
+from notifications.stove_notifcations import StoryCreated, StatusChange, send_stove_notification, send_stove_notification_grouped
 
 from django.core.exceptions import ValidationError
 
@@ -281,6 +281,14 @@ def load_partial_stories(request, section="all", page=1):
         result = result[:-1] + "]"
     return JsonResponse(result, safe=False)
 
+#doesn't really belong here, to be moved in the future
+def send_status_update_notification(page: Page, status):
+    article_page = page.specific
+    notification = StatusChange(page.article_status, status, page.title)
+
+    if status == 2:
+        send_stove_notification_grouped([editor.author.full_name for editor in article_page.editors], notification)
+        
 def update_article_status(page, status, user):
     if page.article_status == status: return page
 
@@ -294,6 +302,8 @@ def update_article_status(page, status, user):
             print()
     except Exception as error:
         warnings.warn(f"Failed to update workflow status for {page.pk}: {error}")
+    
+    send_status_update_notification(page, status)
         
     page.article_status = status
     return page

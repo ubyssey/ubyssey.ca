@@ -1980,6 +1980,10 @@ class StandardArticlePage(ArticlePage):
         """
         authors = list(self.article_authors.filter(author_role="author"))
         return authors or list(self.article_authors.all()[:1])
+    
+    @property
+    def editors(self):
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor"])
 
     @property
     def story_form_statement(self):
