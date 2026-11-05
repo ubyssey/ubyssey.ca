@@ -48,10 +48,9 @@ from stove.editors.homepage.preview import prepare_homepage_preview
 from stove.editors.manuscript.submission import process_editor_forms
 from stove.editors.collaboration.revisions import (
     restore_page_revision,
-    save_page_revision,
     autosave_page_revision,
     save_manual_page_revision,
-    STALE_AUTOSAVE,
+    get_collaboration_form_data,
 )
 from stove.editors.collaboration.wagtail import (
     active_wagtail_editing_sessions,
@@ -409,7 +408,7 @@ def update_content_tracker(request, page_id):
     page.save_revision(user=request.user, log_action=True, changed=False)
     if save_as_draft:
         page.save(user=request.user)
-    update_page_collaboration(page, data)
+    update_page_collaboration(page, data, request.user)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)
@@ -427,7 +426,7 @@ def page_collaboration(request, page_id):
         return HttpResponseBadRequest("Missing collaboration presence id")
 
     try:
-        collaboration_id, document = initialize_page_collaboration(page_id, request.body, presence_id)
+        collaboration_id, document = initialize_page_collaboration(page_id, request.body, presence_id, request.user)
     except Page.DoesNotExist:
         return HttpResponse(status=404)
 
@@ -491,12 +490,12 @@ def manuscript_editor(request, page_id):
 
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
-        saved_revision = None
-        editor_errors, page_form, article_authors_form, featured_media_form = process_editor_forms(page, request.POST)
+        saved_revision, editor_errors = save_manual_page_revision(page_id, request.POST, request.user, action=action)
 
-        if not editor_errors:
-            page, saved_revision, save_errors = save_page_revision(page, action, request.user)
-            editor_errors.update(save_errors)
+        page = get_latest_page(page_id)
+        page_form = create_page_form(page)
+        article_authors_form = create_article_authors_form(page)
+        featured_media_form = create_featured_media_form(page)
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("accept", ""):
             if editor_errors:
@@ -715,13 +714,12 @@ def editor_page_revisions(request, page_id):
 @require_POST
 def editor_page_save_revision(request, page_id):
     saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
-    if saved_revision is STALE_AUTOSAVE:
-        return JsonResponse({"errors": errors, "syncing": True}, status=409)
     if errors or saved_revision is None:
         return JsonResponse({"errors": errors or {"__all__": ["Failed to save revision."]}}, status=422)
 
     if request.POST.get("handoff_to_wagtail") == "1":
-        hand_page_to_wagtail(page_id)
+        if not hand_page_to_wagtail(page_id):
+            return JsonResponse({"errors": {"__all__": ["Could not be saved? Try again and let systems know."]}}, status=422)
 
     return JsonResponse({
         "ok": True,
@@ -764,7 +762,11 @@ def editor_page_preview(request, page_id):
     if revision_id:
         revision = get_object_or_404(page.revisions, id=revision_id)
 
-    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_editor_preview(page, request.POST, revision)
+    try:
+        editor_data = get_collaboration_form_data(page, request.POST, request.user) if revision is None else request.POST
+    except ValidationError as error:
+        return JsonResponse({"errors": {"__all__": error.messages}}, status=422)
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_editor_preview(page, editor_data, revision)
 
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=422)
@@ -794,20 +796,7 @@ def editor_page_preview(request, page_id):
             status=422,
         )
 
-    render_only = request.POST.get("render_only") == "1"
-    autosaved = False
-    if revision is None and not render_only:
-        saved_revision = autosave_page_revision(page.id, request.POST, request.user)
-        if saved_revision is STALE_AUTOSAVE:
-            return JsonResponse(
-                {"errors": {"__all__": ["The document is synchronizing. Please try again."]}, "syncing": True},
-                status=409,
-            )
-        if saved_revision is None:
-            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
-        autosaved = True
-
-    return JsonResponse({"errors": editor_errors, "html": html, "autosaved": autosaved})
+    return JsonResponse({"errors": editor_errors, "html": html})
 
 
 @login_required
@@ -815,7 +804,12 @@ def editor_page_preview(request, page_id):
 def editor_page_full_preview(request, page_id):
     page = get_latest_page(page_id)
 
-    editor_errors, _, _, _ = process_editor_forms(page, request.POST)
+    try:
+        editor_data = get_collaboration_form_data(page, request.POST, request.user)
+    except ValidationError as error:
+        return JsonResponse({"errors": {"__all__": error.messages}}, status=422)
+
+    editor_errors, _, _, _ = process_editor_forms(page, editor_data)
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
 
@@ -825,9 +819,7 @@ def editor_page_full_preview(request, page_id):
         warnings.warn(f"Failed to render editor preview for page {page_id}")
         return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
 
-    saved_revision = autosave_page_revision(page.id, request.POST, request.user)
-    if saved_revision is STALE_AUTOSAVE:
-        return HttpResponse("Document is synchronizing. Please try View Preview again.", status=409)
+    saved_revision = autosave_page_revision(page.id, request.user)
     if saved_revision is None:
         return HttpResponse("Failed to save. Please try again.", status=422)
 

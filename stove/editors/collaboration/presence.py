@@ -14,11 +14,15 @@ PRESENCE_REFRESH_SECONDS = 60
 PRESENCE_TIMEOUT_SECONDS = 180
 
 
-def claim_page_presence(page_id, presence_id):
+def claim_page_presence(page_id, presence_id, collaboration_id=None):
     now = timezone.now()
     with transaction.atomic():
         Page.objects.select_for_update().get(pk=page_id)
-        if not PageCollaboration.objects.filter(page_id=page_id).exists():
+        collaboration = PageCollaboration.objects.filter(page_id=page_id)
+
+        if collaboration_id is not None:
+            collaboration = collaboration.filter(pk=collaboration_id)
+        if not collaboration.exists():
             return False
 
         PageCollaborationPresence.objects.filter(expires_at__lt=now).delete()

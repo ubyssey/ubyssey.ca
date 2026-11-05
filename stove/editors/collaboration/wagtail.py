@@ -33,6 +33,15 @@ def hand_page_to_wagtail(page_id, only_if_stove_is_inactive=False):
         if only_if_stove_is_inactive and page_is_being_edited_in_stove(page_id):
             return False
 
+        collaboration = PageCollaboration.objects.select_for_update().filter(page_id=page_id).first()
+        if collaboration and collaboration.revision_pending:
+            # More evil circular import evasion
+            from .revisions import autosave_page_revision
+
+            if autosave_page_revision(page_id, collaboration_id=collaboration.pk) is None:
+                return False
+
+        # Potentially remove the deletion given the server side serialization
         PageCollaboration.objects.filter(page_id=page_id).delete()
         PageCollaborationPresence.objects.filter(page_id=page_id).delete()
         transaction.on_commit(lambda: _close_stove_clients(page_id))

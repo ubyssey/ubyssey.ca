@@ -159,7 +159,7 @@ export function setupMetadataCollaboration(form, metadata) {
           applyAuthors(value);
         } else if (key.startsWith(FIELD_PREFIX)) {
           bindText(key, value);
-          applyField(key.slice(FIELD_PREFIX.length), value);
+          applyField(key.slice(FIELD_PREFIX.length), value, { remote: event.transaction.origin !== "metadata-input" });
         }
       });
     } finally {

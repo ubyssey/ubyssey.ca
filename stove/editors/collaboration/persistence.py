@@ -21,7 +21,7 @@ def _update_shared_text(metadata, key, value):
         metadata[key] = Text(value)
 
 
-def initialize_page_collaboration(page_id, initial_update, presence_id):
+def initialize_page_collaboration(page_id, initial_update, presence_id, user=None):
     document = Doc()
     document.apply_update(initial_update)
 
@@ -30,14 +30,16 @@ def initialize_page_collaboration(page_id, initial_update, presence_id):
         collaboration, _ = PageCollaboration.objects.get_or_create(page=page)
         if not collaboration.document:
             collaboration.document = initial_update
-            collaboration.save(update_fields=["document", "updated_at"])
+            collaboration.revision_pending = True
+            collaboration.last_edited_by = user
+            collaboration.save(update_fields=["document", "updated_at", "revision_pending", "last_edited_by"])
 
         claim_page_presence(page_id, presence_id)
 
         return collaboration.pk, bytes(collaboration.document)
 
 
-def update_page_collaboration(page, data):
+def update_page_collaboration(page, data, user=None):
     with transaction.atomic():
         Page.objects.select_for_update().only("pk").get(pk=page.pk)
         collaboration = PageCollaboration.objects.select_for_update().filter(page_id=page.pk).first()
@@ -79,7 +81,9 @@ def update_page_collaboration(page, data):
             return
 
         collaboration.document = document.get_update()
-        collaboration.save(update_fields=["document", "updated_at"])
+        collaboration.revision_pending = True
+        collaboration.last_edited_by = user
+        collaboration.save(update_fields=["document", "updated_at", "revision_pending", "last_edited_by"])
         transaction.on_commit(lambda: send_page_update(page.pk, collaboration.pk, update))
 
 
