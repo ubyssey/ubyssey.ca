@@ -4,7 +4,7 @@
 import { findPageBlock, syncSelectedPageBlockEditor } from "./selection.js";
 
 import { pageEditorState } from "../state.js";
-import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../prosemirror/persistence.js";
+import { snapshotStreamDocuments } from "../prosemirror/persistence.js";
 import { syncPageEditorsFromMetadata } from "./editables.jsx";
 import { setupRevisionHistory } from "../revisions/revision_history.js";
 import { focusedPageBlock, previewMatchesYjsSnapshot, replacePagePreviewHtml, replaceSelectedBlockPreviewHtml, replaceUnfocusedPageBlocks, restoreCurrentPageControls } from "./dom.js";
@@ -31,7 +31,7 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
   let activePreviewRequest = null;
   const historySelect = document.querySelector("[data-history-select]");
 
-  const schedulePreview = ({ deferIfPageFocused = false, deferUntilBlur = false, immediate = false, debounceMs = null, blockOnly = false, block = null, renderOnly = false } = {}) => {
+  const schedulePreview = ({ deferIfPageFocused = false, immediate = false, debounceMs = null, blockOnly = false, block = null, renderOnly = false } = {}) => {
     const delay = debounceMs ?? (immediate ? 0 : 500);
     if (timer && timerDelay === 0 && delay > 0) return;
 
@@ -48,7 +48,7 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     if (deferForFocus) {
       deferredPagePreview = true;
       deferredRenderOnly = renderOnly;
-      if (deferUntilBlur || !scheduledPreserveFocusedBlock) return;
+      if (!scheduledPreserveFocusedBlock) return;
     } else {
       deferredPagePreview = false;
       deferredRenderOnly = false;
@@ -126,7 +126,7 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
   const appendCollaborationSnapshot = (event) => {
     const snapshot = collaboration?.collaborationSnapshot?.();
     if (!snapshot) return;
-    event.formData.set("collaboration_state_vector", snapshot.stateVector);
+    if (snapshot.collaborationId) event.formData.set("collaboration_id", snapshot.collaborationId);
     event.formData.set("collaboration_update", snapshot.update);
   };
   const scheduleAfterPageFocus = () => setTimeout(flushDeferredPreview, 0);
@@ -146,23 +146,15 @@ export function createPreviewRefresh(form, pageRoot, collaboration = null) {
     const preserveFocusedBlock = scheduledPreserveFocusedBlock;
     const renderOnly = scheduledRenderOnly;
     scheduledRenderOnly = false;
-    const streamDocs = snapshotStreamDocuments(pageEditorState.streamEditors);
-    const formData = formDataWithStreamDocuments(form, streamDocs);
-    if (renderOnly) formData.set("render_only", "1");
+    const formData = new FormData(form);
 
     const currentPreviewId = ++previewId;
     const requestRevision = previewRevision;
     const controller = new AbortController();
-    const syncCheckpoint = collaboration?.createSyncCheckpoint?.();
     activePreviewRequest = controller;
 
     try {
-      const { html, syncing } = await fetchPreviewHtml(form.dataset.previewUrl, formData, controller.signal);
-      if (syncing) {
-        syncCheckpoint.waitForRemoteUpdate().then((synchronized) => {
-          if (synchronized) schedulePreview({ immediate: true });
-        });
-      }
+      const { html } = await fetchPreviewHtml(form.dataset.previewUrl, formData, controller.signal);
       
       // Checks that preview matches YJS snapshot
       const currentStreamDocs = snapshotStreamDocuments(pageEditorState.streamEditors);
@@ -227,14 +219,13 @@ export function setupHistoryPreviewButtons(pageRoot, cancelPreview) {
   let historyPreviewId = 0;
 
   setupRevisionHistory(form, {
-    formDataBeforeRestore: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    formDataBeforeRestore: () => new FormData(form),
     onHistoryModeChange: (active) => form.classList.toggle("page-editor--history", active),
     async onPreviewRevision(revisionId, isCurrent) {
       const currentPreviewId = ++historyPreviewId;
       try {
         cancelPreview();
-        const streamDocs = isCurrent ? snapshotStreamDocuments(pageEditorState.streamEditors) : null;
-        const formData = isCurrent ? formDataWithStreamDocuments(form, streamDocs) : new FormData(form);
+        const formData = new FormData(form);
 
         if (!isCurrent) formData.set("revision", revisionId);
 

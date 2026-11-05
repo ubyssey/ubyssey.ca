@@ -113,46 +113,10 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId }) {
   };
 }
 
-export function collaborationSnapshot(ydoc) {
+export function collaborationSnapshot(ydoc, collaborationId = null) {
   return {
-    stateVector: buffer.toBase64(Y.encodeStateVector(ydoc)),
+    collaborationId,
     update: buffer.toBase64(Y.encodeStateAsUpdate(ydoc)),
-  };
-}
-
-function createRemoteUpdateTracker(ydoc, provider) {
-  let updateVersion = 0;
-  const pendingCheckpoints = new Set();
-
-  ydoc.on("update", (_update, origin) => {
-    if (origin !== provider) return;
-
-    updateVersion += 1;
-    for (const checkpoint of [...pendingCheckpoints]) {
-      if (updateVersion > checkpoint.version) checkpoint.resolve(true);
-    }
-  });
-
-  return () => {
-    const version = updateVersion;
-    return {
-      waitForRemoteUpdate(timeoutMs = 10000) {
-        if (updateVersion > version) return Promise.resolve(true);
-
-        return new Promise((resolve) => {
-          const checkpoint = {
-            version,
-            resolve(value) {
-              window.clearTimeout(timeout);
-              pendingCheckpoints.delete(checkpoint);
-              resolve(value);
-            },
-          };
-          const timeout = window.setTimeout(() => checkpoint.resolve(false), timeoutMs);
-          pendingCheckpoints.add(checkpoint);
-        });
-      },
-    };
   };
 }
 
@@ -170,9 +134,9 @@ function editorColour(id) {
 }
 
 // Creates Y.doc, and sends initial update (this allows reconnections to work) and handles response (gets new remote changes)
-export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, presenceUrl, websocketUrl }) {
+export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl }) {
   const ydoc = new Y.Doc();
-  const presenceId = crypto.randomUUID();
+  let presenceId = crypto.randomUUID();
   const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
   let collaborationId = null;
 
@@ -185,16 +149,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     console.warn("Unable to read collaborative recovery data", error);
   }
 
-
-  const updatePresence = (action) => fetch(presenceUrl, {
-    method: "POST",
-    credentials: "same-origin",
-    keepalive: action === "release",
-    headers: {
-      "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value || "",
-    },
-    body: new URLSearchParams({ action, presence: presenceId }),
-  });
 
   const startOfflineRecovery = () => {
     const pendingUpdates = createPendingUpdatesStore({
@@ -211,7 +165,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
       awareness: null,
       provider: null,
       collaborationSnapshot: () => collaborationSnapshot(ydoc),
-      createSyncCheckpoint: () => null,
       recovery,
     };
   };
@@ -257,8 +210,6 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     { params: { presence: presenceId, collaboration: collaborationId } },
   );
 
-  const createSyncCheckpoint = createRemoteUpdateTracker(ydoc, provider);
-
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
     // Ignore old server style acks
     if (!decoding.hasContent(decoder)) return;
@@ -286,20 +237,27 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   // Restores currently reload for everyone so potentially pretty dangerous (not sure how else to implement)
   provider.on("connection-close", (event) => {
     if (event?.code === RESTORE_CLOSE_CODE) {
+      provider.shouldConnect = false;
       pendingUpdates.clear();
       window.location.reload();
+      return;
     }
     if (event?.code === WAGTAIL_EDITING_CLOSE_CODE) {
+      provider.shouldConnect = false;
       pendingUpdates.clear();
       const form = document.querySelector("[data-page-form]");
       if (form.dataset.wagtailHandoffPending) return;
       window.location.assign(form.dataset.stoveHomeUrl || "/stove/");
+      return;
+    }
+    if (event) {
+      presenceId = crypto.randomUUID();
+      provider.params.presence = presenceId;
     }
   });
 
   window.addEventListener("pagehide", (event) => {
     pendingUpdates.flush();
-    updatePresence("release").catch(() => {});
     provider.awareness.setLocalState(null);
     if (event.persisted) provider.disconnect();
     else provider.destroy();
@@ -307,20 +265,13 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
 
   window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
-    updatePresence("claim")
-      .then((response) => {
-        if (!response.ok) throw new Error("Unable to resume Stove editor");
-        provider.connect();
-        provider.awareness.setLocalStateField("user", user);
-      })
-      .catch((error) => console.warn(error));
+    window.location.reload();
   });
   return {
     ydoc,
     awareness: provider.awareness,
     provider,
-    collaborationSnapshot: () => collaborationSnapshot(ydoc),
-    createSyncCheckpoint,
+    collaborationSnapshot: () => collaborationSnapshot(ydoc, collaborationId),
     recovery,
   };
 }

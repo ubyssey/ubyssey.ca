@@ -9,7 +9,6 @@ import { createStreamEditor, createStreamBlockDraft, createBlockEditor, createEm
 import { createPagePreview } from "../core/preview/index.jsx";
 import { pageEditorState } from "../core/state.js";
 import { createPageHistory } from "../core/collaboration/history.js";
-import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent);
@@ -63,12 +62,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   setupManualRevisionSave(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
-    collaboration,
+    formDataForSave: () => new FormData(form),
   });
 
   setupWagtailHandoff(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    formDataForSave: () => new FormData(form),
     beforeSave: () => {
       pageEditorState.users.kickOtherUsers();
       return pageEditorState.users.waitForOtherUsersToLeave();

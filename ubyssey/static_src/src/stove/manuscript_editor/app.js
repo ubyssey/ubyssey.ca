@@ -1,7 +1,6 @@
 // Entrypoint
 
 import { ACTIVE_SUGGESTION_THREAD_META } from "../core/richtext/plugins.js";
-import { appendStreamDocumentsToFormData, formDataWithStreamDocuments, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
 import { mountShortcutDocumentation } from "../core/richtext/shortcut_help.jsx";
 import { createManuscriptToolbar } from "./chrome/toolbar.jsx";
 import { mountManuscriptChrome } from "./chrome/mount.jsx";
@@ -101,10 +100,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     ));
   }
 
-  form.addEventListener("formdata", (event) => {
-    appendStreamDocumentsToFormData(event.formData, snapshotStreamDocuments(pageEditorState.streamEditors));
-  });
-
   form.addEventListener("focusin", (event) => {
     if (event.target.closest?.("[data-collaborative-metadata]")) {
       pageEditorState.history.stopCapturing();
@@ -157,12 +152,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   preview.setupHistory();
 
   setupManualRevisionSave(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
-    collaboration,
+    formDataForSave: () => new FormData(form),
   });
 
   setupWagtailHandoff(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    formDataForSave: () => new FormData(form),
     beforeSave: () => {
       pageEditorState.users.kickOtherUsers();
       return pageEditorState.users.waitForOtherUsersToLeave();

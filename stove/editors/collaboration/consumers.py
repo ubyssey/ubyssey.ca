@@ -1,7 +1,9 @@
 import asyncio
+import logging
 from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from django.db import transaction
+from django.utils import timezone
 
 # pycrdt provides python bindings to rust port of YJS which is the library used here for collaboration
 from pycrdt import Doc, YMessageType, YSyncMessageType, create_sync_message, read_message
@@ -13,13 +15,16 @@ from pycrdt.websocket.django_channels_consumer import (
 from wagtail.models import Page
 from stove.models import PageCollaboration
 from stove.editors.collaboration.wagtail import WAGTAIL_EDITING_CLOSE_CODE
-from stove.editors.collaboration.presence import PRESENCE_REFRESH_SECONDS, refresh_page_presence
+from stove.editors.collaboration.presence import (
+    PRESENCE_REFRESH_SECONDS,
+    claim_page_presence,
+    refresh_page_presence,
+    release_page_presence,
+)
 
 # Formerly was 0.25
 PERSISTENCE_BATCH_DELAY_SECONDS = 0.1
-
-# Websocket close codes https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/code
-# TODO make them all constants probably
+REVISION_AUTOSAVE_DELAY_SECONDS = 2
 
 # Used in collabaration.js, code sent which tells clients to reload vs applying local YJS state (maybe a bad move)
 RESTORE_CLOSE_CODE = 4410
@@ -28,6 +33,8 @@ RESTORE_CLOSE_CODE = 4410
 PERSISTENCE_ACK_MESSAGE = 4
 # Sent when persistence fails, so client can retry
 PERSISTENCE_ERROR_MESSAGE = 5
+
+logger = logging.getLogger(__name__)
 
 
 # This channel is used to tell all connected editors that a restore happened
@@ -53,7 +60,11 @@ class PageYjsConsumer(YjsConsumer):
         self._pending_messages = []
         self._persistence_task = None
         self._presence_refresh_task = None
+        self._autosave_task = None
+        self._autosave_pending = False
         self.presence_id = None
+        self._presence_claimed = False
+        self._last_presence_seen_at = None
         # Page collaboration object PK
         self.collaboration_id = None
 
@@ -87,9 +98,10 @@ class PageYjsConsumer(YjsConsumer):
             await self.close(code=RESTORE_CLOSE_CODE)
             return
 
-        if not await self._refresh_stove_presence():
+        if not await self._claim_stove_presence():
             await self.close(code=4400)
             return
+        self._presence_claimed = True
 
         self.room_name = self.make_room_name()
         self.ydoc = Doc()
@@ -98,17 +110,24 @@ class PageYjsConsumer(YjsConsumer):
         await self.channel_layer.group_add(self.room_name, self.channel_name)
         await self.channel_layer.group_add(page_restore_group_name(self.page_id), self.channel_name)
 
+        collaboration_id, saved_document = await self._load_document()
+        if collaboration_id != self.collaboration_id:
+            await self.close(code=RESTORE_CLOSE_CODE)
+            return
+
         if saved_document:
             self.ydoc.apply_update(saved_document)
 
         await self.accept()
 
+        self._last_presence_seen_at = timezone.now()
         self._presence_refresh_task = asyncio.create_task(
             self._refresh_stove_presence_loop()
         )
         
         await self._websocket_shim.send(create_sync_message(self.ydoc))
         await self.send(bytes_data=create_persistence_ack_message(self.ydoc.get_state()))
+        self._schedule_revision_autosave()
 
     async def disconnect(self, code):
         if self._presence_refresh_task:
@@ -122,15 +141,24 @@ class PageYjsConsumer(YjsConsumer):
             )
         if self.room_name:
             await super().disconnect(code)
-        # Waits for last edits here before saving
-        if self._persistence_task:
-            await asyncio.gather(self._persistence_task, return_exceptions=True)
-        if self._pending_updates:
-            updates = self._pending_updates
-            messages = self._pending_messages
-            self._pending_updates = []
-            self._pending_messages = []
-            await self._persist_updates(updates, messages)
+        try:
+            if self._persistence_task:
+                await asyncio.gather(self._persistence_task, return_exceptions=True)
+            if self._pending_updates:
+                updates = self._pending_updates
+                messages = self._pending_messages
+                self._pending_updates = []
+                self._pending_messages = []
+                await self._persist_updates(updates, messages)
+        finally:
+            if self._presence_claimed:
+                await database_sync_to_async(release_page_presence)(self.presence_id)
+                self._presence_claimed = False
+
+        if self._autosave_task:
+            await asyncio.gather(self._autosave_task, return_exceptions=True)
+        if self.collaboration_id is not None:
+            await self._save_revision()
 
     def make_room_name(self):
         return page_yjs_group_name(self.page_id, self.collaboration_id)
@@ -142,9 +170,10 @@ class PageYjsConsumer(YjsConsumer):
         await self.close(code=WAGTAIL_EDITING_CLOSE_CODE)
 
     async def receive(self, text_data=None, bytes_data=None):
-        if bytes_data is None:
+        if not bytes_data:
             return
 
+        self._last_presence_seen_at = timezone.now()
         if bytes_data[0] != YMessageType.SYNC:
             await self.group_send_message(bytes_data)
             return
@@ -176,6 +205,9 @@ class PageYjsConsumer(YjsConsumer):
 
         await super().send_message(message_wrapper)
 
+        if message and message[0] == YMessageType.SYNC:
+            self._schedule_revision_autosave()
+
     async def _persist_update_batches(self):
         try:
             while self._pending_updates:
@@ -205,11 +237,39 @@ class PageYjsConsumer(YjsConsumer):
 
         # Confirms only for editor that sent the changes
         await self.send(bytes_data=create_persistence_ack_message(state_vector))
+        self._schedule_revision_autosave()
+
+    # Autosave loop
+    def _schedule_revision_autosave(self):
+        self._autosave_pending = True
+        if self._autosave_task is None:
+            self._autosave_task = asyncio.create_task(self._autosave_revisions())
+
+    async def _autosave_revisions(self):
+        try:
+            while self._autosave_pending:
+                self._autosave_pending = False
+                await asyncio.sleep(REVISION_AUTOSAVE_DELAY_SECONDS)
+                await self._save_revision()
+        finally:
+            self._autosave_task = None
+
+    @database_sync_to_async
+    def _save_revision(self):
+        # Evil circular import evasion
+        from .revisions import autosave_page_revision
+
+        try:
+            return autosave_page_revision(self.page_id, collaboration_id=self.collaboration_id)
+        except Exception:
+            # Revision still pending so can retry
+            logger.exception("Could not autosave Stove page %s", self.page_id)
 
     async def _refresh_stove_presence_loop(self):
         while True:
             await asyncio.sleep(PRESENCE_REFRESH_SECONDS)
             if not await self._refresh_stove_presence():
+                await self.close(code=1001)
                 return
 
     @database_sync_to_async
@@ -217,8 +277,12 @@ class PageYjsConsumer(YjsConsumer):
         return Page.objects.filter(pk=self.page_id).exists()
 
     @database_sync_to_async
+    def _claim_stove_presence(self):
+        return claim_page_presence(self.page_id, self.presence_id, self.collaboration_id)
+
+    @database_sync_to_async
     def _refresh_stove_presence(self):
-        return refresh_page_presence(self.page_id, self.presence_id)
+        return refresh_page_presence(self.page_id, self.presence_id, self._last_presence_seen_at)
 
     @database_sync_to_async
     def _load_document(self):
@@ -240,13 +304,20 @@ class PageYjsConsumer(YjsConsumer):
                 pk=self.collaboration_id,
                 page_id=self.page_id,
             ).first()
+
             if session is None:
                 return None
+
             ydoc = Doc()
             if session.document:
                 ydoc.apply_update(bytes(session.document))
             for update in updates:
                 ydoc.apply_update(update)
-            session.document = ydoc.get_update()
-            session.save(update_fields=["document", "updated_at"])
+            document = ydoc.get_update()
+
+            if document != bytes(session.document):
+                session.document = document
+                session.revision_pending = True
+                session.last_edited_by = self.scope["user"]
+                session.save(update_fields=["document", "updated_at", "revision_pending", "last_edited_by"])
             return ydoc.get_state()
