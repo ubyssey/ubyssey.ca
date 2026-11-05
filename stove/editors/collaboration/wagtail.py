@@ -34,7 +34,7 @@ def hand_page_to_wagtail(page_id, only_if_stove_is_inactive=False):
             return False
 
         collaboration = PageCollaboration.objects.select_for_update().filter(page_id=page_id).first()
-        if collaboration and collaboration.revision_pending:
+        if collaboration and collaboration.document and collaboration.revision_pending:
             # More evil circular import evasion
             from .revisions import autosave_page_revision
 

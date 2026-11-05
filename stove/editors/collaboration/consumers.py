@@ -3,6 +3,7 @@ import logging
 from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from django.db import transaction
+from django.utils import timezone
 
 # pycrdt provides python bindings to rust port of YJS which is the library used here for collaboration
 from pycrdt import Doc, YMessageType, YSyncMessageType, create_sync_message, read_message
@@ -63,6 +64,7 @@ class PageYjsConsumer(YjsConsumer):
         self._autosave_pending = False
         self.presence_id = None
         self._presence_claimed = False
+        self._last_presence_seen_at = None
         # Page collaboration object PK
         self.collaboration_id = None
 
@@ -118,6 +120,7 @@ class PageYjsConsumer(YjsConsumer):
 
         await self.accept()
 
+        self._last_presence_seen_at = timezone.now()
         self._presence_refresh_task = asyncio.create_task(
             self._refresh_stove_presence_loop()
         )
@@ -167,9 +170,10 @@ class PageYjsConsumer(YjsConsumer):
         await self.close(code=WAGTAIL_EDITING_CLOSE_CODE)
 
     async def receive(self, text_data=None, bytes_data=None):
-        if bytes_data is None:
+        if not bytes_data:
             return
 
+        self._last_presence_seen_at = timezone.now()
         if bytes_data[0] != YMessageType.SYNC:
             await self.group_send_message(bytes_data)
             return
@@ -265,6 +269,7 @@ class PageYjsConsumer(YjsConsumer):
         while True:
             await asyncio.sleep(PRESENCE_REFRESH_SECONDS)
             if not await self._refresh_stove_presence():
+                await self.close(code=1001)
                 return
 
     @database_sync_to_async
@@ -277,7 +282,7 @@ class PageYjsConsumer(YjsConsumer):
 
     @database_sync_to_async
     def _refresh_stove_presence(self):
-        return refresh_page_presence(self.page_id, self.presence_id)
+        return refresh_page_presence(self.page_id, self.presence_id, self._last_presence_seen_at)
 
     @database_sync_to_async
     def _load_document(self):

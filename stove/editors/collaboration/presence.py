@@ -36,9 +36,16 @@ def claim_page_presence(page_id, presence_id, collaboration_id=None):
         return True
 
 
-def refresh_page_presence(page_id, presence_id):
+def refresh_page_presence(page_id, presence_id, last_seen_at=None):
+    now = timezone.now()
+
+    expires_at = (last_seen_at or now) + timedelta(seconds=PRESENCE_TIMEOUT_SECONDS)
+    if expires_at <= now:
+        release_page_presence(presence_id)
+        return False
+
     return bool(PageCollaborationPresence.objects.filter(page_id=page_id, presence_id=presence_id).update(
-        expires_at=timezone.now() + timedelta(seconds=PRESENCE_TIMEOUT_SECONDS),
+        expires_at=expires_at,
     ))
 
 
