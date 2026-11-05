@@ -10,6 +10,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.urls import reverse
 from wagtail.models import Page, Site
 from article.models import ArticlePage, StandardArticlePage, ArticleDeadline
 from article.models import ArticleAuthorsOrderable
@@ -841,6 +842,23 @@ def get_editor_preview_template(page):
     elif isinstance(page, HomePage):
         return "editors/preview/homepage_preview.html"
     return f"editors/preview/{page._meta.model_name}_preview.html"
+
+
+@login_required
+@require_POST
+def force_wagtail_handoff(request, page_id):
+    page = get_object_or_404(Page, pk=page_id)
+
+    if hand_page_to_wagtail(page_id):
+        return redirect("wagtailadmin_pages:edit", page_id)
+
+    return render(request, "editors/wagtail_handoff_required.html", {
+        "page_id": page_id,
+        "stove_editor_url": (
+            reverse("stove:homepage_editor") if isinstance(page.specific, HomePage)
+            else reverse("stove:manuscript_editor", args=[page_id])
+        ),
+    }, status=422)
 
 
 def get_user_display_name(user):

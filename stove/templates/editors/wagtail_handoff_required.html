@@ -4,8 +4,12 @@
 
 {% block content %}
 <section class="page-editor-message">
-    <h1>Switch from Stove to Wagtail first</h1>
-    <p>This page has collaborative Stove changes. Opening it directly in Wagtail could discard unsaved work.</p>
-    <p><a href="{{ stove_editor_url }}">Open the Stove editor</a>, then use <strong>View in Wagtail</strong> to save and kick people editing Stove (check with them first maybe).</p>
+    <h1>People may be editing in Stove which could conflict with Wagtail edits</h1>
+    <p><a href="{{ stove_editor_url }}">Open the Stove editor to check</a></p>
+    <p>There also may be no one as this is somewhat broken right now (we'll fix this soon I swear) so if no one is in, feel free to hit the button below to enter Wagtail</p>
+    <form method="post" action="{% url 'stove:force_wagtail_handoff' page_id %}">
+        {% csrf_token %}
+        <button type="submit">Save changes, and kick everyone from Stove and enter Wagtail</button>
+    </form>
 </section>
 {% endblock %}
