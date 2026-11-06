@@ -4,7 +4,9 @@
 
 {% block content %}
 <h2>Crossword</h2>
-<a href="{% url 'games:home' %}">Home</a>
+{% with games_home=page.get_games_home %}
+    <a href="{% pageurl games_home %}">Home</a>
+{% endwith %}
 <p>{{ id }}</p>
 <p>{{ test_data|json_script:"test_data" }}</p>
 <p>Test</p>
@@ -12,7 +14,5 @@
 {{ puzzle_data|json_script:"crossword-puzzle-data" }}
 <div id="crossword-renderer"></div>
 <script src="{% static 'ubyssey/js/crossword-renderer.js' %}" defer></script>
-
-<p>Gorp</p>
 
 {% endblock %}

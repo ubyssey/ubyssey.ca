@@ -6,7 +6,7 @@ from . import views
 app_name = "games"
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    #path("", views.home, name="home"),
     # Change to something like this in the future /gametype/year/month/day/
-    path("crosswords/<int:id>", views.crosswords, name="crosswords"),
+    #path("crosswords/<int:id>/", views.crosswords, name="crosswords"),
 ]

@@ -3,5 +3,13 @@
 
 {% block content %}
 <h2>Games</h2>
-<a href="{% url 'games:crosswords' 1 %}">Crossword</a>
+<ul>
+    {% for puzzle in crossword_puzzles %}
+        <li>
+            <a href="{{ puzzle.url }}">{{ puzzle.title }}</a>
+        </li>
+    {% empty %}
+        <li>No puzzles found!</li>
+    {% endfor %}
+</ul>
 {% endblock %}
