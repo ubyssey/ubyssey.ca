@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     websocketUrl: protocol + "//" + window.location.host + "/ws/stove/manuscript/" + pageId,
   });
 
+  if (!collaboration) return;
+
   pageEditorState.awareness = collaboration.awareness;
   pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
   pageEditorState.footnoteTexts = collaboration.ydoc.getMap("footnoteTexts");

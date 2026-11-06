@@ -133,41 +133,15 @@ function editorColour(id) {
   return EDITOR_COLOURS[(Number(id) + date) % EDITOR_COLOURS.length];
 }
 
-// Creates Y.doc, and sends initial update (this allows reconnections to work) and handles response (gets new remote changes)
+// Creates the collaboration object
+// - ydoc: the yjs document
+// - provider: the websocket provider
+// - awareness: users/selections
+// - collaborationSnapshot(): the full document as a yjs update and collaboration id which is the primary key for the PageCollaboration model
 export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl }) {
   const ydoc = new Y.Doc();
   let presenceId = crypto.randomUUID();
-  const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
   let collaborationId = null;
-
-  let recovery = null;
-  try {
-    const recoveryKey = pendingUpdatesStorageKey(fallbackCollaborationId, currentEditor.id);
-    const update = window.localStorage.getItem(recoveryKey);
-    recovery = update ? { key: recoveryKey, format: "yjs-update", update } : null;
-  } catch (error) {
-    console.warn("Unable to read collaborative recovery data", error);
-  }
-
-
-  const startOfflineRecovery = () => {
-    const pendingUpdates = createPendingUpdatesStore({
-      ydoc,
-      collaborationId: fallbackCollaborationId,
-      userId: currentEditor.id,
-    });
-    
-    ydoc.on("update", (update) => pendingUpdates.record(update));
-    window.addEventListener("pagehide", () => pendingUpdates.flush(), { once: true });
-    
-    return {
-      ydoc,
-      awareness: null,
-      provider: null,
-      collaborationSnapshot: () => collaborationSnapshot(ydoc),
-      recovery,
-    };
-  };
 
   try {
     const initializationRequestUrl = new URL(initializationUrl, window.location.origin);
@@ -184,17 +158,13 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     });
 
     if (!response.ok) throw new Error(`Collaboration initialization failed (${response.status})`);
-    Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
     collaborationId = response.headers.get("X-Stove-Collaboration-Id");
+    if (!collaborationId) throw new Error("Collaboration initialization did not return a document id");
+    Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
   } catch (error) {
     console.error(error);
-    Y.applyUpdate(ydoc, initialUpdate);
-    return startOfflineRecovery();
-  }
-
-  if (!collaborationId) {
-    console.error("Collaboration initialization did not return a document id");
-    return startOfflineRecovery();
+    ydoc.destroy();
+    return null;
   }
 
   const pendingUpdates = createPendingUpdatesStore({
@@ -272,6 +242,5 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     awareness: provider.awareness,
     provider,
     collaborationSnapshot: () => collaborationSnapshot(ydoc, collaborationId),
-    recovery,
   };
 }

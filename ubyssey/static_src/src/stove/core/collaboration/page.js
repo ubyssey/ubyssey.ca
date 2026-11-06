@@ -34,6 +34,9 @@ function initialYjsUpdate(streamEditors, createEmptyBlock, initializeSharedData)
 }
 
 export async function setupPageCollaboration({createEmptyBlock, currentEditor, initializationUrl, initializeSharedData = () => ({}), streamEditors, presenceUrl, websocketUrl}) {
+  const form = document.querySelector("[data-page-form]");
+  form.inert = true;
+
   const collaboration = await connectYjs({
     initialUpdate: initialYjsUpdate(streamEditors, createEmptyBlock, initializeSharedData),
     currentEditor,
@@ -42,8 +45,29 @@ export async function setupPageCollaboration({createEmptyBlock, currentEditor, i
     websocketUrl,
   });
 
+  if (!collaboration) {
+    const message = document.createElement("div");
+    message.setAttribute("role", "alert");
+
+    const heading = document.createElement("h1");
+    heading.textContent = "Could not connect to Stove";
+
+    const description = document.createElement("p");
+    description.textContent = "Check your connection and try again.";
+
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.textContent = "Try again";
+    retry.addEventListener("click", () => window.location.reload());
+
+    message.append(heading, description, retry);
+    form.replaceWith(message);
+    return null;
+  }
+
   // Check and fix stream docs before mounting
   normalizeSharedStreamDocuments(collaboration.ydoc, streamEditors);
+  form.inert = false;
 
   return {
     ...collaboration,
