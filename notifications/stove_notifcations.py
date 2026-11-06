@@ -88,10 +88,60 @@ class StatusChange(NotificationAction):
         return self.notif_body
     
     def getStoryUrl(self):
-        return f"/stove"   
+        return f"/stove"  
 
+@dataclass
+class DailyDigest(ABC):
 
+    headlines: list[str] #for now we'll just save it as a list of slugs
 
+    def getFormattedHeadlines(self) -> str:
+        parts = []
+
+        for index, value in enumerate(self.headlines, start = 1):
+            entry = f"{index}: {value}"
+            parts.append(entry)
+        
+        return "\n".join(parts)
+    
+    def getStoryCount(self) -> int:
+        return self.headlines.count
+    
+class EditorDigest(NotificationAction, DailyDigest):
+
+    def __init__(self, headlines):
+        NotificationAction.__init__(self)
+        DailyDigest.__init__(self, headlines)
+    
+    def getNotificationHeader(self):
+        return "Morning editing digest"
+    
+    def getNotificationBody(self):
+        return f"""You are assigned to edit {super().getStoryCount()} stories today:
+                   {super().getFormattedHeadlines()}
+                """
+
+    def getStoryUrl(self):
+        return f"/stove"  
+
+class AuthorDigest(NotificationAction, DailyDigest):
+
+    def __init__(self, headlines):
+        NotificationAction.__init__(self)
+        DailyDigest.__init__(self, headlines)
+    
+    def getNotificationHeader(self):
+        return "Morning author digest"
+
+    def getNotificationBody(self):
+        return f"""You are assigned to write {super().getStoryCount()} stories today:
+                   {super().getFormattedHeadlines()}
+                """
+    
+    def getStoryUrl(self):
+        return f"/stove"  
+
+    
 # note: we assume here that the Author full name is equivalent to the full name defined in their stove account    
 def send_stove_notification(author_id: str, notification_info: NotificationAction):
     
