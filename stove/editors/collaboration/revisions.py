@@ -44,7 +44,7 @@ def _decode_collaboration_value(data, field_name):
 
 def _merge_collaboration_snapshot(session, data, user):
     collaboration_id = data.get("collaboration_id")
-    if collaboration_id and collaboration_id != str(session.pk):
+    if collaboration_id != str(session.pk):
         raise ValidationError("The document has changed. Reload the editor.")
     submitted_update = _decode_collaboration_value(data, "collaboration_update")
     if submitted_update is None:
