@@ -138,7 +138,7 @@ function editorColour(id) {
 // - provider: the websocket provider
 // - awareness: users/selections
 // - collaborationSnapshot(): the full document as a yjs update and collaboration id which is the primary key for the PageCollaboration model
-export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl }) {
+export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl, onPageHide }) {
   const ydoc = new Y.Doc();
   let presenceId = crypto.randomUUID();
   let collaborationId = null;
@@ -227,6 +227,7 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   });
 
   window.addEventListener("pagehide", (event) => {
+    onPageHide?.();
     pendingUpdates.flush();
     provider.awareness.setLocalState(null);
     if (event.persisted) provider.disconnect();

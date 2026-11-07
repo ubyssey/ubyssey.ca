@@ -130,12 +130,15 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       const activeView = this;
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
       const startedCommentThreadId = transaction.getMeta(START_COMMENT_THREAD_META);
+      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
+      if (startedCommentThreadId && !isYjsSyncTransaction) {
+        pageEditorState.commentSidebar.registerPendingThread(startedCommentThreadId);
+      }
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
 
       // Thread selection
-      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
       const activateThread = activeSuggestionThreadId || (
         activeView.hasFocus() && !isYjsSyncTransaction && transaction.selectionSet
           ? annotationThreadAtSelection(nextState)

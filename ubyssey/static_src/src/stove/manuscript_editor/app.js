@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     streamEditors,
     presenceUrl: "/stove/page/" + pageId + "/collaboration/presence",
     websocketUrl: protocol + "//" + window.location.host + "/ws/stove/manuscript/" + pageId,
+    onPageHide: () => pageEditorState.commentSidebar.discardPendingThreads(),
   });
 
   if (!collaboration) return;

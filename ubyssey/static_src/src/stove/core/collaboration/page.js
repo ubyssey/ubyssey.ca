@@ -33,7 +33,7 @@ function initialYjsUpdate(streamEditors, createEmptyBlock, initializeSharedData)
   return Y.encodeStateAsUpdate(combined);
 }
 
-export async function setupPageCollaboration({createEmptyBlock, currentEditor, initializationUrl, initializeSharedData = () => ({}), streamEditors, presenceUrl, websocketUrl}) {
+export async function setupPageCollaboration({createEmptyBlock, currentEditor, initializationUrl, initializeSharedData = () => ({}), streamEditors, presenceUrl, websocketUrl, onPageHide}) {
   const form = document.querySelector("[data-page-form]");
   form.inert = true;
 
@@ -43,6 +43,7 @@ export async function setupPageCollaboration({createEmptyBlock, currentEditor, i
     initializationUrl,
     presenceUrl,
     websocketUrl,
+    onPageHide,
   });
 
   if (!collaboration) {
