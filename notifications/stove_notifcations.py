@@ -99,13 +99,19 @@ class DailyDigest(ABC):
         parts = []
 
         for index, value in enumerate(self.headlines, start = 1):
+            # important note, we can only fit 8 entries on the notification, 
+            # so if expriring articles > 8 we'll make the last line tell them how many there are in addition
+            if (index >= 8 and self.getStoryCount() > 8):
+                remaining_entries = self.getStoryCount() - 7
+                parts.append(f"and {remaining_entries} other articles. Check out Stove to see them all.")
+                break
             entry = f"{index}: {value}"
             parts.append(entry)
         
         return "\n".join(parts)
     
     def getStoryCount(self) -> int:
-        return self.headlines.count
+        return len(self.headlines)
     
 class EditorDigest(NotificationAction, DailyDigest):
 
@@ -117,9 +123,7 @@ class EditorDigest(NotificationAction, DailyDigest):
         return "Morning editing digest"
     
     def getNotificationBody(self):
-        return f"""You are assigned to edit {super().getStoryCount()} stories today:
-                   {super().getFormattedHeadlines()}
-                """
+        return f"You are assigned to edit {super().getStoryCount()} stories today: {super().getFormattedHeadlines()}"                
 
     def getStoryUrl(self):
         return f"/stove"  
@@ -134,15 +138,14 @@ class AuthorDigest(NotificationAction, DailyDigest):
         return "Morning author digest"
 
     def getNotificationBody(self):
-        return f"""You are assigned to write {super().getStoryCount()} stories today:
-                   {super().getFormattedHeadlines()}
+        return f"""You are assigned to write {super().getStoryCount()} stories today: \n\n{super().getFormattedHeadlines()}
                 """
     
     def getStoryUrl(self):
         return f"/stove"  
 
     
-# note: we assume here that the Author full name is equivalent to the full name defined in their stove account    
+# note: we assume here that the Author full name is equivalent to the full name defined in wagtail account    
 def send_stove_notification(author_id: str, notification_info: NotificationAction):
     
     username = AuthorPage.objects.get(id=author_id).full_name
@@ -150,21 +153,24 @@ def send_stove_notification(author_id: str, notification_info: NotificationActio
     send_stove_notification_full(username, notification_info)
 
 def send_stove_notification_full(author_full_name: str, notification_info: NotificationAction):
-    first_name, last_name = author_full_name.split(" ", 1) # this looks ugly
+    first_name, _, last_name = author_full_name.partition(" ") # this looks ugly, should stop from single first names from crashing the server
 
     User = get_user_model()
-    user = User.objects.get(first_name = first_name, last_name = last_name)
+    try:
+        user = User.objects.get(first_name=first_name, last_name=last_name)
+        payload = {
+            "head": notification_info.getNotificationHeader(),
+            "body": notification_info.getNotificationBody(),
+            "url": notification_info.getStoryUrl()
+        }
+        send_user_notification(
+            user=user,
+            payload=payload,
+            ttl=1000,
+        )
+    except User.DoesNotExist:
+        print(f"Author name:{author_full_name} does not a matching User account with this name. Failing to send notification silently.")
 
-    payload = {
-        "head": notification_info.getNotificationHeader(),
-        "body": notification_info.getNotificationBody(),
-        "url": notification_info.getStoryUrl()
-    }
-    send_user_notification(
-        user=user,
-        payload=payload,
-        ttl=1000,
-    )
     print("notification fired")
 
 def send_stove_notification_grouped(authors_full_name: list[str], notification_info: NotificationAction):

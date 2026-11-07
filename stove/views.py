@@ -286,8 +286,14 @@ def send_status_update_notification(page: Page, status):
     article_page = page.specific
     notification = StatusChange(page.article_status, status, page.title)
 
+    target_group = [author.author.full_name for author in article_page.primary_author_orderables]
+
     if status == 2:
-        send_stove_notification_grouped([editor.author.full_name for editor in article_page.editors], notification)
+        target_group = [editor.author.full_name for editor in article_page.editors]
+
+    send_stove_notification_grouped(target_group, notification)
+
+
         
 def update_article_status(page, status, user):
     if page.article_status == status: return page
