@@ -367,6 +367,13 @@ CRONJOBS = [
     ('0 */6 * * *', 'events.views.update_events')
 ]
 
+NOTIFICATION_CRONJOBS = [
+    ('0 8 * * *', 'notifications.views.daily_author_digest'),
+    ('0 8 * * *', 'notifications.views.daily_editor_digest')
+]
+
+CRONJOBS.append(NOTIFICATION_CRONJOBS)
+
 # Daphne
 ASGI_APPLICATION = "ubyssey.asgi.application"
 # Django channels

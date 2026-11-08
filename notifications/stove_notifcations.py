@@ -96,11 +96,15 @@ class DailyDigest(ABC):
     headlines: list[str] #for now we'll just save it as a list of slugs
 
     def getFormattedHeadlines(self) -> str:
+
+        if (not self.headlines):
+            return "No articles due in the next 36 hours."
+
         parts = []
 
         for index, value in enumerate(self.headlines, start = 1):
             # important note, we can only fit 8 entries on the notification, 
-            # so if expriring articles > 8 we'll make the last line tell them how many there are in addition
+            # so if expiring articles > 8 we'll make the last line tell them how many there are in addition
             if (index >= 8 and self.getStoryCount() > 8):
                 remaining_entries = self.getStoryCount() - 7
                 parts.append(f"and {remaining_entries} other articles. Check out Stove to see them all.")
@@ -143,7 +147,21 @@ class AuthorDigest(NotificationAction, DailyDigest):
     
     def getStoryUrl(self):
         return f"/stove"  
+    
+class EditorDigest(NotificationAction, DailyDigest):
 
+    def __init__(self, headlines):
+        NotificationAction.__init__(self)
+        DailyDigest.__init__(self, headlines)
+
+    def getNotificationHeader(self):
+        return "Morning editing digest"
+    
+    def getNotificationBody(self):
+        return f"""You are assigned to edit {super().getStoryCount()} stories today: \n\n{super().getFormattedHeadlines()}
+                """
+    def getStoryUrl(self):
+        return f"/stove"  
     
 # note: we assume here that the Author full name is equivalent to the full name defined in wagtail account    
 def send_stove_notification(author_id: str, notification_info: NotificationAction):
@@ -169,7 +187,7 @@ def send_stove_notification_full(author_full_name: str, notification_info: Notif
             ttl=1000,
         )
     except User.DoesNotExist:
-        print(f"Author name:{author_full_name} does not a matching User account with this name. Failing to send notification silently.")
+        print(f"Author name:{author_full_name} does not have a matching User account with this name. Failing to send notification silently.")
 
     print("notification fired")
 
