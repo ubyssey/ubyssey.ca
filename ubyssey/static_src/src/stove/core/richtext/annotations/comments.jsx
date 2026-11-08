@@ -36,10 +36,13 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   let clickedAnnotationThreadId = null;
   const commentDrafts = new Map();
 
+  // Pending threads are sharedm but only creator can edit/delete
+  const localPendingThreadIds = new Set();
+
   const currentThreads = () => [
     ...collectAnnotationThreads(getViews()),
     ...getThreads(),
-  ].filter((thread) => !thread.resolved);
+  ].filter((thread) => !thread.resolved && (!thread.pending || localPendingThreadIds.has(thread.threadId)));
 
   const activeDraftHasText = () => Boolean(
     root.querySelector(".pm-comment-thread--active textarea")?.value.trim(),
@@ -76,6 +79,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   };
 
   const setActiveThread = (threadId, scroll = "center", focusReply = false) => {
+    if (threadId && !currentThreads().some((thread) => thread.threadId === threadId)) return;
     if (threadId && threadId !== activeThreadId && activeDraftHasText()) return;
     if (threadId === activeThreadId && !focusReply) return;
     let anchorScrolled = false;
@@ -187,6 +191,15 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
     return cursorIds.length ? cursorIds : threadIdsFromMarks(nearbyCommentMarks(event), includeResolved);
   };
 
+  const discardPendingThreads = () => {
+    let changed = false;
+    currentThreads().forEach((thread) => {
+      if (!thread.pending) return;
+      changed = (thread.remove ? thread.remove() : removeAnnotationThread(thread)) || changed;
+    });
+    return changed;
+  };
+
   const removePendingThreads = (event) => {
     if (event.type === "focusin" && eventPath(event).includes(pageShadow)) return;
 
@@ -194,12 +207,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
     clearActiveThread();
     
-    let changed = false;
-    currentThreads().forEach((thread) => {
-      if (!thread.pending) return;
-      changed = (thread.remove ? thread.remove() : removeAnnotationThread(thread)) || changed;
-    });
-    if (changed) update();
+    if (discardPendingThreads()) update();
   };
 
   const selectCommentBlock = (event) => {
@@ -212,7 +220,8 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   // switches selected overlapping suggestion/comment on second click
   const onCommentMarkClick = (event) => {
-    const threadIds = eventCommentThreadIds(event);
+    const visibleThreadIds = new Set(currentThreads().map((thread) => thread.threadId));
+    const threadIds = eventCommentThreadIds(event).filter((threadId) => visibleThreadIds.has(threadId));
     if (!threadIds.length) return;
 
     if (threadIds.join(":") === clickedThreadIds.join(":")) {
@@ -294,6 +303,8 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   return {
     update,
+    discardPendingThreads,
+    registerPendingThread(threadId) { localPendingThreadIds.add(threadId); },
     activateThread(threadId, { focusReply = false } = {}) {
       if (clickedAnnotationThreadId && threadId !== clickedAnnotationThreadId) return;
       if (!threadId && clickedAnnotationThreadId) return;
