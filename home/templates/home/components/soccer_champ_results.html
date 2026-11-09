@@ -1,0 +1,25 @@
+<div class="soccer-champ-results">
+  <div class="soccer-bracket-scroll" role="region" aria-label="Championship bracket" tabindex="0"><div class="soccer-bracket">
+    <div class="soccer-bracket__round soccer-bracket__round--quarters">
+      <h4>{{ championship_content.quarterfinals.0.starts_at|date:'M j'|default:'Nov 12' }} <span>Quarterfinals</span></h4>
+      {% for match in championship_content.quarterfinals %}{% include "home/components/soccer_champ_match.html" %}{% endfor %}
+    </div>
+    <div class="soccer-bracket__round soccer-bracket__round--semis">
+      <h4>{{ championship_content.championship_semifinals.0.starts_at|date:'M j'|default:'Nov 13' }} <span>Semifinals</span></h4>
+      <div class="soccer-bracket__path"><span>Championship path</span>{% for match in championship_content.championship_semifinals %}{% include "home/components/soccer_champ_match.html" %}{% endfor %}</div>
+      <div class="soccer-bracket__path"><span>Consolation path</span>{% for match in championship_content.consolation_semifinals %}{% include "home/components/soccer_champ_match.html" %}{% endfor %}</div>
+    </div>
+    <div class="soccer-bracket__round soccer-bracket__round--finals">
+      <h4>{{ championship_content.finals.0.starts_at|date:'M j'|default:'Nov 15' }} <span>Placement matches</span></h4>
+      {% for match in championship_content.finals %}{% include "home/components/soccer_champ_match.html" %}{% endfor %}
+    </div>
+  </div></div>
+  <div class="soccer-champ-table-wrap">
+    <h4>Team statistics</h4>
+    <div class="soccer-champ-table-scroll"><table class="soccer-champ-table">
+      <caption class="sr-only">Teams by original tournament seed; statistics are entered by editors</caption>
+      <thead><tr><th scope="col" title="Original seed">#</th><th scope="col">Team</th><th scope="col" title="Games played">GP</th><th scope="col" title="Shots">S</th><th scope="col" title="Goals scored">G</th><th scope="col" title="Assists">A</th><th scope="col" title="Points">Pts</th></tr></thead>
+      <tbody>{% for team in championship_content.teams %}{% include "home/components/soccer_champ_team_row.html" %}{% endfor %}</tbody>
+    </table></div>
+  </div>
+</div>

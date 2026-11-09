@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static wagtailcore_tags wagtailimages_tags articletags %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=redesign-page-edges-2" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=soccer-championship-1" type="text/css"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block head_scripts %}<link rel="alternate" type="application/atom+xml" title="Ubyssey {{ self.title }} feed" href="{% if redesign_page_url %}{{ redesign_page_url }}{% else %}{% pageurl self %}{% endif %}rss/">{% endblock %}
 {% block page_wrapper %}listing-redesign{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
@@ -20,6 +20,7 @@
     <div class="sr-hero__lead">{% if lead %}{% include 'section/objects/redesign_story.html' with article=lead variant='lead' show_summary=False show_date=True %}{% endif %}</div>
     <div class="sr-hero__secondary">{% if side_one %}{% include 'section/objects/redesign_story.html' with article=side_one variant='secondary' show_summary=True %}{% endif %}{% if side_two %}{% include 'section/objects/redesign_story.html' with article=side_two variant='secondary' show_summary=True hide_image=True %}{% endif %}</div>
   </section>{% endwith %}{% endif %}
+  {% if section_slug == 'sports' and not redesign_active_beat_id and soccer_championship_content %}{% include "home/components/soccer_champ_panel.html" with panel_heading=soccer_championship_page.title panel_description=soccer_championship_page.summary show_featured=True show_explainers=True show_results=True %}{% endif %}
   <section id="redesign-section-feed" class="lr-feed page-shell" aria-label="Latest {{ self.title }} stories">{% for article in redesign_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='row' show_date=True show_summary=True %}{% empty %}{% for article in redesign_recent_articles %}{% include 'section/objects/redesign_story.html' with article=article variant='row' show_date=True show_summary=True %}{% endfor %}{% endfor %}</section>
   {% if not redesign_page_url %}<div id="redesign-section-loader" class="sr-feed-loader" data-section="{{ section_slug }}"{% if redesign_active_beat_id %} data-category="{{ self.slug }}"{% else %} data-exclude="{{ redesign_featured_ids }}"{% endif %} data-start="20" data-number="20" aria-live="polite"><img src="{% static 'ubyssey/images/throbber.svg' %}" class="spin" alt="Loading more stories"></div>{% endif %}
 </main>

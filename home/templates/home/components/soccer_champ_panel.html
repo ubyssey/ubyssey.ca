@@ -1,0 +1,17 @@
+<section class="soccer-champ-panel page-shell" aria-labelledby="soccer-champ-panel-title">
+  <h2 class="bc-election-heading" id="soccer-champ-panel-title"><a href="{{ soccer_championship_page.url }}">{{ panel_heading }} {% include "home/components/bc_election_arrow.html" %}</a></h2>
+  {% if panel_description %}<p class="soccer-champ-panel__description">{{ panel_description|linebreaksbr }}</p>{% endif %}
+  {% if show_featured and soccer_championship_content.featured_article %}{% include "home/components/soccer_champ_featured.html" with article=soccer_championship_content.featured_article label=soccer_championship_page.featured_label %}{% endif %}
+  {% if show_explainers %}
+  <section class="soccer-champ-panel__section" aria-labelledby="soccer-champ-about">
+    <h3 id="soccer-champ-about">{{ soccer_championship_page.about_heading }}</h3>
+    <div class="soccer-champ-panel__explainers">{% for item in soccer_championship_content.explainers %}{% include "home/components/bc_election_story_card.html" with show_dek=True %}{% endfor %}</div>
+  </section>
+  {% endif %}
+  {% if show_results %}
+  <section class="soccer-champ-panel__section" aria-labelledby="soccer-champ-results">
+    <h3 id="soccer-champ-results">{{ soccer_championship_page.results_heading }}</h3>
+    {% include "home/components/soccer_champ_results.html" with championship_content=soccer_championship_content %}
+  </section>
+  {% endif %}
+</section>

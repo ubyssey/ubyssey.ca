@@ -243,6 +243,15 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         help_text="Custom copy for the Contact the editor box. This does not use the editor's author-profile bio.",
     )
 
+    soccer_championship_page = models.ForeignKey(
+        "home.WomensSoccerChampionshipPage", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+        help_text="For the main Sports section only: select the published championship hub.",
+    )
+    soccer_championship_panel_enabled = models.BooleanField(
+        default=False, help_text="Show the championship panel between the Sports hero and story feed. Hidden on beats.",
+    )
+
     label_svg = models.ForeignKey(
         'wagtaildocs.Document',
         null=True,
@@ -306,6 +315,11 @@ class SectionPage(RoutablePageMixin, SectionablePage):
             ],
             heading="Redesign section page",
             help_text="Add all three featured stories in display order: centre, upper-right, then lower-right.",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("soccer_championship_page"), FieldPanel("soccer_championship_panel_enabled")],
+            heading="Women's soccer championship: Sports section panel",
+            help_text="This panel appears on the main Sports page only, never on a beat page.",
         ),
         MultiFieldPanel(
             [FieldPanel("spotify_episode_url")],
@@ -408,6 +422,17 @@ class SectionPage(RoutablePageMixin, SectionablePage):
         context["redesign_all_url"] = self.url
         context["redesign_active_beat_id"] = None
         context["redesign_topics"] = self.get_redesign_topics()
+        context["soccer_championship_content"] = None
+        context["soccer_championship_page"] = None
+        if self.slug == "sports" and self.soccer_championship_panel_enabled and self.soccer_championship_page_id:
+            from home.models import WomensSoccerChampionshipPage
+
+            championship = WomensSoccerChampionshipPage.objects.live().public().filter(
+                pk=self.soccer_championship_page_id,
+            ).first()
+            if championship:
+                context["soccer_championship_page"] = championship
+                context["soccer_championship_content"] = championship.get_championship_content()
         # CMS content may be saved incrementally. A stale or unpublished
         # chooser must not turn a newly-created section into a server error.
         configured_featured = [
