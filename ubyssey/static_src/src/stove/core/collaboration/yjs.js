@@ -177,8 +177,13 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     websocketUrl,
     "yjs",
     ydoc,
-    { params: { presence: presenceId, collaboration: collaborationId } },
+    { connect: false, params: { presence: presenceId, collaboration: collaborationId } },
   );
+
+  // Broadcast channel is used for tabs on same device
+  // Needs to check collaboration ID to prevent duplication
+  provider.bcChannel += `/collaboration/${collaborationId}`;
+  provider.connect();
 
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
     // Ignore old server style acks
