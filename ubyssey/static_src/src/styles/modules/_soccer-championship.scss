@@ -8,6 +8,7 @@
   --sc-gold: #a16f12;
   --sc-gold-soft: #fbf5e8;
   --sc-bronze: #916247;
+  --sc-match-hover: #edf4e8;
   color: var(--sc-ink);
 }
 
@@ -22,6 +23,7 @@
     --sc-gold: #eacb81;
     --sc-gold-soft: #2d291d;
     --sc-bronze: #d7a58b;
+    --sc-match-hover: #1d382a;
   }
 }
 
@@ -65,17 +67,19 @@
   .bc-live-story__copy > p { margin: 9px 0 0; color: var(--sc-muted); font: 400 16px/1.4 "meursault-variable", Georgia, serif; }
 }
 
-.soccer-champ-results { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr); gap: 20px; min-width: 0; margin-top: 22px; }
+.soccer-champ-results { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 20px; min-width: 0; margin-top: 22px; }
 .soccer-bracket-scroll { min-width: 0; overflow-x: auto; }
+.soccer-bracket-scroll--championship { grid-column: 1 / -1; }
+.soccer-bracket-scroll--consolation { grid-column: 1 / span 3; }
 .soccer-bracket { --bracket-gap: 28px; --bracket-card-width: calc(33.333333% - 18.666667px); min-width: 780px; }
 .soccer-bracket__round-heads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--bracket-gap); }
 .soccer-bracket__round-heads h4,
 .soccer-champ-table-wrap > h4 { box-sizing: border-box; min-height: 50px; margin: 0; padding: 10px 12px; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); color: var(--sc-ink); font: 700 14px/1.1 "meursault-variable", Georgia, serif; text-transform: uppercase; }
 .soccer-bracket__round-heads h4 span { display: block; margin-top: 3px; color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; }
-.soccer-bracket__path-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 18px 0 10px; padding: 1px 0 1px 10px; border-left: 3px solid #264b35; }
+.soccer-bracket__path-heading { display: flex; align-items: center; margin: 18px 0 10px; padding: 1px 0 1px 10px; border-left: 3px solid #264b35; }
 .soccer-bracket__path-heading h5 { margin: 0; color: var(--sc-ink); font: 700 13px/1.25 "meursault-variable", Georgia, serif; text-transform: uppercase; }
-.soccer-bracket__path-heading span { color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
-.soccer-bracket__path-heading--consolation { margin-top: 22px; border-color: var(--sc-rule); }
+.soccer-bracket__path-heading--consolation { box-sizing: border-box; min-height: 50px; margin: 0 0 10px; padding: 10px 12px; border: 0; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); }
+.soccer-bracket__path-heading--consolation h5 { font-size: 14px; }
 .soccer-bracket__track { position: relative; }
 .soccer-bracket__track--championship { height: 660px; }
 .soccer-bracket__track--consolation { height: 326px; }
@@ -98,25 +102,30 @@
 .soccer-bracket__slot--csf1 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 80px; }
 .soccer-bracket__slot--csf2 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 246px; }
 .soccer-bracket__slot--fifth { right: 0; top: 163px; }
-.soccer-bracket__advance { position: absolute; left: 0; top: -18px; color: var(--sc-muted); font: 600 9px/1.1 "articulat-cf", sans-serif; letter-spacing: .03em; text-transform: uppercase; }
 .soccer-bracket__origin { box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; min-height: 68px; padding: 10px 12px; border: 1px dashed var(--sc-rule); background: var(--sc-soft); color: var(--sc-muted); }
 .soccer-bracket__origin strong { color: var(--sc-ink); font: 700 13px/1.2 "meursault-variable", Georgia, serif; }
 .soccer-bracket__origin span { margin-top: 4px; font: 600 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
-.soccer-match { box-sizing: border-box; position: relative; min-width: 0; min-height: 116px; padding: 10px 11px; border: 1px solid var(--sc-rule); background: var(--sc-paper); box-shadow: 0 2px 8px rgba(16,24,39,.07); }
+.soccer-match { box-sizing: border-box; position: relative; min-width: 0; min-height: 116px; padding: 10px 11px; border: 1px solid var(--sc-rule); background: var(--sc-paper); box-shadow: 0 2px 8px rgba(16,24,39,.07); transition: background-color .2s ease, box-shadow .2s ease; }
+.soccer-match.has-analysis { cursor: pointer; }
+.soccer-match.has-analysis:hover,
+.soccer-match.has-analysis:focus-within { background: var(--sc-match-hover); box-shadow: 0 4px 14px rgba(16,24,39,.14); }
 .soccer-match.is-empty { border-style: dashed; background: var(--sc-soft); }
 .soccer-match--gold { border-top: 3px solid #d4a932; }
 .soccer-match--bronze { border-top: 3px solid #aa7155; }
-.soccer-match__meta { display: flex; align-items: center; justify-content: space-between; gap: 5px; min-height: 22px; margin-bottom: 5px; color: var(--sc-muted); font: 700 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
+.soccer-match__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px; min-height: 22px; margin-bottom: 5px; color: var(--sc-muted); font: 700 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
 .soccer-match__type { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 .soccer-match__meta time,
 .soccer-match__pending { flex: none; white-space: nowrap; }
-.soccer-match__analysis { display: grid; place-items: center; width: 26px; height: 24px; flex: none; border: 1px solid currentColor; color: #253377; text-decoration: none; transition: background .16s, color .16s; }
+.soccer-match__analysis { display: grid; place-items: center; width: 24px; height: 24px; flex: none; color: #253377; text-decoration: none; transition: color .16s; }
+/* The single analysis link covers the card while its icon stays in the heading. */
+.soccer-match__analysis::after { position: absolute; inset: 0; content: ""; }
 .soccer-match__analysis svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; stroke-linejoin: miter; }
-.soccer-match__analysis:hover,
-.soccer-match__analysis:focus-visible { background: #253377; border-color: #253377; color: #fff; }
+.soccer-match.has-analysis:hover .soccer-match__analysis,
+.soccer-match__analysis:focus-visible { color: #264b35; }
+.soccer-match__analysis:focus-visible::after { outline: 2px solid #253377; outline-offset: 2px; }
 [color-css-theme="dark"] .soccer-match__analysis { color: #a9bcff; }
-[color-css-theme="dark"] .soccer-match__analysis:hover,
-[color-css-theme="dark"] .soccer-match__analysis:focus-visible { background: #a9bcff; border-color: #a9bcff; color: #08111f; }
+[color-css-theme="dark"] .soccer-match.has-analysis:hover .soccer-match__analysis,
+[color-css-theme="dark"] .soccer-match__analysis:focus-visible { color: #9ec756; }
 .soccer-match__team { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 5px; align-items: center; min-height: 34px; padding: 3px 1px; border-top: 1px solid var(--sc-rule); color: var(--sc-ink); font: 600 13px/1.2 "meursault-variable", Georgia, serif; }
 .soccer-match__team img { width: 24px; height: 24px; object-fit: contain; }
 .soccer-match__team > span:first-child:not(.soccer-match__tbd) { grid-column: 2; }
@@ -127,7 +136,7 @@
 .soccer-match__note { margin: 5px 0 0; color: var(--sc-muted); font: 400 10px/1.25 "meursault-variable", Georgia, serif; }
 .soccer-match__team.is-medalist { background: var(--sc-gold-soft); }
 
-.soccer-champ-table-wrap { min-width: 0; }
+.soccer-champ-table-wrap { grid-column: 4; min-width: 0; }
 .soccer-champ-table-scroll { width: 100%; overflow-x: auto; }
 .soccer-champ-table { width: 100%; border-collapse: collapse; color: var(--sc-ink); font: 500 12px/1.25 "meursault-variable", Georgia, serif; }
 .soccer-champ-table th,
@@ -146,20 +155,21 @@
 .soccer-medal--bronze { color: var(--sc-bronze); }
 
 .soccer-champ-analyses { margin-top: 18px; }
-.soccer-champ-analysis { display: grid; grid-template-columns: 130px minmax(0, 1fr) 275px; align-items: center; gap: 25px; min-height: 250px; border-bottom: 1px solid var(--sc-rule); }
-.soccer-champ-analysis__meta { align-self: start; padding-top: 32px; color: var(--sc-muted); font: 700 11px/1.35 "articulat-cf", sans-serif; text-transform: uppercase; }
-.soccer-champ-analysis__meta span { display: block; width: max-content; max-width: 100%; margin-top: 8px; padding: 4px 6px; background: #253377; color: #fff; }
+.soccer-champ-analysis { display: grid; grid-template-columns: 130px minmax(0, 1fr) 275px; align-items: start; gap: 25px; min-height: 0; padding: 22px 0; border-bottom: 1px solid var(--sc-rule); }
+.soccer-champ-analysis__meta { color: var(--sc-muted); font: 700 11px/1.35 "articulat-cf", sans-serif; text-transform: uppercase; }
+.soccer-champ-analysis__meta span { display: inline-block; max-width: 100%; padding: 4px 6px; background: #253377; color: #fff; }
 .soccer-champ-analysis__copy h3 { margin: 0 0 10px; font: 600 29px/1.13 "meursault-variable", Georgia, serif; }
-.soccer-champ-analysis__copy h3 a { color: inherit; text-decoration: none; }
+.soccer-champ-analysis__copy h3 a { color: inherit; text-decoration: none; background-image: linear-gradient(var(--redesign-hover-wash, #c6d6ee), var(--redesign-hover-wash, #c6d6ee)); background-repeat: no-repeat; background-position: 0 90%; background-size: 0 78%; box-decoration-break: clone; -webkit-box-decoration-break: clone; transition: background-size .22s ease, color .22s ease; }
 .soccer-champ-analysis__copy h3 a:hover,
-.soccer-champ-analysis__copy h3 a:focus-visible { color: #253377; }
+.soccer-champ-analysis__copy h3 a:focus-visible { background-size: 100% 78%; color: #081839; }
 .soccer-champ-analysis__copy > p { margin: 0 0 10px; color: var(--sc-muted); font: 400 16px/1.3 "meursault-variable", Georgia, serif; }
 .soccer-champ-analysis__image { display: block; height: 205px; overflow: hidden; }
 .soccer-champ-analysis__image img { width: 100%; height: 100%; object-fit: cover; }
 
 @media (max-width: 1150px) {
   .soccer-champ-results { grid-template-columns: 1fr; }
-  .soccer-champ-table-wrap { max-width: 100%; }
+  .soccer-bracket-scroll--consolation,
+  .soccer-champ-table-wrap { grid-column: 1 / -1; max-width: 100%; }
   .soccer-champ-table tbody th { width: auto; }
 }
 
@@ -168,15 +178,16 @@
   .soccer-bracket { min-width: 780px; }
   .soccer-champ-results { display: block; }
   .soccer-bracket-scroll { padding-bottom: 12px; }
+  .soccer-bracket-scroll--consolation { margin-top: 20px; }
   .soccer-champ-table-wrap { margin-top: 20px; }
-  .soccer-champ-analysis { grid-template-columns: minmax(0, 1fr) 110px; min-height: 0; gap: 10px; padding: 22px 0; }
-  .soccer-champ-analysis__meta { grid-column: 1 / -1; padding: 0; }
+  .soccer-champ-analysis { grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+  .soccer-champ-analysis__meta { grid-column: 1; grid-row: 1; }
+  .soccer-champ-analysis__copy { grid-column: 2; grid-row: 1; }
   .soccer-champ-analysis__copy h3 { font-size: 23px; }
-  .soccer-champ-analysis__image { height: 130px; }
+  .soccer-champ-analysis__image { grid-column: 1 / -1; grid-row: 2; height: auto; aspect-ratio: 3 / 2; }
 }
 
 @media (max-width: 480px) {
   .soccer-champ-panel__explainers { grid-template-columns: 1fr; }
-  .soccer-champ-analysis { grid-template-columns: 1fr; }
-  .soccer-champ-analysis__image { grid-row: 2; width: 100%; height: auto; aspect-ratio: 3 / 2; }
+  .soccer-champ-analysis { grid-template-columns: 88px minmax(0, 1fr); }
 }
