@@ -44,6 +44,7 @@ class HomepageRedesignTests(SimpleTestCase):
             "home/components/bc_provincial_panel.html",
             "home/components/bc_provincial_featured_story.html",
             "home/womens_soccer_championship_page.html",
+            "home/womens_soccer_data_preview.html",
             "home/components/soccer_champ_banner.html",
             "home/components/soccer_champ_panel.html",
             "home/components/soccer_champ_featured.html",
@@ -149,6 +150,20 @@ class HomepageRedesignTests(SimpleTestCase):
         self.assertEqual(WomensSoccerTeamsPage.max_count_per_parent, 1)
         self.assertEqual(WomensSoccerMatchesPage.max_count_per_parent, 1)
         self.assertEqual(len(WomensSoccerMatch.SLOT_CHOICES), 11)
+
+    def test_soccer_data_children_have_previews_without_public_templates(self):
+        request = RequestFactory().get("/admin/preview/")
+        parent = SimpleNamespace(get_url=lambda _request: "/2026-usports-womens-soccer-championship/")
+        for page_class, relation, kind in (
+            (WomensSoccerTeamsPage, "teams", "teams"),
+            (WomensSoccerMatchesPage, "matches", "matches"),
+        ):
+            with self.subTest(kind=kind), patch("home.models.render") as render:
+                page = SimpleNamespace(get_parent=lambda: parent)
+                setattr(page, relation, SimpleNamespace(all=lambda: []))
+                page_class.serve_preview(page, request, "")
+                self.assertEqual(render.call_args.args[1], "home/womens_soccer_data_preview.html")
+                self.assertEqual(render.call_args.args[2]["data_kind"], kind)
 
     def test_soccer_championship_medals_wait_for_both_final_matches(self):
         teams = [SimpleNamespace(pk=i, seed=i) for i in range(1, 5)]

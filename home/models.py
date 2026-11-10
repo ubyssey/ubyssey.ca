@@ -23,7 +23,8 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from django.conf import settings
-from django.shortcuts import redirect
+from django.http import Http404
+from django.shortcuts import redirect, render
 from wagtail.snippets.models import register_snippet
 
 # Create your models here.
@@ -1217,7 +1218,18 @@ class WomensSoccerTeamsPage(Page):
     ]
 
     def serve(self, request, *args, **kwargs):
-        return redirect(self.get_parent().url)
+        parent_url = self.get_parent().get_url(request)
+        if not parent_url:
+            raise Http404
+        return redirect(parent_url)
+
+    def serve_preview(self, request, mode_name):
+        return render(request, "home/womens_soccer_data_preview.html", {
+            "page": self,
+            "data_kind": "teams",
+            "items": self.teams.all(),
+            "parent_url": self.get_parent().get_url(request),
+        })
 
 
 class WomensSoccerTeam(Orderable):
@@ -1273,7 +1285,18 @@ class WomensSoccerMatchesPage(Page):
     ]
 
     def serve(self, request, *args, **kwargs):
-        return redirect(self.get_parent().url)
+        parent_url = self.get_parent().get_url(request)
+        if not parent_url:
+            raise Http404
+        return redirect(parent_url)
+
+    def serve_preview(self, request, mode_name):
+        return render(request, "home/womens_soccer_data_preview.html", {
+            "page": self,
+            "data_kind": "matches",
+            "items": self.matches.all(),
+            "parent_url": self.get_parent().get_url(request),
+        })
 
 
 class WomensSoccerMatch(Orderable):
