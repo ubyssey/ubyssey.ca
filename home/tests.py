@@ -185,6 +185,13 @@ class HomepageRedesignTests(SimpleTestCase):
             articles.live.return_value.public.return_value.filter.return_value.specific.return_value = [analysis, explainer]
             pending = WomensSoccerChampionshipPage.get_championship_content(page)
             self.assertEqual(pending["medals"], {})
+            self.assertEqual(len(pending["quarterfinals"]), 4)
+            self.assertEqual(len(pending["championship_semifinals"]), 2)
+            self.assertEqual(len(pending["consolation_semifinals"]), 2)
+            self.assertEqual(len(pending["finals"]), 3)
+            self.assertEqual(pending["quarterfinals"][0].short_label, "QF 1")
+            self.assertIsNone(pending["quarterfinals"][0].home_team)
+            self.assertFalse(pending["quarterfinals"][0].has_score)
             bronze.is_final = True
             complete = WomensSoccerChampionshipPage.get_championship_content(page)
         self.assertEqual(complete["medals"], {1: "gold", 2: "silver", 3: "bronze"})

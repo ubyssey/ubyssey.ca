@@ -65,42 +65,76 @@
   .bc-live-story__copy > p { margin: 9px 0 0; color: var(--sc-muted); font: 400 16px/1.4 "meursault-variable", Georgia, serif; }
 }
 
-.soccer-champ-results { display: grid; grid-template-columns: minmax(0, 3fr) minmax(250px, 1fr); gap: 16px; min-width: 0; margin-top: 22px; }
+.soccer-champ-results { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr); gap: 20px; min-width: 0; margin-top: 22px; }
 .soccer-bracket-scroll { min-width: 0; overflow-x: auto; }
-.soccer-bracket { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; min-width: 0; }
-.soccer-bracket__round { display: flex; flex-direction: column; justify-content: space-around; gap: 8px; min-width: 0; min-height: 680px; }
-.soccer-bracket__round > h4,
-.soccer-champ-table-wrap > h4 { min-height: 38px; margin: 0; padding: 9px 10px; background: var(--sc-soft); color: var(--sc-ink); font: 700 13px/1.25 "meursault-variable", Georgia, serif; text-transform: uppercase; }
-.soccer-bracket__round > h4 span { display: block; color: var(--sc-muted); font: 500 10px/1.2 "articulat-cf", sans-serif; }
-.soccer-bracket__path { display: flex; flex-direction: column; justify-content: space-around; gap: 7px; flex: 1; min-width: 0; }
-.soccer-bracket__path > span { color: var(--sc-muted); font: 700 10px/1.2 "articulat-cf", sans-serif; letter-spacing: .04em; text-transform: uppercase; }
-.soccer-match { position: relative; min-width: 0; padding: 9px; border: 1px solid var(--sc-rule); background: var(--sc-paper); }
-.soccer-bracket__round--quarters .soccer-match::after,
-.soccer-bracket__round--semis .soccer-match::after { content: ""; position: absolute; left: 100%; top: 50%; width: 15px; border-top: 1px solid var(--sc-rule); pointer-events: none; }
+.soccer-bracket { --bracket-gap: 28px; --bracket-card-width: calc(33.333333% - 18.666667px); min-width: 780px; }
+.soccer-bracket__round-heads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--bracket-gap); }
+.soccer-bracket__round-heads h4,
+.soccer-champ-table-wrap > h4 { box-sizing: border-box; min-height: 50px; margin: 0; padding: 10px 12px; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); color: var(--sc-ink); font: 700 14px/1.1 "meursault-variable", Georgia, serif; text-transform: uppercase; }
+.soccer-bracket__round-heads h4 span { display: block; margin-top: 3px; color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; }
+.soccer-bracket__path-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 18px 0 10px; padding: 1px 0 1px 10px; border-left: 3px solid #264b35; }
+.soccer-bracket__path-heading h5 { margin: 0; color: var(--sc-ink); font: 700 13px/1.25 "meursault-variable", Georgia, serif; text-transform: uppercase; }
+.soccer-bracket__path-heading span { color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
+.soccer-bracket__path-heading--consolation { margin-top: 22px; border-color: var(--sc-rule); }
+.soccer-bracket__track { position: relative; }
+.soccer-bracket__track--championship { height: 660px; }
+.soccer-bracket__track--consolation { height: 326px; }
+.soccer-bracket__links { position: absolute; top: 0; width: var(--bracket-gap); height: 100%; fill: none; stroke: #9eabb5; stroke-width: 1.5; pointer-events: none; }
+[color-css-theme="dark"] .soccer-bracket__links { stroke: #8292a6; }
+.soccer-bracket__links path { vector-effect: non-scaling-stroke; }
+.soccer-bracket__links--first { left: var(--bracket-card-width); }
+.soccer-bracket__links--second { right: var(--bracket-card-width); }
+.soccer-bracket__slot { position: absolute; width: var(--bracket-card-width); transform: translateY(-50%); }
+.soccer-bracket__slot--qf1 { left: 0; top: 96px; }
+.soccer-bracket__slot--qf2 { left: 0; top: 240px; }
+.soccer-bracket__slot--qf3 { left: 0; top: 420px; }
+.soccer-bracket__slot--qf4 { left: 0; top: 564px; }
+.soccer-bracket__slot--sf1 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 168px; }
+.soccer-bracket__slot--sf2 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 492px; }
+.soccer-bracket__slot--gold { right: 0; top: 260px; }
+.soccer-bracket__slot--bronze { right: 0; top: 400px; }
+.soccer-bracket__slot--origin1 { left: 0; top: 80px; }
+.soccer-bracket__slot--origin2 { left: 0; top: 246px; }
+.soccer-bracket__slot--csf1 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 80px; }
+.soccer-bracket__slot--csf2 { left: calc(var(--bracket-card-width) + var(--bracket-gap)); top: 246px; }
+.soccer-bracket__slot--fifth { right: 0; top: 163px; }
+.soccer-bracket__advance { position: absolute; left: 0; top: -18px; color: var(--sc-muted); font: 600 9px/1.1 "articulat-cf", sans-serif; letter-spacing: .03em; text-transform: uppercase; }
+.soccer-bracket__origin { box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; min-height: 68px; padding: 10px 12px; border: 1px dashed var(--sc-rule); background: var(--sc-soft); color: var(--sc-muted); }
+.soccer-bracket__origin strong { color: var(--sc-ink); font: 700 13px/1.2 "meursault-variable", Georgia, serif; }
+.soccer-bracket__origin span { margin-top: 4px; font: 600 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
+.soccer-match { box-sizing: border-box; position: relative; min-width: 0; min-height: 116px; padding: 10px 11px; border: 1px solid var(--sc-rule); background: var(--sc-paper); box-shadow: 0 2px 8px rgba(16,24,39,.07); }
+.soccer-match.is-empty { border-style: dashed; background: var(--sc-soft); }
 .soccer-match--gold { border-top: 3px solid #d4a932; }
 .soccer-match--bronze { border-top: 3px solid #aa7155; }
-.soccer-match__meta { display: flex; align-items: center; justify-content: space-between; gap: 5px; min-height: 19px; margin-bottom: 5px; color: var(--sc-muted); font: 700 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
-.soccer-match__type { display: inline-flex; align-items: center; gap: 5px; }
-.soccer-match__meta time { white-space: nowrap; }
-.soccer-match__type a { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #253377; color: #fff; font: 700 15px/1 "meursault-variable", Georgia, serif; text-decoration: none; }
-.soccer-match__type a:hover,
-.soccer-match__type a:focus-visible { background: #b9cfff; color: #081839; }
+.soccer-match__meta { display: flex; align-items: center; justify-content: space-between; gap: 5px; min-height: 22px; margin-bottom: 5px; color: var(--sc-muted); font: 700 10px/1.2 "articulat-cf", sans-serif; text-transform: uppercase; }
+.soccer-match__type { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.soccer-match__meta time,
+.soccer-match__pending { flex: none; white-space: nowrap; }
+.soccer-match__analysis { display: grid; place-items: center; width: 26px; height: 24px; flex: none; border: 1px solid currentColor; color: #253377; text-decoration: none; transition: background .16s, color .16s; }
+.soccer-match__analysis svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; stroke-linejoin: miter; }
+.soccer-match__analysis:hover,
+.soccer-match__analysis:focus-visible { background: #253377; border-color: #253377; color: #fff; }
+[color-css-theme="dark"] .soccer-match__analysis { color: #a9bcff; }
+[color-css-theme="dark"] .soccer-match__analysis:hover,
+[color-css-theme="dark"] .soccer-match__analysis:focus-visible { background: #a9bcff; border-color: #a9bcff; color: #08111f; }
 .soccer-match__team { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 5px; align-items: center; min-height: 34px; padding: 3px 1px; border-top: 1px solid var(--sc-rule); color: var(--sc-ink); font: 600 13px/1.2 "meursault-variable", Georgia, serif; }
 .soccer-match__team img { width: 24px; height: 24px; object-fit: contain; }
 .soccer-match__team > span:first-child:not(.soccer-match__tbd) { grid-column: 2; }
 .soccer-match__team small { color: var(--sc-muted); font-size: 11px; }
-.soccer-match__team strong { font-size: 15px; }
-.soccer-match__tbd { grid-column: 1 / 3; color: var(--sc-muted); font-weight: 400; }
+.soccer-match__team strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+.soccer-match__team .soccer-match__score-pending { color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; }
+.soccer-match__tbd { grid-column: 1 / 3; color: var(--sc-muted); font-weight: 500; letter-spacing: .04em; }
 .soccer-match__note { margin: 5px 0 0; color: var(--sc-muted); font: 400 10px/1.25 "meursault-variable", Georgia, serif; }
 .soccer-match__team.is-medalist { background: var(--sc-gold-soft); }
 
 .soccer-champ-table-wrap { min-width: 0; }
 .soccer-champ-table-scroll { width: 100%; overflow-x: auto; }
-.soccer-champ-table { width: 100%; border-collapse: collapse; color: var(--sc-ink); font: 500 11px/1.25 "meursault-variable", Georgia, serif; }
+.soccer-champ-table { width: 100%; border-collapse: collapse; color: var(--sc-ink); font: 500 12px/1.25 "meursault-variable", Georgia, serif; }
 .soccer-champ-table th,
-.soccer-champ-table td { padding: 11px 2px; border-bottom: 1px solid var(--sc-rule); text-align: center; }
+.soccer-champ-table td { padding: 12px 3px; border-bottom: 1px solid var(--sc-rule); text-align: center; font-variant-numeric: tabular-nums; }
 .soccer-champ-table thead th { font: 700 10px/1.1 "articulat-cf", sans-serif; text-transform: uppercase; }
 .soccer-champ-table tbody th { width: 38%; text-align: left; font-weight: 600; }
+.soccer-champ-table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--sc-soft) 70%, var(--sc-paper)); }
 .soccer-champ-table__team { display: flex; align-items: center; gap: 4px; min-width: 75px; }
 .soccer-champ-table__team img { width: 22px; height: 22px; flex: none; object-fit: contain; }
 .soccer-champ-table__team > span { overflow-wrap: anywhere; }
@@ -131,7 +165,7 @@
 
 @media (max-width: 760px) {
   .soccer-champ-panel__explainers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .soccer-bracket { min-width: 720px; }
+  .soccer-bracket { min-width: 780px; }
   .soccer-champ-results { display: block; }
   .soccer-bracket-scroll { padding-bottom: 12px; }
   .soccer-champ-table-wrap { margin-top: 20px; }

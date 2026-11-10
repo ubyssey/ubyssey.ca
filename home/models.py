@@ -1179,6 +1179,19 @@ class WomensSoccerChampionshipPage(Page):
             match = by_slot.get(slot)
             if match and slot != "gold" and match.analysis_id in stories:
                 analyses.append(SimpleNamespace(match=match, article=stories[match.analysis_id]))
+
+        slot_labels = dict(WomensSoccerMatch.SLOT_CHOICES)
+
+        def match_slot(slot):
+            if slot in by_slot:
+                return by_slot[slot]
+            return SimpleNamespace(
+                slot=slot, short_label=WomensSoccerMatch.SHORT_LABELS[slot],
+                get_slot_display=slot_labels[slot], starts_at=None,
+                home_team=None, away_team=None, has_score=False,
+                is_final=False, visible_analysis=None, result_note="",
+            )
+
         return {
             "featured_article": stories.get(self.featured_article_id),
             "explainers": [
@@ -1186,10 +1199,10 @@ class WomensSoccerChampionshipPage(Page):
                 for row in self.explainers.all() if row.article_id in stories
             ],
             "teams": teams,
-            "quarterfinals": [by_slot[s] for s in ("qf1", "qf2", "qf3", "qf4") if s in by_slot],
-            "championship_semifinals": [by_slot[s] for s in ("sf1", "sf2") if s in by_slot],
-            "consolation_semifinals": [by_slot[s] for s in ("csf1", "csf2") if s in by_slot],
-            "finals": [by_slot[s] for s in ("gold", "bronze", "fifth") if s in by_slot],
+            "quarterfinals": [match_slot(s) for s in ("qf1", "qf2", "qf3", "qf4")],
+            "championship_semifinals": [match_slot(s) for s in ("sf1", "sf2")],
+            "consolation_semifinals": [match_slot(s) for s in ("csf1", "csf2")],
+            "finals": [match_slot(s) for s in ("gold", "bronze", "fifth")],
             "analyses": analyses,
             "medals": medals,
         }

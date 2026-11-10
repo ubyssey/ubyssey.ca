@@ -1,13 +1,13 @@
 {% load wagtailimages_tags %}
-<article class="soccer-match soccer-match--{{ match.slot }}{% if match.is_final %} is-final{% endif %}">
-  <div class="soccer-match__meta"><span class="soccer-match__type">{{ match.short_label }}{% if match.is_final %} · FT{% endif %}{% if match.visible_analysis %}<a href="{{ match.visible_analysis.url }}" aria-label="Read {{ match.get_slot_display }} analysis" title="Read match analysis">↗</a>{% endif %}</span>{% if match.starts_at %}<time datetime="{{ match.starts_at|date:'c' }}">{{ match.starts_at|date:'g:i A' }} PT</time>{% endif %}</div>
+<article class="soccer-match soccer-match--{{ match.slot }}{% if match.is_final %} is-final{% endif %}{% if not match.home_team and not match.away_team %} is-empty{% endif %}">
+  <div class="soccer-match__meta"><span class="soccer-match__type">{{ match.short_label }}{% if match.is_final %} · FT{% endif %}{% if match.visible_analysis %}<a class="soccer-match__analysis" href="{{ match.visible_analysis.url }}" aria-label="Read {{ match.get_slot_display }} analysis" title="Read match analysis"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l4 4v14H7zM14 3v5h4M10 12h5M10 16h5"/></svg></a>{% endif %}</span>{% if match.starts_at %}<time datetime="{{ match.starts_at|date:'c' }}">{{ match.starts_at|date:'g:i A' }} PT</time>{% else %}<span class="soccer-match__pending">Time TBD</span>{% endif %}</div>
   <div class="soccer-match__team{% if match.slot == 'gold' and match.home_team.medal == 'gold' or match.slot == 'bronze' and match.home_team.medal == 'bronze' %} is-medalist{% endif %}">
     {% if match.home_team %}{% if match.home_team.logo %}{% image match.home_team.logo max-48x48 alt="" loading="lazy" %}{% endif %}<span>{{ match.home_team.short_name }} <small>({{ match.home_team.seed }})</small>{% if match.slot == 'gold' or match.slot == 'bronze' %}{% if match.home_team.medal %}<em class="soccer-medal soccer-medal--{{ match.home_team.medal }}">{{ match.home_team.medal }}</em>{% endif %}{% endif %}</span>{% else %}<span class="soccer-match__tbd">TBD</span>{% endif %}
-    {% if match.has_score %}<strong>{{ match.home_score }}</strong>{% endif %}
+    <strong{% if not match.has_score %} class="soccer-match__score-pending"{% endif %}>{% if match.has_score %}{{ match.home_score }}{% else %}TBD{% endif %}</strong>
   </div>
   <div class="soccer-match__team{% if match.slot == 'gold' and match.away_team.medal == 'gold' or match.slot == 'bronze' and match.away_team.medal == 'bronze' %} is-medalist{% endif %}">
     {% if match.away_team %}{% if match.away_team.logo %}{% image match.away_team.logo max-48x48 alt="" loading="lazy" %}{% endif %}<span>{{ match.away_team.short_name }} <small>({{ match.away_team.seed }})</small>{% if match.slot == 'gold' or match.slot == 'bronze' %}{% if match.away_team.medal %}<em class="soccer-medal soccer-medal--{{ match.away_team.medal }}">{{ match.away_team.medal }}</em>{% endif %}{% endif %}</span>{% else %}<span class="soccer-match__tbd">TBD</span>{% endif %}
-    {% if match.has_score %}<strong>{{ match.away_score }}</strong>{% endif %}
+    <strong{% if not match.has_score %} class="soccer-match__score-pending"{% endif %}>{% if match.has_score %}{{ match.away_score }}{% else %}TBD{% endif %}</strong>
   </div>
   {% if match.result_note and match.is_final %}<p class="soccer-match__note">{{ match.result_note }}</p>{% endif %}
 </article>
