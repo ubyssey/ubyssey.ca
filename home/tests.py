@@ -414,6 +414,10 @@ class ThunderbirdCalendarImportTests(TestCase):
         first = ThunderbirdFixture.objects.get()
         first.away_score = 3
         first.home_score = 2
+        first.away_scorebug_color = "#7B5B22"
+        first.scorebug_stats = [("comparison", {
+            "label": "Shots", "away_value": "29", "home_value": "34",
+        })]
         first.save()
 
         # The new game comes first to reproduce the former reconciliation bug:
@@ -423,6 +427,8 @@ class ThunderbirdCalendarImportTests(TestCase):
         self.assertEqual(ThunderbirdFixture.objects.count(), 2)
         first.refresh_from_db()
         self.assertEqual((first.away_score, first.home_score), (3, 2))
+        self.assertEqual(first.away_scorebug_color, "#7B5B22")
+        self.assertEqual(first.scorebug_stats[0].value["away_value"], "29")
         self.assertEqual(first.source_event, f"{self.EVENT}|10/9/2026|5:00PM")
 
         import_calendar(self.calendar(friday, saturday))

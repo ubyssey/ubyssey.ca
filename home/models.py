@@ -4,6 +4,7 @@ from article.models import ArticlePage
 from section.models import SectionPage
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import RegexValidator
 from django.utils import timezone
 
 from ads.models import AdSlot
@@ -94,11 +95,27 @@ class ThunderbirdFixture(models.Model):
     home_logo = models.CharField(max_length=180, blank=True, editable=False)
     away_score = models.PositiveSmallIntegerField(null=True, blank=True)
     home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    away_scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional six-digit hex colour for the away team's score bug panel, such as #002145.",
+    )
+    home_scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional six-digit hex colour for the home team's score bug panel.",
+    )
+    scorebug_stats = StreamField(
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())], max_num=3),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
+    )
 
     panels = [
         FieldPanel("sport"), FieldPanel("starts_at"), FieldPanel("venue"),
         FieldPanel("away_name"), FieldPanel("home_name"),
         MultiFieldPanel([FieldPanel("away_score"), FieldPanel("home_score")], heading="Result (enter after the game)"),
+        MultiFieldPanel(
+            [FieldPanel("away_scorebug_color"), FieldPanel("home_scorebug_color"), FieldPanel("scorebug_stats")],
+            heading="Article score bug (optional)",
+        ),
     ]
 
     class Meta:
@@ -1211,6 +1228,10 @@ class WomensSoccerTeam(Orderable):
     logo = models.ForeignKey(
         "images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
     )
+    scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional team-colour hex code for match analysis score bugs, such as #002145.",
+    )
     games_played = models.PositiveSmallIntegerField(default=0)
     shots = models.PositiveIntegerField(default=0)
     goals = models.PositiveIntegerField(default=0)
@@ -1219,6 +1240,7 @@ class WomensSoccerTeam(Orderable):
 
     panels = [
         FieldPanel("seed"), FieldPanel("name"), FieldPanel("short_name"), FieldPanel("logo"),
+        FieldPanel("scorebug_color"),
         MultiFieldPanel(
             [FieldPanel("games_played"), FieldPanel("shots"), FieldPanel("goals"),
              FieldPanel("assists"), FieldPanel("points")],
@@ -1280,6 +1302,10 @@ class WomensSoccerMatch(Orderable):
     )
     home_score = models.PositiveSmallIntegerField(null=True, blank=True)
     away_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    scorebug_stats = StreamField(
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())], max_num=3),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
+    )
     result_note = models.CharField(
         max_length=100, blank=True, default="", help_text="Optional result detail, such as penalties.",
     )
@@ -1300,6 +1326,7 @@ class WomensSoccerMatch(Orderable):
             heading="Result",
         ),
         FieldPanel("analysis"),
+        FieldPanel("scorebug_stats"),
     ]
 
     class Meta:

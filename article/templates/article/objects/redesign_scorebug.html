@@ -1,0 +1,32 @@
+{% load static wagtailimages_tags %}
+<section class="ar-scorebug" aria-label="{{ scorebug.sport }} game result">
+  <div class="ar-scorebug__heading">
+    <span>{{ scorebug.sport }}{% if scorebug.starts_at %} · {{ scorebug.starts_at|date:'M j, Y' }}{% endif %}</span>
+    <strong>{{ scorebug.status }}</strong>
+  </div>
+  {% if scorebug.venue %}<p class="ar-scorebug__venue">{{ scorebug.venue }}</p>{% endif %}
+  <div class="ar-scorebug__teams">
+    <div class="ar-scorebug__team" style="--scorebug-team-color:{{ scorebug.away.color }}">
+      <span class="ar-scorebug__logo">
+        {% if scorebug.away.logo_image %}{% image scorebug.away.logo_image fill-80x80-c100 alt="" %}{% elif scorebug.away.logo_static %}<img src="{% static scorebug.away.logo_static %}" alt="">{% else %}<span aria-hidden="true">{{ scorebug.away.name|slice:':1' }}</span>{% endif %}
+      </span>
+      <span class="ar-scorebug__name">{{ scorebug.away.name }}</span>
+      <strong class="ar-scorebug__score">{{ scorebug.away.score }}</strong>
+    </div>
+    <div class="ar-scorebug__team" style="--scorebug-team-color:{{ scorebug.home.color }}">
+      <span class="ar-scorebug__logo">
+        {% if scorebug.home.logo_image %}{% image scorebug.home.logo_image fill-80x80-c100 alt="" %}{% elif scorebug.home.logo_static %}<img src="{% static scorebug.home.logo_static %}" alt="">{% else %}<span aria-hidden="true">{{ scorebug.home.name|slice:':1' }}</span>{% endif %}
+      </span>
+      <span class="ar-scorebug__name">{{ scorebug.home.name }}</span>
+      <strong class="ar-scorebug__score">{{ scorebug.home.score }}</strong>
+    </div>
+  </div>
+  {% if scorebug.detail %}<p class="ar-scorebug__detail">{{ scorebug.detail }}</p>{% endif %}
+  {% if scorebug.stats %}
+  <div class="ar-scorebug__stats" aria-label="Team statistics">
+    {% for stat in scorebug.stats %}
+    <div class="ar-scorebug__stat"><span>{{ stat.away }}</span><span>{{ stat.label }}</span><span>{{ stat.home }}</span></div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>

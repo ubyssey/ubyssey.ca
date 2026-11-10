@@ -29,6 +29,25 @@ import images.blocks as image_blocks
 SPORT_CHOICES = [("all", "All sports"), *GAME_ANALYSIS_ACTIVE_SPORT_CHOICES]
 
 
+class ScorebugStat(blocks.StructBlock):
+    """One editor-selected comparison shown for both teams in an article score bug."""
+
+    label = blocks.CharBlock(max_length=30, help_text="For example: Shots, Rebounds, or Aces.")
+    away_value = blocks.CharBlock(max_length=20, required=False)
+    home_value = blocks.CharBlock(max_length=20, required=False)
+
+    class Meta:
+        label = "Team comparison"
+
+
+SCOREBUG_STAT_HELP = (
+    "Optional, up to three comparisons. Suggestions: soccer—shots, shots on target, corners; "
+    "basketball—rebounds, assists, field goal %; hockey—shots, power plays, saves; "
+    "volleyball—kills, blocks, aces; football—total yards, first downs, turnovers; "
+    "rugby—tries, conversions, penalties. Use the same measure for both teams."
+)
+
+
 class GameAnalysisArticle(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
     sport = blocks.ChoiceBlock(
