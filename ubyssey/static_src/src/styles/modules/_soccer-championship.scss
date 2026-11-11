@@ -49,8 +49,13 @@
   &__description { max-width: 720px; margin: 16px auto 24px; color: var(--sc-muted); text-align: center; font: 400 17px/1.4 "meursault-variable", Georgia, serif; }
   &__section { margin-top: 34px; }
   &__section > h3 { margin: 0 0 18px; padding: 0 0 8px; border-bottom: 1px solid var(--sc-rule); color: var(--sc-ink); text-align: center; text-transform: uppercase; font: 600 18px/1.25 "meursault-variable", Georgia, serif; }
-  &__explainers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  &__explainers { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
   &__explainers .bc-election-card__image { aspect-ratio: 3 / 2; }
+}
+
+.soccer-champ-panel__explainers > .bc-election-card,
+.soccer-champ-page .bc-election-page__grid--four > .bc-election-card {
+  flex: 0 1 calc((100% - 60px) / 4);
 }
 
 .sr-page .sr-hero--championship-following { border-bottom: 0; }
@@ -58,6 +63,7 @@
 
 .soccer-champ-page {
   &__featured { margin-top: 26px; }
+  .bc-election-page__grid--four { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
   .bc-election-page__grid .bc-election-card__image { aspect-ratio: 3 / 2; }
   .bc-election-page__section > .bc-election-heading { scroll-margin-top: 116px; }
 }
@@ -178,7 +184,10 @@
 }
 
 @media (max-width: 760px) {
-  .soccer-champ-panel__explainers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .soccer-champ-panel__explainers,
+  .soccer-champ-page .bc-election-page__grid--four { gap: 18px; }
+  .soccer-champ-panel__explainers > .bc-election-card,
+  .soccer-champ-page .bc-election-page__grid--four > .bc-election-card { flex-basis: calc((100% - 18px) / 2); }
   .soccer-bracket { min-width: 780px; }
   .soccer-champ-results { display: block; }
   .soccer-bracket-scroll { padding-bottom: 12px; }
@@ -192,6 +201,7 @@
 }
 
 @media (max-width: 480px) {
-  .soccer-champ-panel__explainers { grid-template-columns: 1fr; }
+  .soccer-champ-panel__explainers > .bc-election-card,
+  .soccer-champ-page .bc-election-page__grid--four > .bc-election-card { flex-basis: 100%; }
   .soccer-champ-analysis { grid-template-columns: 88px minmax(0, 1fr); }
 }
