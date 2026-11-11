@@ -183,6 +183,11 @@
   .soccer-champ-table tbody th { width: auto; }
 }
 
+@media (max-width: 1100px) {
+  .soccer-champ-panel__explainers > .bc-election-card,
+  .soccer-champ-page .bc-election-page__grid--four > .bc-election-card { flex-basis: calc((100% - 20px) / 2); }
+}
+
 @media (max-width: 760px) {
   .soccer-champ-panel__explainers,
   .soccer-champ-page .bc-election-page__grid--four { gap: 18px; }
