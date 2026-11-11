@@ -5,12 +5,21 @@ from unittest.mock import patch
 
 from article.models import ArticleFeaturedMediaOrderable, ArticlePage, StandardArticlePage
 from article.video_header import supported_video_file, youtube_embed_url, youtube_video_id
-from article.scorebug import article_scorebug
+from article.scorebug import article_scorebug, comparison_stats
 from article.templatetags.articletags import format_redesign_extended_byline, normalize_redesign_byline
 from article.views import _author_fixture, _fixture_credit_contributors, _sample_story
 
 
 class ArticleScorebugTests(SimpleTestCase):
+    def test_comparisons_can_be_unlabelled_or_longer_than_three_rows(self):
+        rows = [{"label": "", "away_value": "12", "home_value": "25"}] + [
+            {"label": f"Set {number}", "away_value": "1", "home_value": "2"}
+            for number in range(1, 5)
+        ]
+        self.assertEqual(len(comparison_stats(rows)), 5)
+        self.assertEqual(comparison_stats(rows)[0]["label"], "")
+        self.assertEqual(comparison_stats([]), [])
+
     def fixture(self, away_score=2, home_score=3):
         return SimpleNamespace(
             away_name="University of Victoria", home_name="UBC Thunderbirds",

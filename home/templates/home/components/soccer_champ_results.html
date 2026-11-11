@@ -2,12 +2,12 @@
   <div class="soccer-bracket-scroll soccer-bracket-scroll--championship" role="region" aria-label="Championship bracket" tabindex="0">
     <div class="soccer-bracket">
       <div class="soccer-bracket__round-heads">
-        <h4>{{ championship_content.quarterfinals.0.starts_at|date:'M j'|default:'Nov 12' }} <span>Quarterfinals</span></h4>
-        <h4>{{ championship_content.championship_semifinals.0.starts_at|date:'M j'|default:'Nov 13' }} <span>Semifinals</span></h4>
-        <h4>{{ championship_content.finals.0.starts_at|date:'M j'|default:'Nov 15' }} <span>Placement matches</span></h4>
+        <h4>{{ championship_content.quarterfinal_date|date:'M j'|default:'Date TBD' }} <span>Quarterfinals</span></h4>
+        <h4>{{ championship_content.championship_semifinal_date|date:'M j'|default:'Date TBD' }} <span>Semifinals</span></h4>
+        <h4>{{ championship_content.placement_date|date:'M j'|default:'Date TBD' }} <span>Placement matches</span></h4>
       </div>
 
-      <div class="soccer-bracket__path-heading"><h5>Championship path</h5></div>
+      <div class="soccer-bracket__path-heading"><h5>{{ championship_page.championship_path_heading|default:'Championship Path' }}</h5></div>
       <div class="soccer-bracket__track soccer-bracket__track--championship">
         <svg class="soccer-bracket__links soccer-bracket__links--first" viewBox="0 0 28 660" preserveAspectRatio="none" aria-hidden="true" focusable="false">
           <path d="M0 96H14V240M0 240H14M14 168H28M0 420H14V564M0 564H14M14 492H28"/>
@@ -28,7 +28,12 @@
   </div>
   <div class="soccer-bracket-scroll soccer-bracket-scroll--consolation" role="region" aria-label="Consolation bracket" tabindex="0">
     <div class="soccer-bracket">
-      <div class="soccer-bracket__path-heading soccer-bracket__path-heading--consolation"><h5>Consolation path</h5></div>
+      <div class="soccer-bracket__path-heading soccer-bracket__path-heading--consolation"><h5>{{ championship_page.consolation_path_heading|default:'Consolation Path' }}</h5></div>
+      <div class="soccer-bracket__round-heads soccer-bracket__round-heads--consolation">
+        <h4>{{ championship_content.quarterfinal_date|date:'M j'|default:'Date TBD' }} <span>Quarterfinals</span></h4>
+        <h4>{{ championship_content.consolation_semifinal_date|date:'M j'|default:'Date TBD' }} <span>Consolation semifinals</span></h4>
+        <h4>{{ championship_content.placement_date|date:'M j'|default:'Date TBD' }} <span>5th place</span></h4>
+      </div>
       <div class="soccer-bracket__track soccer-bracket__track--consolation">
         <svg class="soccer-bracket__links soccer-bracket__links--first" viewBox="0 0 28 326" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 80H28M0 246H28"/></svg>
         <svg class="soccer-bracket__links soccer-bracket__links--second" viewBox="0 0 28 326" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 80H14V246M0 246H14M14 163H28"/></svg>
@@ -41,7 +46,7 @@
     </div>
   </div>
   <div class="soccer-champ-table-wrap">
-    <h4>Team statistics</h4>
+    <div class="soccer-bracket__path-heading soccer-bracket__path-heading--table"><h4>{{ championship_page.team_statistics_heading|default:'Team Statistics' }}</h4></div>
     <div class="soccer-champ-table-scroll"><table class="soccer-champ-table">
       <caption class="sr-only">Teams by original tournament seed; statistics are entered by editors</caption>
       <thead><tr><th scope="col" title="Original seed">#</th><th scope="col">Team</th><th scope="col" title="Games played">GP</th><th scope="col" title="Shots">S</th><th scope="col" title="Goals scored">G</th><th scope="col" title="Assists">A</th><th scope="col" title="Points">Pts</th></tr></thead>

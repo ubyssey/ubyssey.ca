@@ -168,7 +168,8 @@ class HomepageRedesignTests(SimpleTestCase):
     def test_soccer_championship_medals_wait_for_both_final_matches(self):
         teams = [SimpleNamespace(pk=i, seed=i) for i in range(1, 5)]
         gold = SimpleNamespace(slot="gold", home_team=teams[0], away_team=teams[1],
-                               winner_id=1, losing_team=teams[1], is_final=True, analysis_id=100)
+                               winner_id=1, losing_team=teams[1], is_final=True, analysis_id=100,
+                               starts_at=datetime(2026, 11, 15, 16, 0, tzinfo=datetime_timezone.utc))
         bronze = SimpleNamespace(slot="bronze", home_team=teams[2], away_team=teams[3],
                                  winner_id=3, losing_team=teams[3], is_final=False, analysis_id=None)
         rows = [SimpleNamespace(article_id=101, display_label="")]
@@ -192,6 +193,8 @@ class HomepageRedesignTests(SimpleTestCase):
             self.assertEqual(pending["quarterfinals"][0].short_label, "QF 1")
             self.assertIsNone(pending["quarterfinals"][0].home_team)
             self.assertFalse(pending["quarterfinals"][0].has_score)
+            self.assertIsNone(pending["championship_semifinal_date"])
+            self.assertEqual(pending["placement_date"], gold.starts_at)
             bronze.is_final = True
             complete = WomensSoccerChampionshipPage.get_championship_content(page)
         self.assertEqual(complete["medals"], {1: "gold", 2: "silver", 3: "bronze"})

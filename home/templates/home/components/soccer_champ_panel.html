@@ -11,7 +11,7 @@
   {% if show_results %}
   <section class="soccer-champ-panel__section" aria-labelledby="soccer-champ-results">
     <h3 id="soccer-champ-results">{{ soccer_championship_page.results_heading }}</h3>
-    {% include "home/components/soccer_champ_results.html" with championship_content=soccer_championship_content %}
+    {% include "home/components/soccer_champ_results.html" with championship_content=soccer_championship_content championship_page=soccer_championship_page %}
   </section>
   {% endif %}
 </section>

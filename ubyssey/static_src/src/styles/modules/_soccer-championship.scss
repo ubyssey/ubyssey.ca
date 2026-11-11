@@ -53,6 +53,9 @@
   &__explainers .bc-election-card__image { aspect-ratio: 3 / 2; }
 }
 
+.sr-page .sr-hero--championship-following { border-bottom: 0; }
+.sr-page .soccer-champ-panel { margin-bottom: 42px; padding-bottom: 32px; border-bottom: double 4px var(--lr-rule); }
+
 .soccer-champ-page {
   &__featured { margin-top: 26px; }
   .bc-election-page__grid .bc-election-card__image { aspect-ratio: 3 / 2; }
@@ -73,13 +76,14 @@
 .soccer-bracket-scroll--consolation { grid-column: 1 / span 3; }
 .soccer-bracket { --bracket-gap: 28px; --bracket-card-width: calc(33.333333% - 18.666667px); min-width: 780px; }
 .soccer-bracket__round-heads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--bracket-gap); }
-.soccer-bracket__round-heads h4,
-.soccer-champ-table-wrap > h4 { box-sizing: border-box; min-height: 50px; margin: 0; padding: 10px 12px; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); color: var(--sc-ink); font: 700 14px/1.1 "meursault-variable", Georgia, serif; text-transform: uppercase; }
+.soccer-bracket__round-heads h4 { box-sizing: border-box; min-height: 50px; margin: 0; padding: 10px 12px; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); color: var(--sc-ink); font: 700 14px/1.1 "meursault-variable", Georgia, serif; text-transform: uppercase; }
 .soccer-bracket__round-heads h4 span { display: block; margin-top: 3px; color: var(--sc-muted); font: 600 10px/1.2 "articulat-cf", sans-serif; }
 .soccer-bracket__path-heading { display: flex; align-items: center; margin: 18px 0 10px; padding: 1px 0 1px 10px; border-left: 3px solid #264b35; }
+.soccer-bracket__path-heading h4,
 .soccer-bracket__path-heading h5 { margin: 0; color: var(--sc-ink); font: 700 13px/1.25 "meursault-variable", Georgia, serif; text-transform: uppercase; }
-.soccer-bracket__path-heading--consolation { box-sizing: border-box; min-height: 50px; margin: 0 0 10px; padding: 10px 12px; border: 0; border-bottom: 2px solid var(--sc-rule); background: var(--sc-soft); }
-.soccer-bracket__path-heading--consolation h5 { font-size: 14px; }
+.soccer-bracket__path-heading--consolation,
+.soccer-bracket__path-heading--table { margin-top: 0; min-height: 20px; }
+.soccer-bracket__round-heads--consolation { margin-bottom: 10px; }
 .soccer-bracket__track { position: relative; }
 .soccer-bracket__track--championship { height: 660px; }
 .soccer-bracket__track--consolation { height: 326px; }

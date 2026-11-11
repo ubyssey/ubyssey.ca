@@ -105,7 +105,7 @@ class ThunderbirdFixture(models.Model):
         help_text="Optional six-digit hex colour for the home team's score bug panel.",
     )
     scorebug_stats = StreamField(
-        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())], max_num=3),
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
         blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
     )
 
@@ -1116,6 +1116,9 @@ class WomensSoccerChampionshipPage(Page):
     featured_label = models.CharField(max_length=100, default="Gold medal match")
     about_heading = models.CharField(max_length=100, default="About the Championship")
     results_heading = models.CharField(max_length=100, default="Bracket & Table")
+    championship_path_heading = models.CharField(max_length=100, default="Championship Path")
+    consolation_path_heading = models.CharField(max_length=100, default="Consolation Path")
+    team_statistics_heading = models.CharField(max_length=100, default="Team Statistics")
     analyses_heading = models.CharField(max_length=100, default="Match Analyses")
 
     content_panels = Page.content_panels + [
@@ -1129,7 +1132,9 @@ class WomensSoccerChampionshipPage(Page):
             heading="About the Championship: up to four stories",
         ),
         MultiFieldPanel(
-            [FieldPanel("results_heading"), FieldPanel("analyses_heading")],
+            [FieldPanel("results_heading"), FieldPanel("championship_path_heading"),
+             FieldPanel("consolation_path_heading"), FieldPanel("team_statistics_heading"),
+             FieldPanel("analyses_heading")],
             heading="Bracket, table and match analyses headings",
             help_text="Add the Teams and Matches child pages beneath this page to fill the bracket and table.",
         ),
@@ -1192,6 +1197,11 @@ class WomensSoccerChampionshipPage(Page):
                 is_final=False, visible_analysis=None, result_note="",
             )
 
+        def round_date(*slots):
+            return next((starts_at for slot in slots
+                         if slot in by_slot
+                         if (starts_at := getattr(by_slot[slot], "starts_at", None))), None)
+
         return {
             "featured_article": stories.get(self.featured_article_id),
             "explainers": [
@@ -1199,6 +1209,10 @@ class WomensSoccerChampionshipPage(Page):
                 for row in self.explainers.all() if row.article_id in stories
             ],
             "teams": teams,
+            "quarterfinal_date": round_date("qf1", "qf2", "qf3", "qf4"),
+            "championship_semifinal_date": round_date("sf1", "sf2"),
+            "consolation_semifinal_date": round_date("csf1", "csf2"),
+            "placement_date": round_date("gold", "bronze", "fifth"),
             "quarterfinals": [match_slot(s) for s in ("qf1", "qf2", "qf3", "qf4")],
             "championship_semifinals": [match_slot(s) for s in ("sf1", "sf2")],
             "consolation_semifinals": [match_slot(s) for s in ("csf1", "csf2")],
@@ -1339,7 +1353,7 @@ class WomensSoccerMatch(Orderable):
     home_score = models.PositiveSmallIntegerField(null=True, blank=True)
     away_score = models.PositiveSmallIntegerField(null=True, blank=True)
     scorebug_stats = StreamField(
-        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())], max_num=3),
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
         blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
     )
     result_note = models.CharField(

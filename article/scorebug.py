@@ -53,9 +53,9 @@ def comparison_stats(value):
         label = data.get("label", "")
         away = data.get("away_value", "")
         home = data.get("home_value", "")
-        if label and (away or home):
+        if away or home:
             stats.append({"label": label, "away": away or "—", "home": home or "—"})
-    return stats[:3]
+    return stats
 
 
 def article_scorebug(article):

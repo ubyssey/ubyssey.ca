@@ -1,6 +1,6 @@
 {% extends 'ubyssey/base.html' %}
 {% load static %}
-{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=soccer-championship-3"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'ubyssey/css/section.css' %}?v=soccer-championship-4"><link rel="stylesheet" href="https://use.typekit.net/xqc5jbh.css">{% endblock %}
 {% block page_wrapper %}listing-redesign{% endblock %}
 {% block header %}{% include 'navigation/headers/redesign_standard.html' %}{% endblock %}
 {% block content %}
@@ -22,7 +22,7 @@
   </section>
   <section class="bc-election-page__section page-shell" aria-labelledby="championship-results">
     <h2 class="bc-election-heading" id="championship-results">{{ self.results_heading }}</h2>
-    {% include "home/components/soccer_champ_results.html" %}
+    {% include "home/components/soccer_champ_results.html" with championship_page=self %}
   </section>
   <section class="bc-election-page__section page-shell" aria-labelledby="match-analyses">
     <h2 class="bc-election-heading" id="match-analyses">{{ self.analyses_heading }}</h2>
