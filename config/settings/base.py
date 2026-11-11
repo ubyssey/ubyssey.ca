@@ -370,6 +370,7 @@ CRONJOBS = [
 NOTIFICATION_CRONJOBS = [
     ('0 8 * * *', 'notifications.views.daily_author_digest'),
     ('0 8 * * *', 'notifications.views.daily_editor_digest')
+    ('*/30 * * * *', 'notifications.views.send_deadline_notifications')
 ]
 
 CRONJOBS.append(NOTIFICATION_CRONJOBS)

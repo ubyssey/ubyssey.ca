@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.core.cache import cache
 
-from notifications.stove_notifcations import send_stove_notification_full, AuthorDigest, EditorDigest
+from notifications.stove_notifcations import AuthorDigest, EditorDigest, NotificationAction, Deadline
+from notifications.stove_notifcations import send_stove_notification_full, send_stove_notification_grouped
 
 import datetime as dt
 from django.utils import timezone
 from collections import defaultdict
 
-from article.models import ArticleAuthorsOrderable
+from article.models import ArticleAuthorsOrderable, ArticleDeadline
 
 @login_required
 def mockWebPush(request):
@@ -67,6 +69,47 @@ def daily_editor_digest():
     for editor in editor_expiring_articles.keys():
         notification = EditorDigest(editor_expiring_articles[editor])
         send_stove_notification_full(editor, notification)
+
+# deadline_type refers to the description field of the ArticleDeadline
+# will select articles where min_deadline_in_hours < deadline <= max_deadline_in_hours
+def deadline_notification(deadline_type: str, max_deadline_in_hours: int, min_deadline_in_hours: int = 0):
+    
+    max_expiring_articles_date = get_date_hours_in_future(max_deadline_in_hours)
+    min_expiring_articles_date = get_date_hours_in_future(min_deadline_in_hours)
+
+    expiring_articles = ArticleDeadline.objects.select_related(
+        "article_page"
+    ).prefetch_related(
+        "article_page__article_authors__author"
+    ).filter(
+        date_lte=max_expiring_articles_date,
+        date_gt=min_expiring_articles_date,
+        description=deadline_type
+    )
+
+    for deadline in expiring_articles:
+        authors = deadline.article_page.article_authors.all()
+        authors_full_name = [author.full_name for author in authors]
+        article_headline = deadline.article_page.title
+        notification = Deadline(article_headline, deadline_type, max_deadline_in_hours)
+        send_stove_notification_grouped(authors_full_name, notification)
+
+def send_deadline_notifications():
+
+    # Important: We send two notification timelines: One for deadline in 2hr, another for deadline in 24hr (special case for editing)
+    # We avoid sending duplicate notifcations for deadlines < 2hr (1 for 2hr and 1 for 24hr)
+
+    # TODO cache some of this stuff because we do pretty heavy repeated db access here
+
+    topics = ArticleDeadline.objects.values_list("description", flat=True).distinct()
+
+    for topic in topic:
+        if (topic == "Editing"):
+            deadline_notification("Editing", 24, 2)
+            deadline_notification("Editing", 2, 0)
+        else:
+            deadline_notification(topic, 24, 2)
+            deadline_notification(topic, 2, 0)
 
 def get_date_hours_in_future(hours: int):
     now = timezone.now()

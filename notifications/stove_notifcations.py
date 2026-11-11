@@ -76,7 +76,7 @@ class StatusChange(NotificationAction):
             self.notif_header = "Story rejected"
             self.notif_body = f"{story_title} was not ready for edits and was rejected."
         else:
-            raise ValueError(f"{prev_status} to {cur_status} is not a valid notification status pattern")
+            raise print(f"{prev_status} to {cur_status} is not a valid notification status pattern")
         #self.story_id = story_id
         super().__init__()
         
@@ -162,7 +162,42 @@ class EditorDigest(NotificationAction, DailyDigest):
                 """
     def getStoryUrl(self):
         return f"/stove"  
+
+@dataclass 
+class Deadline(NotificationAction):
+
+    headline: str
+    deadline_type: str # string entirely equivalent the different description types in the NotificationDeadline 'description' field
+    deadline_in_hours: int
+
+    @property
+    def deadline(self) -> str:
+        if (self.deadline_in_hours == 24):
+            return "1 day"
+        elif (self.deadline_in_hours > 24):
+            return f"{self.deadline_in_hours % 24} days"
+        elif(self.deadline_in_hours == 1):
+            return "1 hour"
+        else:
+            return f"{self.deadline_in_hours} hours"
+
+
+    def getNotificationHeader(self):
+        if (self.deadline_type == "Draft_in"):
+            return f"Draft due in {self.deadline}"
+        else:
+            return f"{self.deadline_type} deadline in {self.deadline}"
     
+    def getNotificationBody(self):
+        if (self.deadline_type == "Research"):
+            return f"Research for {self.headline} is due in {self.deadline}."
+        else:
+            return f"{self.deadline_type} for {self.headline} are due in {self.deadline}."
+        
+    # TODO should bring you to the article itself.
+    def getStoryUrl(self):
+        return f"/stove"  
+
 # note: we assume here that the Author full name is equivalent to the full name defined in wagtail account    
 def send_stove_notification(author_id: str, notification_info: NotificationAction):
     

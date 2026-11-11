@@ -284,7 +284,14 @@ def load_partial_stories(request, section="all", page=1):
 #doesn't really belong here, to be moved in the future
 def send_status_update_notification(page: Page, status):
     article_page = page.specific
-    notification = StatusChange(page.article_status, status, page.title)
+    
+    notification = None
+  
+    try:
+        notification = StatusChange(page.article_status, status, page.title)
+    except Exception as e:
+        print(f"{e}. Stove will not send a notification for this pattern.")
+        return
 
     target_group = [author.author.full_name for author in article_page.primary_author_orderables]
 
