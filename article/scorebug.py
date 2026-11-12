@@ -58,6 +58,21 @@ def comparison_stats(value):
     return stats
 
 
+def soccer_goals(value):
+    """Group editor-entered goals by side, preserving their match order."""
+    goals = {"away": [], "home": []}
+    for item in value or []:
+        data = getattr(item, "value", item)
+        if not hasattr(data, "get"):
+            continue
+        team = data.get("team")
+        scorer = str(data.get("scorer") or "").strip()
+        minute = str(data.get("minute") or "").strip().rstrip("'′")
+        if team in goals and scorer and minute:
+            goals[team].append({"scorer": scorer, "minute": minute})
+    return goals
+
+
 def article_scorebug(article):
     """Return a score bug for a Game Analysis with a scored linked match."""
     if getattr(article, "story_form", None) != "game-analysis":
@@ -75,6 +90,7 @@ def article_scorebug(article):
         )
     if match and match.has_score and match.home_team and match.away_team:
         away_team, home_team = match.away_team, match.home_team
+        goals = soccer_goals(getattr(match, "scorebug_goals", []))
         return {
             "sport": "Women's soccer",
             "status": "Final" if match.is_final else "Score reported",
@@ -85,11 +101,13 @@ def article_scorebug(article):
                 "name": away_team.name, "score": match.away_score,
                 "logo_image": away_team.logo,
                 "color": team_color(away_team.scorebug_color, away_team.name),
+                "goals": goals["away"],
             },
             "home": {
                 "name": home_team.name, "score": match.home_score,
                 "logo_image": home_team.logo,
                 "color": team_color(home_team.scorebug_color, home_team.name),
+                "goals": goals["home"],
             },
             "stats": comparison_stats(match.scorebug_stats),
         }
@@ -97,6 +115,7 @@ def article_scorebug(article):
     fixture = getattr(article, "game_fixture", None)
     if fixture is None or fixture.away_score is None or fixture.home_score is None:
         return None
+    goals = soccer_goals(getattr(fixture, "scorebug_goals", [])) if fixture.sport in ("soccer-w", "soccer-m") else {"away": [], "home": []}
     return {
         "sport": fixture.get_sport_display(),
         "status": "Final",
@@ -107,11 +126,13 @@ def article_scorebug(article):
             "name": fixture.away_name, "score": fixture.away_score,
             "logo_static": fixture.away_logo,
             "color": team_color(fixture.away_scorebug_color, fixture.away_name),
+            "goals": goals["away"],
         },
         "home": {
             "name": fixture.home_name, "score": fixture.home_score,
             "logo_static": fixture.home_logo,
             "color": team_color(fixture.home_scorebug_color, fixture.home_name),
+            "goals": goals["home"],
         },
         "stats": comparison_stats(fixture.scorebug_stats),
     }

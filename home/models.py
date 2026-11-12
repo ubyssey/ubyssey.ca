@@ -108,13 +108,18 @@ class ThunderbirdFixture(models.Model):
         blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
         blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
     )
+    scorebug_goals = StreamField(
+        blocks.StreamBlock([("goal", homeblocks.ScorebugGoal())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_GOAL_HELP,
+    )
 
     panels = [
         FieldPanel("sport"), FieldPanel("starts_at"), FieldPanel("venue"),
         FieldPanel("away_name"), FieldPanel("home_name"),
         MultiFieldPanel([FieldPanel("away_score"), FieldPanel("home_score")], heading="Result (enter after the game)"),
         MultiFieldPanel(
-            [FieldPanel("away_scorebug_color"), FieldPanel("home_scorebug_color"), FieldPanel("scorebug_stats")],
+            [FieldPanel("away_scorebug_color"), FieldPanel("home_scorebug_color"),
+             FieldPanel("scorebug_stats"), FieldPanel("scorebug_goals")],
             heading="Article score bug (optional)",
         ),
     ]
@@ -1356,6 +1361,10 @@ class WomensSoccerMatch(Orderable):
         blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
         blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
     )
+    scorebug_goals = StreamField(
+        blocks.StreamBlock([("goal", homeblocks.ScorebugGoal())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_GOAL_HELP,
+    )
     result_note = models.CharField(
         max_length=100, blank=True, default="", help_text="Optional result detail, such as penalties.",
     )
@@ -1377,6 +1386,7 @@ class WomensSoccerMatch(Orderable):
         ),
         FieldPanel("analysis"),
         FieldPanel("scorebug_stats"),
+        FieldPanel("scorebug_goals"),
     ]
 
     class Meta:

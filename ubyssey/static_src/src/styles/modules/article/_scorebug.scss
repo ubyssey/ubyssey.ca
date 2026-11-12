@@ -57,6 +57,19 @@
 .ar-scorebug__logo img { display: block; width: 42px; height: 42px; object-fit: contain; }
 .ar-scorebug__name { font: 600 17px/20px "meursault-variable", Georgia, serif; }
 .ar-scorebug__score { font: 700 34px/1 "meursault-variable", Georgia, serif; font-variant-numeric: tabular-nums; }
+.ar-scorebug__goals {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin: 4px 0 0;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--ar-rule);
+  list-style: none;
+  font: 500 13px/17px "meursault-variable", Georgia, serif;
+}
+.ar-scorebug__goals li { display: flex; justify-content: space-between; gap: 10px; }
+.ar-scorebug__goals li span:last-child { flex: none; font-variant-numeric: tabular-nums; }
 .ar-scorebug__detail { margin: 10px 0 0; font: 500 13px/17px "meursault-variable", Georgia, serif; }
 
 .ar-scorebug__stats { padding: 8px 0 0; }

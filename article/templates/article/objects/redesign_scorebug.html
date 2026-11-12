@@ -12,6 +12,9 @@
       </span>
       <span class="ar-scorebug__name">{{ scorebug.away.name }}</span>
       <strong class="ar-scorebug__score">{{ scorebug.away.score }}</strong>
+      {% if scorebug.away.goals %}<ul class="ar-scorebug__goals" aria-label="{{ scorebug.away.name }} goals">
+        {% for goal in scorebug.away.goals %}<li><span>{{ goal.scorer }}</span><span>{{ goal.minute }}′</span></li>{% endfor %}
+      </ul>{% endif %}
     </div>
     <div class="ar-scorebug__team" style="--scorebug-team-color:{{ scorebug.home.color }}">
       <span class="ar-scorebug__logo">
@@ -19,6 +22,9 @@
       </span>
       <span class="ar-scorebug__name">{{ scorebug.home.name }}</span>
       <strong class="ar-scorebug__score">{{ scorebug.home.score }}</strong>
+      {% if scorebug.home.goals %}<ul class="ar-scorebug__goals" aria-label="{{ scorebug.home.name }} goals">
+        {% for goal in scorebug.home.goals %}<li><span>{{ goal.scorer }}</span><span>{{ goal.minute }}′</span></li>{% endfor %}
+      </ul>{% endif %}
     </div>
   </div>
   {% if scorebug.detail %}<p class="ar-scorebug__detail">{{ scorebug.detail }}</p>{% endif %}

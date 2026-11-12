@@ -474,6 +474,24 @@ class ThunderbirdCalendarImportTests(TestCase):
         self.assertEqual(fixture.away_score, 4)
         self.assertEqual(fixture.source_event, f"{self.EVENT}|10/9/2026|6:00PM")
 
+    def test_soccer_goal_events_survive_calendar_refresh(self):
+        self.EVENT = "Women's Soccer vs University of Victoria"
+        self.CATEGORY = "Women's Soccer"
+        game = ("11/12/2026", "11:00AM")
+        import_calendar(self.calendar(game))
+        fixture = ThunderbirdFixture.objects.get()
+        fixture.home_score = 1
+        fixture.away_score = 0
+        fixture.scorebug_goals = [("goal", {
+            "team": "home", "scorer": "A. Player", "minute": "23",
+        })]
+        fixture.save()
+
+        import_calendar(self.calendar(game))
+        fixture.refresh_from_db()
+        self.assertEqual((fixture.home_score, fixture.away_score), (1, 0))
+        self.assertEqual(fixture.scorebug_goals[0].value["scorer"], "A. Player")
+
     def test_volleyball_double_header_keeps_both_home_games(self):
         self.EVENT = "Women's Volleyball vs University of Calgary"
         self.CATEGORY = "Women's Volleyball"
