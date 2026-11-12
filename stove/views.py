@@ -79,7 +79,8 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    user_groups = list(request.user.groups.values_list('name',flat = True))
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section, "user_groups": user_groups})
 
 @login_required
 def copy(request, section="all"):
@@ -319,6 +320,7 @@ def build_partial_stories_json(pages):
             result += "\"article_authors\": \"\", "
             result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
             result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
+            result += "\"limited_access\": " + str(currentPage.get("limited_access", "false")).lower() + ", "
             result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
 
         result = result[:-1] + "]"
