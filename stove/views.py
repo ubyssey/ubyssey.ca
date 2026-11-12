@@ -79,7 +79,8 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    user_groups = list(request.user.groups.values_list('name',flat = True))
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section, "user_groups": user_groups})
 
 @login_required
 def copy(request, section="all"):
@@ -185,9 +186,9 @@ def create_page(request, section_id):
         ]
         newPage.article_authors.set(items)
     if ("assignment_memo" in data):
-        newPage.assignment_memo = data["assignment_memo"]
+        newPage.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        newPage.ethics_notes = data["ethics_notes"]
+        newPage.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
 
     try:
         section.add_child(instance=newPage)
@@ -319,6 +320,7 @@ def build_partial_stories_json(pages):
             result += "\"article_authors\": \"\", "
             result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
             result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
+            result += "\"limited_access\": " + str(currentPage.get("limited_access", "false")).lower() + ", "
             result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
 
         result = result[:-1] + "]"
@@ -393,9 +395,9 @@ def update_content_tracker(request, page_id):
         )
         page.article_authors.commit()
     if ("assignment_memo" in data):
-        page.assignment_memo = data["assignment_memo"]
+        page.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        page.ethics_notes = data["ethics_notes"]
+        page.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
     if ("deadline_list" in data):
         page.deadline_list = [
             ArticleDeadline(
@@ -865,6 +867,10 @@ def get_user_display_name(user):
     if not user:
         return ""
     return user.get_full_name() or user.email
+
+def remove_prosemirror_break(prosemirror_text):
+    print(prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " "))
+    return prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " ")
 
 
 def article_media_response(request, page, item):

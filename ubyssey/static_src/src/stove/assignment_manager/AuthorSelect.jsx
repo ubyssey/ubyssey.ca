@@ -28,7 +28,12 @@ export function findAuthorRole(authorId) {
   }
 }
 
-
+export function authorListContainsUser(authorList, user) {
+  for (let author of authorList) {
+    if (findAuthorName(author.author) === user) return true;
+  }
+  return false;
+}
 
 
 
