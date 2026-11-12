@@ -18,7 +18,10 @@ from home.game_analysis_queries import (
     panel_active_sports,
     six_month_cutoff,
 )
-from home.models import BCLocalElectionsPage, BCProvincialElectionsPage, HomePage, ThunderbirdFixture
+from home.models import (
+    BCLocalElectionsPage, BCProvincialElectionsPage, HomePage, ThunderbirdFixture,
+    WomensSoccerChampionshipPage, WomensSoccerMatch, WomensSoccerMatchesPage, WomensSoccerTeamsPage,
+)
 from home.sports_calendar import import_calendar
 from home.views import game_analysis_filter
 
@@ -40,6 +43,15 @@ class HomepageRedesignTests(SimpleTestCase):
             "home/components/bc_provincial_banner.html",
             "home/components/bc_provincial_panel.html",
             "home/components/bc_provincial_featured_story.html",
+            "home/womens_soccer_championship_page.html",
+            "home/womens_soccer_data_preview.html",
+            "home/components/soccer_champ_banner.html",
+            "home/components/soccer_champ_panel.html",
+            "home/components/soccer_champ_featured.html",
+            "home/components/soccer_champ_results.html",
+            "home/components/soccer_champ_match.html",
+            "home/components/soccer_champ_team_row.html",
+            "home/components/soccer_champ_analysis.html",
             "home/components/game_analysis_story.html",
             "home/components/redesign_story_row.html",
             "home/stream_blocks/game_analysis.html",
@@ -125,6 +137,98 @@ class HomepageRedesignTests(SimpleTestCase):
         self.assertEqual(BCProvincialElectionsPage.template, "home/bc_provincial_elections_page.html")
         self.assertEqual(BCProvincialElectionsPage().party_heading, "Party Explainers")
         self.assertEqual(BCProvincialElectionsPage().about_heading, "About the Provincial Elections")
+
+    def test_soccer_championship_has_two_cms_children_and_eleven_match_slots(self):
+        homepage = HomePage()
+        self.assertFalse(homepage.soccer_championship_banner_enabled)
+        self.assertFalse(homepage.soccer_championship_panel_enabled)
+        self.assertIn("home.WomensSoccerChampionshipPage", HomePage.subpage_types)
+        self.assertEqual(
+            WomensSoccerChampionshipPage.subpage_types,
+            ["home.WomensSoccerTeamsPage", "home.WomensSoccerMatchesPage"],
+        )
+        self.assertEqual(WomensSoccerTeamsPage.max_count_per_parent, 1)
+        self.assertEqual(WomensSoccerMatchesPage.max_count_per_parent, 1)
+        self.assertEqual(len(WomensSoccerMatch.SLOT_CHOICES), 11)
+
+    def test_soccer_data_children_have_previews_without_public_templates(self):
+        request = RequestFactory().get("/admin/preview/")
+        parent = SimpleNamespace(get_url=lambda _request: "/2026-usports-womens-soccer-championship/")
+        for page_class, relation, kind in (
+            (WomensSoccerTeamsPage, "teams", "teams"),
+            (WomensSoccerMatchesPage, "matches", "matches"),
+        ):
+            with self.subTest(kind=kind), patch("home.models.render") as render:
+                page = SimpleNamespace(get_parent=lambda: parent)
+                setattr(page, relation, SimpleNamespace(all=lambda: []))
+                page_class.serve_preview(page, request, "")
+                self.assertEqual(render.call_args.args[1], "home/womens_soccer_data_preview.html")
+                self.assertEqual(render.call_args.args[2]["data_kind"], kind)
+
+    def test_soccer_championship_medals_wait_for_both_final_matches(self):
+        teams = [SimpleNamespace(pk=i, seed=i) for i in range(1, 5)]
+        gold = SimpleNamespace(slot="gold", home_team=teams[0], away_team=teams[1],
+                               winner_id=1, losing_team=teams[1], is_final=True, analysis_id=100,
+                               starts_at=datetime(2026, 11, 15, 16, 0, tzinfo=datetime_timezone.utc))
+        bronze = SimpleNamespace(slot="bronze", home_team=teams[2], away_team=teams[3],
+                                 winner_id=3, losing_team=teams[3], is_final=False, analysis_id=None)
+        rows = [SimpleNamespace(article_id=101, display_label="")]
+        page = SimpleNamespace(pk=42, explainers=SimpleNamespace(all=lambda: rows), featured_article_id=None)
+        team_page = SimpleNamespace(teams=SimpleNamespace(select_related=lambda *_: SimpleNamespace(order_by=lambda *_: teams)))
+        match_page = SimpleNamespace(matches=SimpleNamespace(select_related=lambda *_: [gold, bronze]))
+        analysis = SimpleNamespace(pk=100)
+        explainer = SimpleNamespace(pk=101)
+        with patch("home.models.WomensSoccerTeamsPage.objects") as team_pages, \
+                patch("home.models.WomensSoccerMatchesPage.objects") as match_pages, \
+                patch("home.models.ArticlePage.objects") as articles:
+            team_pages.live.return_value.public.return_value.child_of.return_value.first.return_value = team_page
+            match_pages.live.return_value.public.return_value.child_of.return_value.first.return_value = match_page
+            articles.live.return_value.public.return_value.filter.return_value.specific.return_value = [analysis, explainer]
+            pending = WomensSoccerChampionshipPage.get_championship_content(page)
+            self.assertEqual(pending["medals"], {})
+            self.assertEqual(len(pending["quarterfinals"]), 4)
+            self.assertEqual(len(pending["championship_semifinals"]), 2)
+            self.assertEqual(len(pending["consolation_semifinals"]), 2)
+            self.assertEqual(len(pending["finals"]), 3)
+            self.assertEqual(pending["quarterfinals"][0].short_label, "QF 1")
+            self.assertIsNone(pending["quarterfinals"][0].home_team)
+            self.assertFalse(pending["quarterfinals"][0].has_score)
+            self.assertIsNone(pending["championship_semifinal_date"])
+            self.assertEqual(pending["placement_date"], gold.starts_at)
+            bronze.is_final = True
+            complete = WomensSoccerChampionshipPage.get_championship_content(page)
+        self.assertEqual(complete["medals"], {1: "gold", 2: "silver", 3: "bronze"})
+        self.assertEqual([team.medal for team in complete["teams"]], ["gold", "silver", "bronze", ""])
+        self.assertEqual(complete["analyses"], [])
+
+    def test_soccer_panel_story_slots_stay_out_of_chronological_home_stream(self):
+        stories = []
+        for story_id in range(1, 9):
+            story = SimpleNamespace(pk=story_id, story_form="standard")
+            story.specific = story
+            stories.append(story)
+        championship = SimpleNamespace(get_championship_content=lambda: {
+            "featured_article": stories[5],
+            "explainers": [SimpleNamespace(article=stories[6])],
+        })
+        homepage = HomePage(
+            soccer_championship_page_id=44,
+            soccer_championship_panel_enabled=True,
+            game_analysis_enabled=False,
+        )
+        with patch("wagtail.models.Page.get_context", return_value={}), \
+                patch.object(homepage, "get_curated_articles", return_value=stories), \
+                patch("home.models.WomensSoccerChampionshipPage.objects") as pages, \
+                patch("home.models.ArticlePage"), \
+                patch("home.models.settings.DEBUG", False):
+            pages.live.return_value.public.return_value.filter.return_value.first.return_value = championship
+            context = homepage.get_context(RequestFactory().get("/"))
+        self.assertEqual([story.pk for story in context["redesign_articles"]], [1, 2, 3, 4, 5, 8])
+
+    def test_soccer_panel_is_limited_to_main_sports_section(self):
+        template = get_template("section/section_page.html").template.source
+        self.assertIn("section_slug == 'sports' and not redesign_active_beat_id", template)
+        self.assertLess(template.index("soccer_champ_panel.html"), template.index('id="redesign-section-feed"'))
 
     def test_empty_provincial_slots_do_not_query_articles(self):
         class EmptySlots:
@@ -335,6 +439,10 @@ class ThunderbirdCalendarImportTests(TestCase):
         first = ThunderbirdFixture.objects.get()
         first.away_score = 3
         first.home_score = 2
+        first.away_scorebug_color = "#7B5B22"
+        first.scorebug_stats = [("comparison", {
+            "label": "Shots", "away_value": "29", "home_value": "34",
+        })]
         first.save()
 
         # The new game comes first to reproduce the former reconciliation bug:
@@ -344,6 +452,8 @@ class ThunderbirdCalendarImportTests(TestCase):
         self.assertEqual(ThunderbirdFixture.objects.count(), 2)
         first.refresh_from_db()
         self.assertEqual((first.away_score, first.home_score), (3, 2))
+        self.assertEqual(first.away_scorebug_color, "#7B5B22")
+        self.assertEqual(first.scorebug_stats[0].value["away_value"], "29")
         self.assertEqual(first.source_event, f"{self.EVENT}|10/9/2026|5:00PM")
 
         import_calendar(self.calendar(friday, saturday))
@@ -363,6 +473,24 @@ class ThunderbirdCalendarImportTests(TestCase):
         fixture.refresh_from_db()
         self.assertEqual(fixture.away_score, 4)
         self.assertEqual(fixture.source_event, f"{self.EVENT}|10/9/2026|6:00PM")
+
+    def test_soccer_goal_events_survive_calendar_refresh(self):
+        self.EVENT = "Women's Soccer vs University of Victoria"
+        self.CATEGORY = "Women's Soccer"
+        game = ("11/12/2026", "11:00AM")
+        import_calendar(self.calendar(game))
+        fixture = ThunderbirdFixture.objects.get()
+        fixture.home_score = 1
+        fixture.away_score = 0
+        fixture.scorebug_goals = [("goal", {
+            "team": "home", "scorer": "A. Player", "minute": "23",
+        })]
+        fixture.save()
+
+        import_calendar(self.calendar(game))
+        fixture.refresh_from_db()
+        self.assertEqual((fixture.home_score, fixture.away_score), (1, 0))
+        self.assertEqual(fixture.scorebug_goals[0].value["scorer"], "A. Player")
 
     def test_volleyball_double_header_keeps_both_home_games(self):
         self.EVENT = "Women's Volleyball vs University of Calgary"

@@ -82,6 +82,8 @@
 .hp-fixture__details{font-size:11px;line-height:15px}
 .hp-newsletter__art:after{transform:scaleX(-1)}
 .hp-hero{border-bottom:0}
+.hp-hero{height:auto;align-items:start;overflow:visible}
+.hp-hero__rail{grid-template-rows:auto auto;align-content:start}
 .hp-nav__bar{background-position:center 9px,center 46px,center 49px;background-size:100% .5px,100% .5px,100% .35px}
 
 @media(max-width:760px){

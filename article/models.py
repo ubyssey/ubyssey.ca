@@ -2181,6 +2181,9 @@ class StandardArticlePage(ArticlePage):
 
         context = super().get_context(request, *args, **kwargs)
 
+        from article.scorebug import article_scorebug
+        context["scorebug"] = article_scorebug(self)
+
         user_agent = get_user_agent(request)
         context['is_mobile'] = user_agent.is_mobile
         if self.current_section == "guide":
