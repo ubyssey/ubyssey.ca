@@ -14,7 +14,7 @@ from article.models import ArticleAuthorsOrderable, ArticleDeadline
 @login_required
 def mockWebPush(request):
     print("hit")
-    daily_author_digest()
+    send_deadline_naggers()
     return JsonResponse({"success": True})
 
 # cron jobs
@@ -82,17 +82,20 @@ def deadline_notification(deadline_type: str, max_deadline_in_hours: int, min_de
     ).prefetch_related(
         "article_page__article_authors__author"
     ).filter(
-        date_lte=max_expiring_articles_date,
-        date_gt=min_expiring_articles_date,
+        date__lte=max_expiring_articles_date,
+        date__gt=min_expiring_articles_date,
         description=deadline_type
     )
 
     for deadline in expiring_articles:
         authors = deadline.article_page.article_authors.all()
-        authors_full_name = [author.full_name for author in authors]
+        authors_full_name = [author.author.full_name for author in authors]
         article_headline = deadline.article_page.title
-        notification = Deadline(article_headline, deadline_type, max_deadline_in_hours)
+        time_diff = (deadline.date - timezone.now()).total_seconds() // 3600
+        notification = Deadline(article_headline, deadline_type, time_diff)
         send_stove_notification_grouped(authors_full_name, notification)
+
+CRON_OFFSET = 0.5 #interval at which the deadline cron job fires in hours
 
 def send_deadline_notifications():
 
@@ -103,13 +106,20 @@ def send_deadline_notifications():
 
     topics = ArticleDeadline.objects.values_list("description", flat=True).distinct()
 
-    for topic in topic:
+    for topic in topics:
         if (topic == "Editing"):
-            deadline_notification("Editing", 24, 2)
-            deadline_notification("Editing", 2, 0)
+            deadline_notification("Editing", 24 + CRON_OFFSET, 24)
+            deadline_notification("Editing", 2 + CRON_OFFSET, 2)
         else:
-            deadline_notification(topic, 24, 2)
-            deadline_notification(topic, 2, 0)
+            deadline_notification(topic, 24 + CRON_OFFSET, 24)
+            deadline_notification(topic, 2 + CRON_OFFSET, 2)
+
+def send_deadline_naggers():
+
+    topics = ArticleDeadline.objects.values_list("description", flat=True).distinct()
+
+    for topic in topics:
+        deadline_notification(topic, 0, -96) # going to cap at 4 days overdue, after 4 days nagging notifications will no longer be sent
 
 def get_date_hours_in_future(hours: int):
     now = timezone.now()

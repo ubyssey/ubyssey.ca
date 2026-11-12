@@ -166,30 +166,35 @@ class EditorDigest(NotificationAction, DailyDigest):
 @dataclass 
 class Deadline(NotificationAction):
 
+    # This notification action handles both deadline nagging (the deadline_in_hours is < 0) and deadline reminders (deadline_in_hours >= 0)
+
     headline: str
     deadline_type: str # string entirely equivalent the different description types in the NotificationDeadline 'description' field
     deadline_in_hours: int
 
     @property
     def deadline(self) -> str:
-        if (self.deadline_in_hours == 24):
+        if (abs(self.deadline_in_hours) == 24):
             return "1 day"
-        elif (self.deadline_in_hours > 24):
-            return f"{self.deadline_in_hours % 24} days"
-        elif(self.deadline_in_hours == 1):
+        elif (abs(self.deadline_in_hours) > 24):
+            return f"{abs(self.deadline_in_hours) // 24} days"
+        elif(abs(self.deadline_in_hours) == 1):
             return "1 hour"
         else:
-            return f"{self.deadline_in_hours} hours"
-
+            return f"{abs(self.deadline_in_hours)} hours"
 
     def getNotificationHeader(self):
-        if (self.deadline_type == "Draft_in"):
+        if (self.deadline_in_hours < 0):
+            return "Deadline nagger"
+        elif (self.deadline_type == "Draft_in"):
             return f"Draft due in {self.deadline}"
         else:
             return f"{self.deadline_type} deadline in {self.deadline}"
     
     def getNotificationBody(self):
-        if (self.deadline_type == "Research"):
+        if (self.deadline_in_hours < 0):
+            return f"{self.deadline_type} deadline for {self.headline} was due {self.deadline} ago."
+        elif (self.deadline_type == "Research"):
             return f"Research for {self.headline} is due in {self.deadline}."
         else:
             return f"{self.deadline_type} for {self.headline} are due in {self.deadline}."
