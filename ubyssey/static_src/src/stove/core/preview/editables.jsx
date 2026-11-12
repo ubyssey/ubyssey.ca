@@ -3,7 +3,9 @@
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState, TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
+import { inputRules, smartQuotes } from "prosemirror-inputrules";
 import { yCursorPlugin, ySyncPlugin, ySyncPluginKey } from "y-prosemirror";
+
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
 import { markRangeAtCursor } from "../richtext/marks.js";
@@ -123,6 +125,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
         ...(sharedType ? [documentSyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
         ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory, allowAnnotations }),
+        inputRules({ rules: [...smartQuotes] }),
       ],
     }),
 
