@@ -186,9 +186,9 @@ def create_page(request, section_id):
         ]
         newPage.article_authors.set(items)
     if ("assignment_memo" in data):
-        newPage.assignment_memo = data["assignment_memo"]
+        newPage.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        newPage.ethics_notes = data["ethics_notes"]
+        newPage.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
 
     try:
         section.add_child(instance=newPage)
@@ -395,9 +395,9 @@ def update_content_tracker(request, page_id):
         )
         page.article_authors.commit()
     if ("assignment_memo" in data):
-        page.assignment_memo = data["assignment_memo"]
+        page.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        page.ethics_notes = data["ethics_notes"]
+        page.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
     if ("deadline_list" in data):
         page.deadline_list = [
             ArticleDeadline(
@@ -867,6 +867,10 @@ def get_user_display_name(user):
     if not user:
         return ""
     return user.get_full_name() or user.email
+
+def remove_prosemirror_break(prosemirror_text):
+    print(prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " "))
+    return prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " ")
 
 
 def article_media_response(request, page, item):
