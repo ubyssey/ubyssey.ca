@@ -283,7 +283,7 @@ STORAGES = {
 WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": "BPT6TuEGSl5gWC2nii2J-P80tFywt4X7AI9Ijw0q_k4PyS0waE3gfCG8gLPR_z-m7x-G62lcF5MBuK_pAcFhbiY",
     "VAPID_PRIVATE_KEY": env("VAPID_PRIVATE_KEY"),
-    "VAPID_ADMIN_EMAIL": "bfaraone920@gmail.com"
+    "VAPID_ADMIN_EMAIL": "webmaster@ubyssey.ca"
 }
 
 GS_LOCATION = None
