@@ -14,7 +14,7 @@ from article.models import ArticleAuthorsOrderable, ArticleDeadline
 @login_required
 def mockWebPush(request):
     print("hit")
-    send_deadline_naggers()
+    daily_author_digest()
     return JsonResponse({"success": True})
 
 # cron jobs
@@ -30,7 +30,7 @@ def daily_author_digest():
     ).filter(
         article_page__deadline_list__date__lte=expiring_articles_date,
         article_page__deadline_list__date__gte=timezone.now(),
-        article_page__deadline_list__description="Draft in", # not really sure if this is how I should be filtering the deadlines, but this is what is set when an article with a deadline is created 
+        #article_page__deadline_list__description="Draft in", # not really sure if this is how I should be filtering the deadlines, but this is what is set when an article with a deadline is created 
         article_page__deadline_list__completed=False,
         author_role="author"
     )
@@ -56,7 +56,7 @@ def daily_editor_digest():
     ).filter(
         article_page__deadline_list__date__lte=expiring_articles_date,
         article_page__deadline_list__date__gte=timezone.now(),
-        article_page__deadline_list__description="Draft in", # not really sure if this is how I should be filtering the deadlines, but this is what is set when an article with a deadline is created 
+        #article_page__deadline_list__description="Draft in", # not really sure if this is how I should be filtering the deadlines, but this is what is set when an article with a deadline is created 
         article_page__deadline_list__completed=False,
         author_role__in=['photo_editor', 'graphics_editor', 'backfield_editor'] # not sending for copy editor, becuase they get their own daily digest
     )

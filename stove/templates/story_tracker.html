@@ -8,6 +8,11 @@
 
 {# Temporarily adding this here since it doesn't extend stove base #}
 <link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
+<link rel="manifest" href="{% static 'ubyssey/images/stove/manifest_stove.json' %}">
+
+{# Tell iOS PWA that we are able to support the standalone type #}
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Ubyssey">
 
 {% webpush_header %}
 
@@ -17,10 +22,9 @@
 {% csrf_token %}
 
 
-{% webpush_button %}
 <div id="content-tracker">
 </div>
-
+{% webpush_button %}
 
 <script>
     // create a collection of page information.
