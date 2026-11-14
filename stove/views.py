@@ -26,6 +26,8 @@ from wagtail.images import get_image_model
 from pycrdt import Array, Doc, Map
 from django.db.models import Min
 
+from notifications.stove_notifcations import StoryCreated, StatusChange, send_stove_notification, send_stove_notification_grouped
+
 from django.core.exceptions import ValidationError
 
 from stove.editors.collaboration.persistence import (
@@ -201,8 +203,15 @@ def create_page(request, section_id):
         newPage.delete()
         return HttpResponseBadRequest(err.messages) 
     
-
-    return JsonResponse(newPage.get_latest_revision_as_object().to_json(), safe=False)
+    latest_revision_data = newPage.get_latest_revision_as_object()
+    
+    for index, item in enumerate(data["article_authors"] or []):
+        try:
+            send_stove_notification(item["author"], StoryCreated(item["author_role"], data["title"], latest_revision_data.pk))
+        except Exception as e:
+            print(f"{e}. Failed to send stove notification, failing silently")
+    
+    return JsonResponse(latest_revision_data.to_json(), safe=False)
 
 @login_required
 def load_page(request, page_id):
@@ -327,6 +336,28 @@ def build_partial_stories_json(pages):
     return result
 
 
+#doesn't really belong here, to be moved in the future
+def send_status_update_notification(page: Page, status):
+    article_page = page.specific
+    
+    notification = None
+  
+    try:
+        notification = StatusChange(page.article_status, status, page.title)
+    except Exception as e:
+        print(f"{e}. Stove will not send a notification for this pattern.")
+        return
+
+    target_group = [author.author.full_name for author in article_page.primary_author_orderables]
+
+    if status == 2:
+        target_group = [editor.author.full_name for editor in article_page.editors]
+
+    try:
+        send_stove_notification_grouped(target_group, notification)
+    except Exception as e:
+        print(f"{e}. Issue while sending notification, failing silently.")
+
 def update_article_status(page, status, user):
     if page.article_status == status: return page
 
@@ -340,6 +371,8 @@ def update_article_status(page, status, user):
             print()
     except Exception as error:
         warnings.warn(f"Failed to update workflow status for {page.pk}: {error}")
+    
+    send_status_update_notification(page, status)
         
     page.article_status = status
     return page

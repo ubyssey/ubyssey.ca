@@ -1,4 +1,5 @@
 {% load static %}
+{% load webpush_notifications %}
 
 
 {% block stylesheet %}
@@ -8,15 +9,23 @@
 
 {# Temporarily adding this here since it doesn't extend stove base #}
 <link rel="icon" href="{% static 'ubyssey/images/stove/favicon.ico' %}">
+<link rel="manifest" href="{% static 'ubyssey/images/stove/manifest_stove.json' %}">
+
+{# Tell iOS PWA that we are able to support the standalone type #}
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Ubyssey">
+
+{% webpush_header %}
 
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
+
+
 <div id="content-tracker">
-
 </div>
-
+{% webpush_button with_class="notif-subscribe-button" %}
 
 <script>
     // create a collection of page information.

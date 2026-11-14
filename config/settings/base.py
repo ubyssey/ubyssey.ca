@@ -144,6 +144,8 @@ INSTALLED_APPS = [
     'wagtailmenus',
     'wagtailcache',
     'wagtail_color_panel',
+
+    'webpush',
 ]
 
 if DEBUG:
@@ -279,6 +281,12 @@ STORAGES = {
     },
 }
 
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "BPT6TuEGSl5gWC2nii2J-P80tFywt4X7AI9Ijw0q_k4PyS0waE3gfCG8gLPR_z-m7x-G62lcF5MBuK_pAcFhbiY",
+    "VAPID_PRIVATE_KEY": env("VAPID_PRIVATE_KEY"),
+    "VAPID_ADMIN_EMAIL": "webmaster@ubyssey.ca"
+}
+
 GS_LOCATION = None
 GS_STORAGE_BUCKET_NAME = None # See documentation https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
 
@@ -360,6 +368,15 @@ CRONJOBS = [
     ('*/5 * * * *', 'election_results.services.scheduled_refresh'),
     ('0 */6 * * *', 'events.views.update_events')
 ]
+
+NOTIFICATION_CRONJOBS = [
+    ('0 8 * * *', 'notifications.views.daily_author_digest'),
+    ('0 8 * * *', 'notifications.views.daily_editor_digest'),
+    ('*/30 * * * *', 'notifications.views.send_deadline_notifications'),
+    ('0 10 * * *', 'notifications.views.send_deadline_naggers')
+]
+
+NOTIFICATION_CRONJOBS += CRONJOBS
 
 # Daphne
 ASGI_APPLICATION = "ubyssey.asgi.application"
