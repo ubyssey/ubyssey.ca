@@ -14,7 +14,7 @@ from article.models import ArticleAuthorsOrderable, ArticleDeadline
 @login_required
 def mockWebPush(request):
     print("hit")
-    daily_author_digest()
+    send_deadline_notifications()
     return JsonResponse({"success": True})
 
 # cron jobs

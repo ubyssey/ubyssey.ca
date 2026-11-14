@@ -206,7 +206,10 @@ def create_page(request, section_id):
     latest_revision_data = newPage.get_latest_revision_as_object()
     
     for index, item in enumerate(data["article_authors"] or []):
-        send_stove_notification(item["author"], StoryCreated(item["author_role"], data["title"], latest_revision_data.pk))
+        try:
+            send_stove_notification(item["author"], StoryCreated(item["author_role"], data["title"], latest_revision_data.pk))
+        except Exception as e:
+            print(f"{e}. Failed to send stove notification, failing silently")
     
     return JsonResponse(latest_revision_data.to_json(), safe=False)
 
@@ -350,10 +353,11 @@ def send_status_update_notification(page: Page, status):
     if status == 2:
         target_group = [editor.author.full_name for editor in article_page.editors]
 
-    send_stove_notification_grouped(target_group, notification)
+    try:
+        send_stove_notification_grouped(target_group, notification)
+    except Exception as e:
+        print(f"{e}. Issue while sending notification, failing silently.")
 
-
-        
 def update_article_status(page, status, user):
     if page.article_status == status: return page
 
