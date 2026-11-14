@@ -69,6 +69,7 @@ services:
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      VAPID_PRIVATE_KEY_FILE: /run/secrets/VAPID_PRIVATE_KEY
       SQL_HOST: mysql
       SQL_USER: root
       SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
