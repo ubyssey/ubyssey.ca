@@ -69,10 +69,10 @@ class StatusChange(NotificationAction):
             self.notif_body = f"'{story_title}' has been filed for edits."
         elif cur_status == 3:
             self.notif_header = "Story edited"
-            self.notif_body = f"{story_title} has been returned with edits."
+            self.notif_body = f"'{story_title}' has been returned with edits."
         elif prev_status == 2 and cur_status == 1:
             self.notif_header = "Story rejected"
-            self.notif_body = f"{story_title} was not ready for edits and was rejected."
+            self.notif_body = f"'{story_title}' was not ready for edits and was rejected."
         else:
             raise print(f"{prev_status} to {cur_status} is not a valid notification status pattern")
         #self.story_id = story_id
@@ -191,11 +191,11 @@ class Deadline(NotificationAction):
     
     def getNotificationBody(self):
         if (self.deadline_in_hours < 0):
-            return f"{self.deadline_type} deadline for {self.headline} was due {self.deadline} ago."
+            return f"{self.deadline_type} deadline for '{self.headline}' was due {self.deadline} ago."
         elif (self.deadline_type == "Research"):
-            return f"Research for {self.headline} is due in {self.deadline}."
+            return f"Research for '{self.headline}' is due in {self.deadline}."
         else:
-            return f"{self.deadline_type} for {self.headline} are due in {self.deadline}."
+            return f"{self.deadline_type} for '{self.headline}' are due in {self.deadline}."
         
     # TODO should bring you to the article itself.
     def getStoryUrl(self):
