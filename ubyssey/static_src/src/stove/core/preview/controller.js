@@ -1,7 +1,7 @@
 import { pageEditorState } from "../state.js";
 import { diffStreamBlockStructure } from "../prosemirror/document.js";
 import { remapRichTextSelections } from "../prosemirror/stream_richtext.js";
-import { refreshPlainTextEditorsFromStream, restorePageRichTextSelections } from "./editables.jsx";
+import { refreshPlainTextEditorsFromStream, restorePageRichTextSelections, refreshRichTextEditorsFromStream } from "./editables.jsx";
 import { reconcilePreviewBlocks } from "./dom.js";
 import { createPreviewRefresh, MODAL_PREVIEW_DEBOUNCE_MS } from "./refresh.js";
 
@@ -20,17 +20,21 @@ export function createPreviewController({ form, pageRoot, collaboration = null }
         : { previewReconciled: false, structureChanged: false };
       
       const previewHandled = reconciliation.previewReconciled || Boolean(transaction?.getMeta("skipPreview"));
+
+      if (!richTextOnly) refreshRichTextEditorsFromStream(instance);
       
       if (kind === "remote" && reconciliation.previewReconciled) {
         restorePageRichTextSelections(remapRichTextSelections(before, doc, richTextSelections));
       }
 
       if (kind === "remote") {
+        if (!richTextOnly) {
+          refreshPlainTextEditorsFromStream(instance);
+        }
         if (!richTextOnly && !previewHandled) {
           refresh.refreshStream(instance.fieldName, {
             immediate: true,
             deferIfPageFocused: true,
-            deferUntilBlur: structuralChanges.structureChanged,
           });
         }
       } else if (pageEditorState.blockEditorEditing) {

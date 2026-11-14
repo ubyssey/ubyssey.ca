@@ -12,7 +12,16 @@ from stove.editors.collaboration.presence import claim_page_presence
 ASSIGNMENT_AUTHOR_ROLES = ["author", "backfield_editor", "copy_editor"]
 
 
-def initialize_page_collaboration(page_id, initial_update, presence_id):
+def _update_shared_text(metadata, key, value):
+    shared_value = metadata.get(key)
+    if isinstance(shared_value, Text):
+        shared_value.clear()
+        shared_value.insert(0, value)
+    else:
+        metadata[key] = Text(value)
+
+
+def initialize_page_collaboration(page_id, initial_update, presence_id, user=None):
     document = Doc()
     document.apply_update(initial_update)
 
@@ -21,14 +30,16 @@ def initialize_page_collaboration(page_id, initial_update, presence_id):
         collaboration, _ = PageCollaboration.objects.get_or_create(page=page)
         if not collaboration.document:
             collaboration.document = initial_update
-            collaboration.save(update_fields=["document", "updated_at"])
+            collaboration.revision_pending = True
+            collaboration.last_edited_by = user
+            collaboration.save(update_fields=["document", "updated_at", "revision_pending", "last_edited_by"])
 
         claim_page_presence(page_id, presence_id)
 
         return collaboration.pk, bytes(collaboration.document)
 
 
-def update_page_collaboration(page, data):
+def update_page_collaboration(page, data, user=None):
     with transaction.atomic():
         Page.objects.select_for_update().only("pk").get(pk=page.pk)
         collaboration = PageCollaboration.objects.select_for_update().filter(page_id=page.pk).first()
@@ -41,12 +52,7 @@ def update_page_collaboration(page, data):
         metadata = document.get("metadata", type=Map)
 
         if "title" in data:
-            title = metadata.get("field:title")
-            if isinstance(title, Text):
-                title.clear()
-                title.insert(0, page.title)
-            else:
-                metadata["field:title"] = Text(page.title)
+            _update_shared_text(metadata, "field:title", page.title)
         if "authors" in data:
             assignment_authors = [
                 {"authorId": str(item.author_id), "role": item.author_role}
@@ -63,19 +69,27 @@ def update_page_collaboration(page, data):
                 authors.extend([Map(item) for item in assignment_authors + manuscript_authors])
             else:
                 metadata["articleAuthors"] = Array([Map(item) for item in assignment_authors])
+        if "story_form" in data:
+            _update_shared_text(
+                metadata,
+                "field:story_form",
+                str(data["story_form"] or ""),
+            )
 
         update = document.get_update(state)
         if not update:
             return
 
         collaboration.document = document.get_update()
-        collaboration.save(update_fields=["document", "updated_at"])
-        transaction.on_commit(lambda: send_page_update(page.pk, update))
+        collaboration.revision_pending = True
+        collaboration.last_edited_by = user
+        collaboration.save(update_fields=["document", "updated_at", "revision_pending", "last_edited_by"])
+        transaction.on_commit(lambda: send_page_update(page.pk, collaboration.pk, update))
 
 
-def send_page_update(page_id, update):
+def send_page_update(page_id, collaboration_id, update):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        page_yjs_group_name(page_id),
+        page_yjs_group_name(page_id, collaboration_id),
         {"type": "send_message", "message": create_update_message(update)},
     )

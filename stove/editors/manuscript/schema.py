@@ -3,11 +3,15 @@
 
 # todo: find out how much is reusable for other page types
 import json
+from collections import Counter
 
 from wagtail import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageChooserBlock
+
+from .annotations import merge_wagtail_value
+from .serialization import generate_public_streamfield
 
 
 # Main entrypoint for editor initialization
@@ -23,10 +27,23 @@ def get_streamfield_editors(page):
         block_types = field.stream_block.child_blocks
         try:
             editor_version = getattr(page, "editor_article_version", None) or {}
+            value = field.stream_block.get_prep_value(getattr(page, field.name))
+
             if field.name in editor_version:
-                value = editor_version[field.name] or []
-            else:
-                value = field.stream_block.get_prep_value(getattr(page, field.name))
+                editor_blocks = editor_version[field.name] or []
+                public_blocks = field.stream_block.get_prep_value(field.stream_block.to_python(generate_public_streamfield(editor_blocks)))
+                editor_by_id = {block.get("id"): block for block in editor_blocks if block.get("id")}
+                public_by_id = {block.get("id"): block for block in public_blocks if block.get("id")}
+                editor_counts = Counter(block.get("id") for block in editor_blocks)
+                public_counts = Counter(block.get("id") for block in public_blocks)
+                wagtail_counts = Counter(block.get("id") for block in value)
+
+                value = [
+                    merge_wagtail_value(editor_by_id[block["id"]], public_by_id[block["id"]], block)
+                    if block.get("id") in editor_by_id and block["id"] in public_by_id and editor_counts[block["id"]] == public_counts[block["id"]] == wagtail_counts[block["id"]] == 1
+                    else block
+                    for block in value
+                ]
             value = json_safe(value) or []
         except Exception:
             print(f"Failed to get field: {field.name}")

@@ -1,7 +1,7 @@
 // Media Tags loader
 
 import { createRoot } from "react-dom/client";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 export function setupMediaTags(form) {
   const field = form.querySelector("#id_article_media-tags");
@@ -16,19 +16,29 @@ export function setupMediaTags(form) {
 
   const setTags = (tags) => {
     pending = tags.filter(Boolean);
-    const selected = options.filter((option) => tags.includes(option.value));
+    const selected = pending.map((tag) => (
+      options.find((option) => option.value === tag) || { value: tag, label: tag }
+    ));
+    
     const fieldTags = status === "loaded" ? selected.map((option) => option.value) : pending;
     field.value = fieldTags.join(", ");
 
     root.render(
-      <Select
+      <CreatableSelect
         isMulti
         isDisabled={status !== "loaded"}
         classNamePrefix="article-media-tag-select"
         options={options}
         placeholder={status === "failed" ? "Failed to fetch tags" : "Loading tags"}
         value={selected}
-        onChange={(nextOptions) => setTags(nextOptions.map((option) => option.value))}
+        onChange={(nextOptions) => setTags((nextOptions || []).map((option) => option.value))}
+        onCreateOption={(value) => {
+          const tag = value.trim();
+          if (!tag) return;
+          const option = { value: tag, label: tag };
+          options = [...options, option];
+          setTags([...pending, option.value]);
+        }}
       />,
     );
   };

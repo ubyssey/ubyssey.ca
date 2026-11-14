@@ -11,12 +11,17 @@ from stove.editors.collaboration.presence import page_is_being_edited_in_stove
 
 WAGTAIL_EDITING_CLOSE_CODE = 4411
 
-def page_is_being_edited_in_wagtail(page_id):
+
+def active_wagtail_editing_sessions(page_id):
     return EditingSession.objects.filter(
         content_type=get_default_page_content_type(),
         object_id=str(page_id),
-        last_seen_at__gte=timezone.now() - EditingSession.IDLE_TIMEOUT,
-    ).exists()
+        last_seen_at__gte=timezone.now() - timezone.timedelta(seconds=30),
+    )
+
+
+def page_is_being_edited_in_wagtail(page_id):
+    return active_wagtail_editing_sessions(page_id).exists()
 
 
 # only_if_stove_is_inactive is false for "View in Wagtail" button, which forces the handoff even if Stove is active
@@ -28,6 +33,15 @@ def hand_page_to_wagtail(page_id, only_if_stove_is_inactive=False):
         if only_if_stove_is_inactive and page_is_being_edited_in_stove(page_id):
             return False
 
+        collaboration = PageCollaboration.objects.select_for_update().filter(page_id=page_id).first()
+        if collaboration and collaboration.document and collaboration.revision_pending:
+            # More evil circular import evasion
+            from .revisions import autosave_page_revision
+
+            if autosave_page_revision(page_id, collaboration_id=collaboration.pk) is None:
+                return False
+
+        # Potentially remove the deletion given the server side serialization
         PageCollaboration.objects.filter(page_id=page_id).delete()
         PageCollaborationPresence.objects.filter(page_id=page_id).delete()
         transaction.on_commit(lambda: _close_stove_clients(page_id))
@@ -40,6 +54,6 @@ def _close_stove_clients(page_id):
         return
 
     async_to_sync(channel_layer.group_send)(
-        f"stove_yjs_{page_id}",
+        f"stove_yjs_restore_{page_id}",
         {"type": "page.wagtail_edit_started"},
     )

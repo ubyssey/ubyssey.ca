@@ -30,15 +30,6 @@ LAYOUTS = {
     "full-bleed", "left-full-bleed", "right-full-bleed", "shared-components",
 }
 
-STORY_TYPE_COPY = {
-    "Report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
-    "Feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-    "Review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-    "Game Analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
-    "Essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
-}
-
-
 def _sample_story(slug):
     if not slug:
         return None, None
@@ -82,20 +73,6 @@ def _preview_content(article):
                 "credit": media.get("credit", ""),
             })
     return content
-
-
-def _story_type(story):
-    path = urlparse(story.get("article_url", "")).path
-    title = story.get("headline", "").lower()
-    if "/opinion/" in path:
-        return "Essay"
-    if "review" in title or path.endswith("-review/"):
-        return "Review"
-    if "/sports/" in path:
-        return "Game Analysis"
-    if any(word in title for word in ("data", "policy", "land trusts", "research")):
-        return "Feature"
-    return "Report"
 
 
 def _author_fixture(name):
@@ -201,7 +178,6 @@ def redesign_preview(request, layout):
         "subtitle": lede,
         "above_cut_lede": "",
     })
-    story_type = _story_type(story) if story else "Report"
     story_path = urlparse(story.get("article_url", "")).path if story else "/news/"
     section = next((part for part in story_path.split("/") if part in {"news", "opinion", "arts", "culture", "sports"}), "news")
     preview = SimpleNamespace(
@@ -217,8 +193,6 @@ def redesign_preview(request, layout):
         primary_author_orderables=[contributor],
         published_at=_preview_story_date(story),
         standpoint_disclosure="<p>Juan Pablo Sastoque Vega is The Ubyssey’s News Editor. This relationship is disclosed so readers can evaluate the reporting with the relevant context.</p>",
-        story_type_description=STORY_TYPE_COPY[story_type],
-        get_story_type_display=story_type,
         extended_contributors=[editor, *fixture_credits],
     )
     thumbnail = story.get("thumbnail", {}) if story else {}

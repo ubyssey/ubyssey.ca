@@ -214,3 +214,8 @@ jobs:
           done
           echo "Health check failed"
           exit 1
+
+      - name: Prune Unused Containers and Images
+        run: |
+          ssh production "docker container prune -f"
+          ssh production "docker image prune -a -f"

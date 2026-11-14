@@ -11,6 +11,7 @@ export {
   migrateLegacySuggestionMarksInDoc,
   startCommentCommand,
   startCommentOnSelection,
+  TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META,
 } from "./comment_model.js";
 export {
   footnoteMarkSpec,

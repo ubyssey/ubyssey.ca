@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { EditorState } from "prosemirror-state";
 
 export const START_COMMENT_THREAD_META = "startCommentThread";
+export const TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META = "hideTextSelectionCommentBubble";
 
 export function commentSuggestion(comments) {
   return comments?.[0]?.suggestion || null;
@@ -148,7 +149,8 @@ export function startCommentCommand(commentMark) {
       .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
       .setMeta("skipPreview", true)
-      .setMeta(START_COMMENT_THREAD_META, threadId));
+      .setMeta(START_COMMENT_THREAD_META, threadId)
+      .setMeta(TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META, true));
     return true;
   };
 }
@@ -267,7 +269,9 @@ export function removeAnnotationThread(thread) {
 
     let tr = view.state.tr;
     for (const range of fragment.ranges) tr = tr.removeMark(range.from, range.to, fragment.markType);
-    view.dispatch(tr.setMeta("skipPreview", true));
+    view.dispatch(tr
+      .setMeta("skipPreview", true)
+      .setMeta(TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META, true));
     changed = true;
   }
 

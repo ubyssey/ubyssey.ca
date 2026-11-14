@@ -44,6 +44,7 @@ module.exports = {
     'stove/manuscript_editor': './src/stove/manuscript_editor/app.js',
     'stove/story_tracker': './src/stove/assignment_manager/StoryTracker.jsx',
     'stove/copy_view': './src/stove/assignment_manager/CopyView.jsx',
+    'stove/newsletter_view': './src/stove/assignment_manager/NewsletterView.jsx',
     'stove/homepage_editor': './src/stove/homepage_editor/app.js',
     'join': './src/js/join.js',
   },

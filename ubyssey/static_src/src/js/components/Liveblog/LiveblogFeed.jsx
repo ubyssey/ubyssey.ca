@@ -1,5 +1,11 @@
 import LiveblogUpdate from "./LiveblogUpdate.jsx";
 
+function SortArrow({ descending }) {
+    return <svg className="c-liveblog__sort-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path d={descending ? "M8 2v12m0 0-5-5m5 5 5-5" : "M8 14V2m0 0L3 7m5-5 5 5"} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>;
+}
+
 function UpdateNotification({meta, caughtUp, updateOrder, position, scrollToRecent}) {
 
     function positionOrder(position) {
@@ -48,7 +54,7 @@ export default function LiveBlogFeed({meta, updates, updateOrder, presentTime, c
                     {viewMode === "timeline" ? "Updates" : "Timeline"}
                 </button>
                 <button type="button" onClick={toggleUpdateOrder} aria-label={`Sort updates by ${updateOrder === -1 ? "oldest" : "latest"}`}>
-                    {updateOrder === -1 ? "Latest" : "Oldest"}<span aria-hidden="true">{updateOrder === -1 ? "↓" : "↑"}</span>
+                    {updateOrder === -1 ? "Latest" : "Oldest"}<SortArrow descending={updateOrder === -1} />
                 </button>
             </div>
         </div>}

@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.urls import reverse
 from wagtail.models import Page, Site
 from article.models import ArticlePage, StandardArticlePage, ArticleDeadline
 from article.models import ArticleAuthorsOrderable
@@ -50,12 +51,15 @@ from stove.editors.homepage.preview import prepare_homepage_preview
 from stove.editors.manuscript.submission import process_editor_forms
 from stove.editors.collaboration.revisions import (
     restore_page_revision,
-    save_page_revision,
     autosave_page_revision,
     save_manual_page_revision,
-    STALE_AUTOSAVE,
+    get_collaboration_form_data,
 )
-from stove.editors.collaboration.wagtail import hand_page_to_wagtail, page_is_being_edited_in_wagtail
+from stove.editors.collaboration.wagtail import (
+    active_wagtail_editing_sessions,
+    hand_page_to_wagtail,
+    page_is_being_edited_in_wagtail,
+)
 from stove.editors.collaboration.presence import claim_page_presence, release_page_presence
 
 
@@ -77,7 +81,8 @@ def content_tracker_react(request, section="all"):
     for s in sections:
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
-    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+    user_groups = list(request.user.groups.values_list('name',flat = True))
+    return render(request, "story_tracker.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section, "user_groups": user_groups})
 
 @login_required
 def copy(request, section="all"):
@@ -97,6 +102,35 @@ def copy(request, section="all"):
         sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
 
     return render(request, "view_copy_department.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+
+@login_required
+def newsletter(request, section="all"):
+    beats = CategoryPage.objects.all().filter(beat=True)
+    authors = AuthorPage.objects.all().order_by("-last_activity", "-full_name", "-pk")
+    sections = SectionPage.objects.exact_type(SectionPage)
+
+    beatExport = {}
+    for beat in beats:
+        beatSection = beat.get_parent().title
+        if not beatSection in beatExport: 
+            beatExport[beatSection] = []
+        beatExport[beatSection] = beatExport[beatSection] + [{"value": beat.pk, "label": beat.title}]
+
+    sectionExport = []
+    for s in sections:
+        sectionExport = sectionExport + [{"value": s.pk, "label": s.title, "slug": s.slug}]
+    
+
+    return render(request, "view_newsletter.html", {"beats": json.dumps(beatExport), "authors": authors, "sections": sectionExport, "section": section})
+
+@login_required
+def homepage_scheduled_stories(request):
+    site = Site.find_for_request(request)
+    homepage = get_object_or_404(HomePage, pk=site.root_page_id).specific.get_latest_revision()
+    curatedStories = homepage.as_object().get_context(request)['curated_articles']
+
+    return JsonResponse({"curated": curatedStories, "homepageSchedule": homepage.approved_go_live_at}, safe=False)
+
 
 @login_required
 @require_POST
@@ -154,9 +188,9 @@ def create_page(request, section_id):
         ]
         newPage.article_authors.set(items)
     if ("assignment_memo" in data):
-        newPage.assignment_memo = data["assignment_memo"]
+        newPage.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        newPage.ethics_notes = data["ethics_notes"]
+        newPage.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
 
     try:
         section.add_child(instance=newPage)
@@ -224,6 +258,22 @@ def load_page(request, page_id):
             pageJson = json.dumps(pageJson)
     return JsonResponse(pageJson, safe=False)
 
+@login_required 
+def load_newsletter_stories(request, page=1):
+    qs = ArticlePage.objects
+    qs = qs.filter(Q(article_status=5) | Q(live=True))
+    qs = qs.order_by("live", "-latest_revision_created_at", "-last_published_at")
+    paginator = Paginator(qs, 20)
+    pages = paginator.get_page(request.GET.get("article-page", page))
+
+    return JsonResponse(build_partial_stories_json(pages), safe=False)
+
+@login_required
+def featured_image_url(request, page_id):
+    articlePage = get_object_or_404(ArticlePage, pk=page_id)
+    return JsonResponse({"media-url": articlePage.get_featured_media_image_url()})
+
+
 @login_required
 def load_partial_stories(request, section="all", page=1):
     username = request.GET.get('username', '')
@@ -234,11 +284,7 @@ def load_partial_stories(request, section="all", page=1):
     qs = ArticlePage.objects
     
     if (article_status != -1):
-        print(article_status)
-        print(type(article_status))
-        print(type(int(article_status)))
         qs = qs.filter(article_status=4)
-        print(list(qs))
     qs = qs.all()
     if (section != "all"):
         qs = qs.child_of(get_object_or_404(SectionPage, slug=section.lower()))
@@ -258,6 +304,10 @@ def load_partial_stories(request, section="all", page=1):
     paginator = Paginator(qs, 20)
 
     pages = paginator.get_page(request.GET.get("article-page", page))
+    
+    return JsonResponse(build_partial_stories_json(pages), safe=False)
+
+def build_partial_stories_json(pages):
     result="[]"
     if (len(pages) > 0):
         result = "["
@@ -276,10 +326,12 @@ def load_partial_stories(request, section="all", page=1):
             result += "\"article_authors\": \"\", "
             result += "\"article_status\": " + str(currentPage.get("article_status") if currentPage.get("article_status") else 1) + ", "
             result += "\"category_page\": \"" + (str(currentPage.get("category_page")) if currentPage.get("category_page") else "")+ "\", "
+            result += "\"limited_access\": " + str(currentPage.get("limited_access", "false")).lower() + ", "
             result += "\"deadline_list\": " + (str(currentPage.get("deadline_list")).replace("'", '"').replace("True", "true").replace("False", "false").replace("None", "null") if currentPage.get("deadline_list") else "[]")+ "},"
 
         result = result[:-1] + "]"
-    return JsonResponse(result, safe=False)
+    return result
+
 
 #doesn't really belong here, to be moved in the future
 def send_status_update_notification(page: Page, status):
@@ -324,9 +376,6 @@ def update_article_status(page, status, user):
 @login_required
 @require_POST
 def update_content_tracker(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_object_or_404(Page, id=page_id).specific.get_latest_revision_as_object()
     data = json.loads(request.body.decode('utf-8'))
 
@@ -375,9 +424,9 @@ def update_content_tracker(request, page_id):
         )
         page.article_authors.commit()
     if ("assignment_memo" in data):
-        page.assignment_memo = data["assignment_memo"]
+        page.assignment_memo = remove_prosemirror_break(data["assignment_memo"])
     if ("ethics_notes" in data):
-        page.ethics_notes = data["ethics_notes"]
+        page.ethics_notes = remove_prosemirror_break(data["ethics_notes"])
     if ("deadline_list" in data):
         page.deadline_list = [
             ArticleDeadline(
@@ -391,7 +440,7 @@ def update_content_tracker(request, page_id):
     page.save_revision(user=request.user, log_action=True, changed=False)
     if save_as_draft:
         page.save(user=request.user)
-    update_page_collaboration(page, data)
+    update_page_collaboration(page, data, request.user)
 
     latest_revision = page.get_latest_revision_as_object()
     return JsonResponse(latest_revision.to_json(), safe=False)
@@ -404,18 +453,12 @@ def page_collaboration(request, page_id):
     if not request.body or len(request.body) > 10 * 1024 * 1024:
         return HttpResponse(status=400)
 
-    if page_is_being_edited_in_wagtail(page_id):
-        return JsonResponse(
-            {"detail": "This page is currently being edited in Wagtail."},
-            status=409,
-        )
-
     presence_id = request.GET.get("presence")
     if presence_id is None:
         return HttpResponseBadRequest("Missing collaboration presence id")
 
     try:
-        collaboration_id, document = initialize_page_collaboration(page_id, request.body, presence_id)
+        collaboration_id, document = initialize_page_collaboration(page_id, request.body, presence_id, request.user)
     except Page.DoesNotExist:
         return HttpResponse(status=404)
 
@@ -438,25 +481,38 @@ def page_collaboration_presence(request, page_id):
     if request.POST.get("action") != "claim":
         return HttpResponseBadRequest("Unknown collaboration presence action")
 
-    if page_is_being_edited_in_wagtail(page_id):
-        return JsonResponse(
-            {"detail": "This page is currently being edited in Wagtail."},
-            status=409,
-        )
-
     if claim_page_presence(page_id, presence_id):
         return HttpResponse(status=204)
     return HttpResponse(status=404)
 
+
+def wagtail_editing_warning(request, page_id):
+    users = []
+    seen_user_ids = set()
+
+    for editing_session in active_wagtail_editing_sessions(page_id).select_related("user"):
+        if editing_session.user_id in seen_user_ids:
+            continue
+        seen_user_ids.add(editing_session.user_id)
+        user = editing_session.user
+        users.append(get_user_display_name(user) or user.get_username())
+
+    return render(
+        request,
+        "editors/wagtail_editing.html",
+        {
+            "page_id": page_id,
+            "wagtail_users": users,
+        },
+    )
+
+
 @login_required
 def manuscript_editor(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return render(
-            request,
-            "editors/wagtail_editing.html",
-            {"page_id": page_id},
-            status=409,
-        )
+    if request.method == "GET" and request.GET.get("continue") == "1":
+        if page_is_being_edited_in_wagtail(page_id):
+            return wagtail_editing_warning(request, page_id)
+        return redirect("stove:manuscript_editor", page_id=page_id)
 
     page = get_latest_page(page_id)
     editor_errors = {}
@@ -466,12 +522,12 @@ def manuscript_editor(request, page_id):
 
     if request.method == "POST":
         action = request.POST.get("action") or "draft"
-        saved_revision = None
-        editor_errors, page_form, article_authors_form, featured_media_form = process_editor_forms(page, request.POST)
+        saved_revision, editor_errors = save_manual_page_revision(page_id, request.POST, request.user, action=action)
 
-        if not editor_errors:
-            page, saved_revision, save_errors = save_page_revision(page, action, request.user)
-            editor_errors.update(save_errors)
+        page = get_latest_page(page_id)
+        page_form = create_page_form(page)
+        article_authors_form = create_article_authors_form(page)
+        featured_media_form = create_featured_media_form(page)
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("accept", ""):
             if editor_errors:
@@ -589,14 +645,6 @@ def manuscript_page_options(request, page_id):
 @login_required
 def homepage_editor(request):
     site = Site.find_for_request(request)
-    if page_is_being_edited_in_wagtail(site.root_page_id):
-        return render(
-            request,
-            "editors/wagtail_editing.html",
-            {"page_id": site.root_page_id},
-            status=409,
-        )
-
     page = get_object_or_404(HomePage, pk=site.root_page_id).specific
     last_saved_page = PageCollaboration.objects.filter(page_id=site.root_page_id).only("updated_at").first()
     context = page.get_context(request)
@@ -697,17 +745,13 @@ def editor_page_revisions(request, page_id):
 @login_required
 @require_POST
 def editor_page_save_revision(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     saved_revision, errors = save_manual_page_revision(page_id, request.POST, request.user)
-    if saved_revision is STALE_AUTOSAVE:
-        return JsonResponse({"errors": errors}, status=409)
     if errors or saved_revision is None:
         return JsonResponse({"errors": errors or {"__all__": ["Failed to save revision."]}}, status=422)
 
     if request.POST.get("handoff_to_wagtail") == "1":
-        hand_page_to_wagtail(page_id)
+        if not hand_page_to_wagtail(page_id):
+            return JsonResponse({"errors": {"__all__": ["Could not be saved? Try again and let systems know."]}}, status=422)
 
     return JsonResponse({
         "ok": True,
@@ -721,9 +765,6 @@ def editor_page_save_revision(request, page_id):
 @login_required
 @require_POST
 def editor_page_restore(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_latest_page(page_id)
     revision_id = request.POST.get("revision")
     if not revision_id:
@@ -747,16 +788,17 @@ def editor_page_restore(request, page_id):
 @login_required
 @require_POST
 def editor_page_preview(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return wagtail_editing_error_response()
-
     page = get_latest_page(page_id)
     revision = None
     revision_id = request.POST.get("revision")
     if revision_id:
         revision = get_object_or_404(page.revisions, id=revision_id)
 
-    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_editor_preview(page, request.POST, revision)
+    try:
+        editor_data = get_collaboration_form_data(page, request.POST, request.user) if revision is None else request.POST
+    except ValidationError as error:
+        return JsonResponse({"errors": {"__all__": error.messages}}, status=422)
+    page, editor_errors, page_form, article_authors_form, featured_media_form = prepare_editor_preview(page, editor_data, revision)
 
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=422)
@@ -786,26 +828,20 @@ def editor_page_preview(request, page_id):
             status=422,
         )
 
-    render_only = request.POST.get("render_only") == "1"
-    autosaved = False
-    if revision is None and not render_only:
-        saved_revision = autosave_page_revision(page.id, request.POST, request.user)
-        if saved_revision is None:
-            return JsonResponse({"errors": {"__all__": ["Failed to save."]}}, status=422)
-        autosaved = saved_revision is not STALE_AUTOSAVE
-
-    return JsonResponse({"errors": editor_errors, "html": html, "autosaved": autosaved})
+    return JsonResponse({"errors": editor_errors, "html": html})
 
 
 @login_required
 @require_POST
 def editor_page_full_preview(request, page_id):
-    if page_is_being_edited_in_wagtail(page_id):
-        return HttpResponse("This page is currently being edited in Wagtail.", status=409)
-
     page = get_latest_page(page_id)
 
-    editor_errors, _, _, _ = process_editor_forms(page, request.POST)
+    try:
+        editor_data = get_collaboration_form_data(page, request.POST, request.user)
+    except ValidationError as error:
+        return JsonResponse({"errors": {"__all__": error.messages}}, status=422)
+
+    editor_errors, _, _, _ = process_editor_forms(page, editor_data)
     if editor_errors:
         return JsonResponse({"errors": editor_errors}, status=400)
 
@@ -815,7 +851,7 @@ def editor_page_full_preview(request, page_id):
         warnings.warn(f"Failed to render editor preview for page {page_id}")
         return HttpResponse("Failed to save. Undo your last change, contact webmaster if this isn't resolved.", status=422)
 
-    saved_revision = autosave_page_revision(page.id, request.POST, request.user)
+    saved_revision = autosave_page_revision(page.id, request.user)
     if saved_revision is None:
         return HttpResponse("Failed to save. Please try again.", status=422)
 
@@ -839,10 +875,31 @@ def get_editor_preview_template(page):
     return f"editors/preview/{page._meta.model_name}_preview.html"
 
 
+@login_required
+@require_POST
+def force_wagtail_handoff(request, page_id):
+    page = get_object_or_404(Page, pk=page_id)
+
+    if hand_page_to_wagtail(page_id):
+        return redirect("wagtailadmin_pages:edit", page_id)
+
+    return render(request, "editors/wagtail_handoff_required.html", {
+        "page_id": page_id,
+        "stove_editor_url": (
+            reverse("stove:homepage_editor") if isinstance(page.specific, HomePage)
+            else reverse("stove:manuscript_editor", args=[page_id])
+        ),
+    }, status=422)
+
+
 def get_user_display_name(user):
     if not user:
         return ""
     return user.get_full_name() or user.email
+
+def remove_prosemirror_break(prosemirror_text):
+    print(prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " "))
+    return prosemirror_text.replace('<br class="ProseMirror-trailingBreak">', " ")
 
 
 def article_media_response(request, page, item):
@@ -852,10 +909,3 @@ def article_media_response(request, page, item):
         "item": {"kind": "image" if item.image else "document", "id": media.id, "title": media.title},
         "gallery": render_to_string("editors/components/article_media_gallery.html", {"article_media": article_media}, request=request)
     })
-
-
-def wagtail_editing_error_response():
-    return JsonResponse(
-        {"errors": {"__all__": ["This page is currently being edited in Wagtail."]}},
-        status=409,
-    )

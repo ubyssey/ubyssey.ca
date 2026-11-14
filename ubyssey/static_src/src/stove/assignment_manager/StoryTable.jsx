@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import Switch from "react-switch";
 
-import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline,PencilOutline, Eye} from 'react-ionicons'
+import { HeadsetOutline, PrintOutline, ImageOutline, BrushOutline, VideocamOutline,PencilOutline, Eye, LockClosed, LockOpen} from 'react-ionicons'
 
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
@@ -19,7 +19,7 @@ import {updateArticleStatus, updateAuthors, updateBeat, updateDeadline} from "./
 import {storyTypeLabel} from "./StoryTypeSelect.jsx";
 import BeatSelect from "./BeatSelect.jsx";
 import {LinkOpenButton} from "./LinkInput.jsx";
-import AuthorsSelect from "./AuthorSelect.jsx";
+import AuthorsSelect, {authorListContainsUser} from "./AuthorSelect.jsx";
 import ArticleStatus from "./ArticleStatus.jsx";
 import statuses from './statuses.json'
 import {SIDEBAR_TYPES} from "./StorySidebar.jsx";
@@ -27,6 +27,7 @@ import { Tooltip } from "react-tooltip";
 
 function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, setActiveSidebar}) {
 
+    const [articleLocked, setArticleLocked] = useState(page.limited_access);
 
     let selectedClass = "";
 
@@ -49,31 +50,48 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
       }
     }
 
+    useEffect(()=>{
+      if (page.limited_access) {
+        setArticleLocked(
+          page.limited_access && !userGroups.includes("Senior Masthead") && !authorListContainsUser(page.article_authors, currentUser)
+        )
+      }
+    }, [page.limited_access, page.article_authors])
+
     return <tr key={page.pk} className={selectedClass}>
             <td className="slug-cell">
-                <span className="slug-link--container">
-              <a className="slug-link" href={articleUrl.replace("1918", page.pk)}>
+              <a className={`slug-link slug-link--container ${articleLocked && 'slug-link--container-disabled'}`} target="_blank" href={ articleLocked || `${articleUrl.replace("1918", page.pk)}`}>
               {page["title"]}
               </a>
-              </span> 
               <div className="slug-cell--button-panel">
-              <button className="slug-cell--edit-button" onClick={() => setSidebar(SIDEBAR_TYPES.EDIT)}><PencilOutline
-                color={'#00000'} 
-                height={"18px"}
-                width={"18px"}
-              /></button>
-              <button className="slug-cell--preview-button" onClick={() => setSidebar(SIDEBAR_TYPES.PREVIEW)}><Eye 
-                className
-                height={"18px"}
-                width={"18px"}/>
-              </button>
-              
-              <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
+                { !articleLocked ? <>
+                  <button className="slug-cell--edit-button" onClick={() => setSidebar(SIDEBAR_TYPES.EDIT)}><PencilOutline
+                    color={'#00000'} 
+                    height={"18px"}
+                    width={"18px"}
+                  /></button>
+                  <button className="slug-cell--preview-button" onClick={() => setSidebar(SIDEBAR_TYPES.PREVIEW)}><Eye 
+                    className
+                    height={"18px"}
+                    width={"18px"}/>
+                  </button>
+                  
+                  <LinkOpenButton url={page.assignment_folder} className={"slug-cell--hyperlink-open"} iconSize={"18px"}/>
+                  { page.limited_access &&
+                    <LockOpen height={"18px"} width={"18px"} color={"#257e4d"}/>
+                  }
+                  </>
+                  :
+                  <LockClosed
+                  height={"18px"}
+                    width={"18px"}
+                    color={"#dc4f3e"}/>
+                }
               </div>
               <div className={`slug-cell--story-type ${hasStoryType ? "slug-cell--story-type-active" : "slug-cell--story-type-empty"}`}>{hasStoryType ? storyTypeLabel(page["story_form"]) : ""}</div>
               </td>
             <td className="authors-cell"><AuthorsSelect 
-              disabled = {page.live}
+              disabled = {page.live || articleLocked}
               currentAuthors={page.article_authors} 
               handleUpdateAuthors={(newAuthorList) => updateAuthors(page, newAuthorList, statuses[page.article_status].role, updatePage)}
               authorType={statuses[page.article_status].role}
@@ -82,7 +100,7 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
             </td>
             <td className={`deadline-cell`}>
               <div className="deadline-cell--container">
-              <DateInput className='deadline-cell--date-input' date={earliestIncompleteDeadline.date} handleUpdateDate={(newDate) => updateDeadline(page, {date: newDate, description: earliestIncompleteDeadline.description, completed: false}, updatePage)} disabled={page.live}/> 
+              <DateInput className='deadline-cell--date-input' date={earliestIncompleteDeadline.date} handleUpdateDate={(newDate) => updateDeadline(page, {date: newDate, description: earliestIncompleteDeadline.description, completed: false}, updatePage)} disabled={page.live || articleLocked}/> 
                  <div className='deadline-cell--extended-indicator' data-tooltip-id={`deadline-additional-${page.pk}`}>{getDeadlineIcon(earliestIncompleteDeadline)}</div>
               </div>
               
@@ -110,8 +128,8 @@ function ArticleRow({page, updatePage, selectedArticleId, setSelectedArticleId, 
               
             </td>
               
-            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live}/></td>
-            <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)}/></td>
+            <td><BeatSelect beat={page.category_page} updateBeat={(newBeat) => updateBeat(page, newBeat, updatePage)} disabled={page.live || articleLocked}/></td>
+            <td><ArticleStatus status={page["article_status"]} updateStatus={(newStatus) => updateArticleStatus(page, newStatus, updatePage)} disabled={page.live || articleLocked}/></td>
             <td className="visuals-cell">
               <ImageOutline color={'#000000'} height="1.5em" width="1.5em" /> 
               <BrushOutline color={'#000000'} height="1.5em" width="1.5em" />
@@ -318,7 +336,7 @@ export default function StoryTable({updatePage, selectedArticleId, setSelectedAr
   const [isIncludingPublished, setIsIncludingPublished] = useState(false);
   const [ordering, setOrdering] = useState(ORDER.LAST_MODIFIED)
   const [isLoading, setLoading] = useState(true);
-  return <><h1>{pageSection} Articles</h1>
+  return <><h1 className="story-table-title">{pageSection}</h1>
         <QueryFilterPanel 
           isOnlyUserFilter={isOnlyUserFilter} 
           setOnlyUserFilter={setOnlyUserFilter}

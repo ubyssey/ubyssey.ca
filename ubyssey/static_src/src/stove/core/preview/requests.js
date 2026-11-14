@@ -7,9 +7,14 @@ export async function fetchPreviewHtml(url, formData, signal = null) {
     credentials: "same-origin",
     signal,
   });
-  const payload = await response.json();
+
   if (!formData.get("revision") && !response.ok) {
     document.dispatchEvent(new Event("editor-save-failed"));
   }
-  return response.ok && payload.html ? payload.html : null;
+
+  const payload = await response.json();
+
+  return {
+    html: response.ok && payload.html ? payload.html : null,
+  };
 }

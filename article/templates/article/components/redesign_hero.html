@@ -1,14 +1,22 @@
 {% load wagtailimages_tags wagtailcore_tags articletags %}
 {% with featured=article.featured_media.first header=article.header.0.value %}
-<section class="ar-hero ar-hero--{{ article.redesign_header_layout }}" data-article-hero>
+<section class="ar-hero ar-hero--{{ article.redesign_header_layout }}{% if article.video_header_enabled %} ar-hero--video{% endif %}" data-article-hero>
   <div class="ar-hero__copy">
     <p class="ar-kicker" data-section="{{ article.current_section|default:'News'|lower }}">{{ article.current_section|default:"News" }}{% if article.category_page %} / {{ article.category_page.title }}{% endif %}</p>
     {% if header.title %}<h1 data-article-editable-stream-field="header" data-article-editable-path="title">{{ header.title|safe }}</h1>{% else %}<h1 data-article-editable-page-field="title" data-article-editable-mode="richtext-inline">{{ article.title|safe }}</h1>{% endif %}
     {% if header.subtitle %}<p class="ar-deck" data-article-editable-stream-field="header" data-article-editable-path="subtitle">{{ header.subtitle }}</p>{% elif header.above_cut_lede %}<div class="ar-deck" data-article-editable-stream-field="header" data-article-editable-path="above_cut_lede" data-article-editable-mode="richtext">{{ header.above_cut_lede|richtext }}</div>{% elif article.lede %}<p class="ar-deck">{{ article.lede }}</p>{% endif %}
   </div>
-  {% if preview_image_url or featured.image %}
-  <figure class="ar-hero__media">
-    {% if preview_image_url %}<img src="{{ preview_image_url }}" alt="{{ featured.alt_text }}">{% else %}{% image featured.image width-1800 format-webp as hero_image %}<img src="{{ hero_image.url }}" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="{{ featured.alt_text }}">{% endif %}
+  {% if preview_image_url or featured.image or article.video_header_enabled %}
+  <figure class="ar-hero__media{% if article.video_header_enabled %} ar-video-hero{% endif %}"{% if article.video_header_enabled %} data-video-hero data-full-video-kind="{% if article.video_full_youtube_url %}youtube{% else %}file{% endif %}" data-full-video-url="{% if article.video_full_youtube_url %}{{ article.video_full_embed_url }}{% else %}{{ article.video_full_file_url }}{% endif %}"{% endif %}>
+    {% if preview_image_url %}<img src="{{ preview_image_url }}" alt="{{ featured.alt_text }}">{% elif featured.image %}{% image featured.image width-1800 format-webp as hero_image %}<img src="{{ hero_image.url }}" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="{{ featured.alt_text }}">{% endif %}
+    {% if article.video_header_enabled %}
+      {% if article.video_preview_youtube_url %}
+        <iframe class="ar-video-hero__preview" data-video-preview src="{{ article.video_preview_embed_url }}" title="Muted looping video preview" tabindex="-1" aria-hidden="true" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      {% elif article.video_preview_file %}
+        <video class="ar-video-hero__preview" data-video-preview src="{{ article.video_preview_file_url }}" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      {% endif %}
+      <button class="ar-video-hero__open" type="button" data-video-open aria-label="Play full video in fullscreen"><span aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></svg></span></button>
+    {% endif %}
     {% if featured.cover_caption or featured.credit %}
       <figcaption>
         {% if featured.cover_caption %}<span data-article-editable-page-field="featured_media-cover_caption" data-article-editable-mode="richtext">{{ featured.cover_caption|richtext }}</span>{% endif %}
@@ -16,6 +24,12 @@
       </figcaption>
     {% endif %}
   </figure>
+  {% endif %}
+  {% if article.video_header_enabled %}
+  <div class="ar-video-player" data-video-player role="dialog" aria-modal="true" aria-label="Full article video" hidden>
+    <button class="ar-video-player__close" type="button" data-video-close aria-label="Close full video">&times;</button>
+    <div class="ar-video-player__stage" data-video-stage></div>
+  </div>
   {% endif %}
 </section>
 {% endwith %}

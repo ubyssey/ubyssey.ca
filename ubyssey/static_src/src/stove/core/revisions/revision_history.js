@@ -72,9 +72,11 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
     const originalText = restoreButton.textContent;
     restoreButton.disabled = true;
     restoreButton.textContent = "Restoring...";
+
     try {
       const formData = formDataBeforeRestore();
       formData.set("revision", revisionId);
+      
       const payload = await restoreRevision(form.dataset.restoreUrl, formData);
       if (payload.errors) {
         const message = Object.entries(payload.errors)
@@ -112,6 +114,7 @@ export function setupManualRevisionSave(form, { formDataForSave }) {
 
     try {
       const payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+
       if (payload.errors) {
         const message = Object.entries(payload.errors)
           .map(([field, messages]) => {
@@ -147,6 +150,7 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
 
   wagtailButton.addEventListener("click", async () => {
     const originalText = wagtailButton.textContent;
+    let handoffSucceeded = false;
     wagtailButton.disabled = true;
     wagtailButton.textContent = "Saving...";
 
@@ -154,6 +158,7 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
       await beforeSave();
       const formData = formDataForSave();
       formData.set("handoff_to_wagtail", "1");
+      form.dataset.wagtailHandoffPending = "1";
       const payload = await saveRevision(form.dataset.saveRevisionUrl, formData);
       
       if (payload.errors) {
@@ -167,12 +172,14 @@ export function setupWagtailHandoff(form, { formDataForSave, beforeSave = () => 
         return;
       }
 
+      handoffSucceeded = true;
       form.dispatchEvent(new CustomEvent("editor:revision-saved"));
       window.location.assign(wagtailButton.dataset.wagtailUrl);
     } catch (error) {
       console.error(error);
       alert("Failed to save revision");
     } finally {
+      if (!handoffSucceeded) delete form.dataset.wagtailHandoffPending;
       wagtailButton.textContent = originalText;
       wagtailButton.disabled = false;
     }

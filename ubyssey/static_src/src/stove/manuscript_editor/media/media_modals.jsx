@@ -22,6 +22,7 @@ export function useMediaModals(form, mediaUpdates) {
     const uploadTitle = document.querySelector("[data-article-media-upload-title]");
     const kind = form.elements.namedItem("article_media-kind");
     let uploadReturnsToGallery = false;
+
     // Sometimes there are layered modals
     const existingMediaModal = document.querySelector("[data-article-media-existing-modal]");
     const existingKind = document.querySelector("[data-article-media-existing-kind]");
@@ -33,11 +34,21 @@ export function useMediaModals(form, mediaUpdates) {
       mount: existingSelectMount,
       addButton: existingAddButton,
     });
+
     const mediaAuthors = setupMediaAuthorSelect(form);
     const mediaTags = setupMediaTags(form);
 
     const mediaField = (name) => form.querySelector(`#id_article_media-${name}`);
     const mediaAuthorOptionsReady = mediaAuthors.optionsReady;
+
+    const mediaTitle = mediaField("title");
+    const mediaUpload = mediaField("file");
+
+    const setTitleToFileName = () => {
+      if (mediaTitle.value === "") {
+        mediaTitle.value = mediaUpload.files[0].name.split(".")[0];
+      }
+    }
 
     const setUploadMode = (mode) => {
       const editing = mode === "edit";
@@ -214,6 +225,7 @@ export function useMediaModals(form, mediaUpdates) {
           existingAddButton.disabled = !existingMedia.selection;
         }
       }),
+      mediaUpload.addEventListener('change', setTitleToFileName),
     ];
 
     return () => {

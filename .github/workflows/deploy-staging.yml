@@ -166,5 +166,5 @@ jobs:
 
       - name: Prune Unused Containers and Images
         run: |
-          ssh staging "docker container prune"
-          ssh staging "docker image prune -a"
+          ssh staging "docker container prune -f"
+          ssh staging "docker image prune -a -f"

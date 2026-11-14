@@ -17,7 +17,7 @@ import { createInvisiblesPlugin, space as invisiblesSpace, hardBreak, paragraph 
 import { ySyncPluginKey } from "y-prosemirror";
 import { v4 as uuidv4 } from "uuid";
 
-import { commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
+import { TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META, commentSuggestion, createSuggestionMark, markRangeAtCursor, startCommentCommand, startFootnoteCommand } from "./annotations/index.js";
 import { promptLinkCommand } from "./link_dialog.jsx";
 import { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestionMode } from "./suggestion_mode.js";
 import { pageEditorState } from "../state.js";
@@ -26,6 +26,8 @@ export { ACTIVE_SUGGESTION_THREAD_META, suggestionModeIsActive, toggleSuggestion
 
 export const ARIAL_MODE_STORAGE_KEY = "manuscript-arial-mode";
 export const INVISIBLE_CHARACTERS_STORAGE_KEY = "manuscript-invisible-characters";
+export const TRAILING_SUGGESTION_SPACE_STORAGE_KEY = "manuscript-trailing-suggestion-space";
+export const SELECTION_COMMENT_BUTTON_STORAGE_KEY = "manuscript-selection-comment-button";
 
 export function isArialModeEnabled() {
   return window.localStorage.getItem(ARIAL_MODE_STORAGE_KEY) === "true";
@@ -35,12 +37,18 @@ export function areInvisibleCharactersEnabled() {
   return window.localStorage.getItem(INVISIBLE_CHARACTERS_STORAGE_KEY) === "true";
 }
 
+export function isTrailingSuggestionSpaceEnabled() {
+  return window.localStorage.getItem(TRAILING_SUGGESTION_SPACE_STORAGE_KEY) !== "false";
+}
+
+export function isSelectionCommentButtonEnabled() {
+  return window.localStorage.getItem(SELECTION_COMMENT_BUTTON_STORAGE_KEY) !== "false";
+}
+
 export function editorPlugins(schema, {includeHistory = true, undoCommand = undo, redoCommand = redo, allowAnnotations = true} = {}) {
   return [
     linkBubblePlugin(schema),
-    // Disabling for now, I don't have time to polish
-    //selectionCommentBubblePlugin(schema),
-    ...(allowAnnotations ? [activeCommentPlugin(schema), footnoteSelectionPlugin(schema), footnotePastePlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
+    ...(allowAnnotations ? [selectionCommentBubblePlugin(schema), activeCommentPlugin(schema), footnoteSelectionPlugin(schema), footnotePastePlugin(schema), frozenFootnotePlugin(schema), suggestionPlugin(schema)] : []),
     keymap(buildEditorKeymap(schema, { undoCommand, redoCommand, allowAnnotations })),
     keymap(baseKeymap),
     dropCursor(),
@@ -166,7 +174,12 @@ function suggestionPlugin(schema) {
     const isWholeWord = !isWordCharacter(leadingCharacter) && !isWordCharacter(trailingCharacter);
     if (!isWholeWord) return { from, to, spacePosition: null };
 
-    if (trailingCharacter === " ") return { from, to: to + 1, spacePosition: "trailing" };
+    if (trailingCharacter === " ") {
+      if(isTrailingSuggestionSpaceEnabled()) {
+       return { from, to: to + 1, spacePosition: "trailing" }
+      }
+      return { from, to, spacePosition: null };
+    }
     if (leadingCharacter === " ") return { from: from - 1, to, spacePosition: "leading" };
 
     return null;
@@ -564,20 +577,69 @@ function suggestionPlugin(schema) {
   });
 }
 
+const selectionCommentBubblePluginKey = new PluginKey("selectionCommentBubble");
 function selectionCommentBubblePlugin(schema) {
   const commentMark = schema.marks.comment;
   if (!commentMark) return new Plugin({});
 
   return new Plugin({
+    key: selectionCommentBubblePluginKey,
+    state: {
+      init: () => false,
+      apply(transaction, dismissed) {
+        if (transaction.getMeta(TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META)) return true;
+        return transaction.selectionSet ? false : dismissed;
+      },
+    },
     view(editorView) {
       const bubble = document.createElement("div");
       const button = document.createElement("button");
+      const pageBlock = editorView.dom.closest("[data-article-block]");
+      let selectingWithMouse = false;
+      let animationFrame = null;
       bubble.className = "pm-selection-comment-bubble";
       bubble.hidden = true;
       button.type = "button";
       button.textContent = "Comment";
       bubble.appendChild(button);
       editorView.dom.parentNode.appendChild(bubble);
+
+      const updateBubble = () => {
+        const { selection } = editorView.state;
+        if (!isSelectionCommentButtonEnabled() || selectionCommentBubblePluginKey.getState(editorView.state) || selectingWithMouse || (pageBlock && !pageBlock.classList.contains("pm-page-block--selected")) || !(selection instanceof TextSelection) || selection.empty) {
+          bubble.hidden = true;
+          return;
+        }
+
+        bubble.hidden = false;
+        bubble.style.visibility = "hidden";
+        const cursor = editorView.coordsAtPos(selection.to);
+        const offset = bubble.offsetParent?.getBoundingClientRect() || { left: 0, top: 0 };
+        bubble.style.left = `${cursor.right - offset.left}px`;
+        bubble.style.top = `${cursor.bottom - offset.top}px`;
+        bubble.style.visibility = "";
+      };
+
+      const startMouseSelection = () => {
+        selectingWithMouse = true;
+        bubble.hidden = true;
+      };
+      const finishMouseSelection = () => {
+        if (!selectingWithMouse) return;
+        selectingWithMouse = false;
+        animationFrame = window.requestAnimationFrame(() => {
+          animationFrame = null;
+          updateBubble();
+        });
+      };
+      const hideForOtherBlock = (event) => {
+        const clickedBlock = event.composedPath?.().find((element) => element?.matches?.("[data-article-block]"));
+        if (clickedBlock && clickedBlock !== pageBlock) bubble.hidden = true;
+      };
+
+      editorView.dom.addEventListener("mousedown", startMouseSelection);
+      document.addEventListener("mousedown", hideForOtherBlock, true);
+      document.addEventListener("mouseup", finishMouseSelection, true);
 
       button.addEventListener("mousedown", (event) => event.preventDefault());
       button.addEventListener("click", () => {
@@ -586,20 +648,12 @@ function selectionCommentBubblePlugin(schema) {
       });
 
       return {
-        update(view) {
-          const { selection } = view.state;
-          if (!(selection instanceof TextSelection) || selection.empty) {
-            bubble.hidden = true;
-            return;
-          }
-
-          const cursor = view.coordsAtPos(selection.to);
-          const offset = bubble.offsetParent?.getBoundingClientRect() || { left: 0, top: 0 };
-          bubble.style.left = `${cursor.right - offset.left}px`;
-          bubble.style.top = `${cursor.bottom - offset.top}px`;
-          bubble.hidden = false;
-        },
+        update: updateBubble,
         destroy() {
+          editorView.dom.removeEventListener("mousedown", startMouseSelection);
+          document.removeEventListener("mousedown", hideForOtherBlock, true);
+          document.removeEventListener("mouseup", finishMouseSelection, true);
+          if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
           bubble.remove();
         },
       };
@@ -633,12 +687,37 @@ function linkBubblePlugin(schema) {
     view(editorView) {
       const bubble = document.createElement("div");
       const link = document.createElement("a");
+      const editButton = document.createElement("button");
+      const removeButton = document.createElement("button");
       
       bubble.className = "pm-link-bubble";
       bubble.hidden = true;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
+      editButton.type = "button";
+      editButton.className = "pm-link-bubble__action";
+      editButton.textContent = "Edit";
+      removeButton.type = "button";
+      removeButton.className = "pm-link-bubble__action pm-link-bubble__action--remove";
+      removeButton.textContent = "Remove";
+
+      // Keep text selection on link when clicking buttons
+      [editButton, removeButton].forEach((button) => button.addEventListener("mousedown", (event) => event.preventDefault()));
+      
+      editButton.addEventListener("click", () => {
+        promptLinkCommand(linkMark)(editorView.state, editorView.dispatch, editorView);
+      });
+      
+      removeButton.addEventListener("click", () => {
+        const range = markRangeAtCursor(editorView.state, linkMark);
+        if (!range) return;
+        editorView.dispatch(editorView.state.tr.removeMark(range.from, range.to, linkMark));
+        editorView.focus();
+      });
+
       bubble.appendChild(link);
+      bubble.appendChild(editButton);
+      bubble.appendChild(removeButton);
       editorView.dom.parentNode.appendChild(bubble);
       const pageBlock = editorView.dom.closest("[data-article-block]");
 

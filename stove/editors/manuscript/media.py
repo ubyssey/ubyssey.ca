@@ -26,12 +26,8 @@ class ArticleMediaUploadForm(forms.Form):
         if not self.is_bound:
             author_field.empty_label = "Loading authors"
 
-    # Reject non existing tags, remove if we want to allow this (but I think we should add a media-tag adder in the content tracker or something)
     def clean_tags(self):
         tags = [tag.strip() for tag in self.cleaned_data.get("tags", "").split(",") if tag.strip()]
-        existing_tags = set(Tag.objects.filter(name__in=tags).values_list("name", flat=True))
-        if any(tag not in existing_tags for tag in tags):
-            raise forms.ValidationError("Select pre-existing tags only.")
         return ", ".join(tags)
 
     def clean(self):

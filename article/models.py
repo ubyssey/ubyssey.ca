@@ -8,6 +8,7 @@ from dbtemplates.models import Template as DBTemplate
 from ubyssey.sports import SPORT_CHOICES as COVERED_SPORT_CHOICES
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.db.models import fields, Q, Max
 from django.db.models.fields import CharField
 from django.shortcuts import render
@@ -33,6 +34,7 @@ from ubyssey.validators import validate_youtube_url
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from article import blocks_inner_article as blocks_inner_article
 from article import blocks_storystream
+from article.video_header import supported_video_file, youtube_embed_url, youtube_video_id
 
 from wagtail.admin.panels import (
     # Panels
@@ -800,6 +802,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         help_text="Link to the drive folder for storing assignment related materials",
     )
+    limited_access = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this if you want to limit the people who can access this article through the Stove content tracker",
+    )
 
 
     lede = models.TextField(
@@ -1038,6 +1046,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
         FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials"),
+        FieldPanel("limited_access"),
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
@@ -1531,23 +1540,6 @@ class StandardArticlePage(ArticlePage):
     show_in_menus_default = True
     show_in_menus = True
 
-    STORY_TYPE_DEFINITIONS = {
-        "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
-        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
-        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
-        "qa": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
-        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
-        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
-        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
-        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
-        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
-        "letter-to-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
-        "letter-from-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
-        "psa": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
-        "other": "This article uses another approved story type.",
-    }
     standpoint_disclosure = RichTextField(
         blank=True,
         default="",
@@ -1567,6 +1559,7 @@ class StandardArticlePage(ArticlePage):
         ("review", "Review"),
         ("game-analysis", "Game Analysis"),
         ("commentary", "Commentary"),
+        ("analysis", "Analysis"),
         ("essay", "Essay"),
         ("column", "Column"),
         ("editorial", "Editorial"),
@@ -1576,19 +1569,20 @@ class StandardArticlePage(ArticlePage):
     ]
     STORY_FORM_STATEMENTS = {
         "report": "This article is a news report, which we define as a shorter story about events with immediate relevance, written from a detached perspective.",
-        "live-update": "This article is a live update, which are a series of brief reports from journalists on the ground while news is happening.",
-        "feature": "This article is a feature, which is a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
-        "profile": "This article is a profile, which tells the stories of individuals and their worldviews, written from a repoter's perspective.",
-        "q-and-a": "This article is a Q&A, which are a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity.",
-        "review": "This article is a review, which is a story about art or culture, written from a critical perspective.",
-        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from an reporter's perspective.",
-        "commentary": "This article is a commentary, which we define as a story that take a position on an event or topic relevant to the sport, and suggest a course of action, either in future or past-tense.",
-        "essay": "This article is an essay, but it's different from the kind of essays students write for class. In journalism, opinion essays refer to author's views on the news, written from their own perspective but based on reporting.",
-        "column": "This article is a column, which is a story reported by a columnists— an opinion journalists who makes abstract judgments about the news and the way the world should be.",
-        "editorial": "This article is an editorial, which is an opinion essay by the Editorial Board, the body of the newspaper's staff who debate and decide positions on the news of the day.",
-        "letter-to-the-editor": "This article is a letter to the editor, which are 250-word responses to stories published in The Ubyssey, written by readers like you.",
-        "letter-from-the-editor": "This article is a letter from the editor, which are messages to readers from the The Ubyssey's Senior Masthead.",
-        "public-service-announcement": "This article is a public service announcement, which shares public interest information with imminent relevance, such as extreme weather or threats to public safety.",
+        "live-update": "This article is a live update, which we define as a series of brief reports from journalists on the ground while news is happening.",
+        "feature": "This article is a feature, which we define as a longer story about people or systems with long-term or widespread relevance, written from a reporter's perspective.",
+        "profile": "This article is a profile, which we define as a story about individuals and their worldviews, written from a reporter's perspective.",
+        "q-and-a": "This article is a Q&A, which we define as a transcription of a conversation between an interviewee and The Ubyssey, edited by our journalists for length and clarity, written from a reporter's perspective.",
+        "review": "This article is a review, which we define as a story about art or culture, written from a critical perspective.",
+        "game-analysis": "This article is a game analysis, which we define as a story about individual games, written from a reporter's perspective.",
+        "commentary": "This article is a commentary, which we define as a story that takes a position on an event or topic relevant to a sport, and suggests a course of action — either in the future or the past — written from a reporter's perspective.",
+        "analysis": "This article is an analysis, which we define as a perspective piece on a topic relevant to a sport, explaining the reasoning and mechanics behind that specific phenomenon, written from a reporter's perspective.",
+        "essay": "This article is an essay, but it's different from the kind of essays students write for class. We define opinion essays as an author's view on the news, written from their own perspective but based on reporting.",
+        "column": "This article is a column, which we define as a story written by a columnist — an opinion journalist who makes abstract judgments about the news and the way the world should be.",
+        "editorial": "This article is an editorial, which we define as an opinion essay by the Ubyssey Editorial Board, the body of the newspaper's staff who debates and decides positions on the news of the day.",
+        "letter-to-the-editor": "This article is a letter to the editor, which we define as a 250-word response to stories published in The Ubyssey, written by readers like you.",
+        "letter-from-the-editor": "This article is a letter from the editor, which we define as a message to readers from The Ubyssey's Senior Masthead.",
+        "public-service-announcement": "This article is a public service announcement, which we define as a piece sharing public interest information with imminent relevance, such as extreme weather or threats to public safety.",
     }
     story_form = models.CharField(
         max_length=50,
@@ -1612,11 +1606,42 @@ class StandardArticlePage(ArticlePage):
             raise ValidationError({
                 "game_fixture": "A fixture can only be linked when Story form is Game Analysis."
             })
+        if self.video_header_enabled:
+            errors = {}
+            for part in ("preview", "full"):
+                file = getattr(self, f"video_{part}_file")
+                youtube_url = getattr(self, f"video_{part}_youtube_url")
+                if bool(file) == bool(youtube_url):
+                    errors[f"video_{part}_youtube_url"] = "Choose exactly one source: an uploaded video or a YouTube URL."
+                if file and not supported_video_file(file):
+                    errors[f"video_{part}_file"] = "Upload an MP4 or WebM video."
+                if youtube_url and not youtube_video_id(youtube_url):
+                    errors[f"video_{part}_youtube_url"] = "Enter a valid YouTube video URL."
+            if errors:
+                raise ValidationError(errors)
     full_bleed_nav_color = models.CharField(
         max_length=5,
         choices=(("white", "White"), ("black", "Black")),
         default="white",
         help_text="Full-bleed articles only: choose the navigation colour that contrasts with the hero image.",
+    )
+    video_header_enabled = models.BooleanField(
+        default=False,
+        help_text="Show a full-bleed looping video preview instead of the article cover image. Keep a featured image for story cards and as a fallback.",
+    )
+    video_preview_file = models.ForeignKey(
+        "wagtaildocs.Document", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Upload an MP4 or WebM for the muted, looping preview. Leave empty if using a YouTube link.",
+    )
+    video_preview_youtube_url = models.URLField(
+        blank=True, default="", help_text="Alternatively, paste a YouTube URL for the muted, looping preview.",
+    )
+    video_full_file = models.ForeignKey(
+        "wagtaildocs.Document", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Upload an MP4 or WebM for fullscreen playback. Leave empty if using a YouTube link.",
+    )
+    video_full_youtube_url = models.URLField(
+        blank=True, default="", help_text="Alternatively, paste the YouTube URL for fullscreen playback.",
     )
 
     #-----Field attributes-----
@@ -1642,7 +1667,7 @@ class StandardArticlePage(ArticlePage):
                 help_text = "Write your article contents here. See documentation: https://docs.wagtail.io/en/latest/editor_manual/new_pages/creating_body_content.html#rich-text-fields"
             )),
             ('extra_article_info', blocks_inner_article.ExtraArticleInfoBlock()),
-            ('dropcap', blocks.TextBlock(
+            ('dropcap', blocks.RichTextBlock(
                 label = "Dropcap Block",
                 template = 'article/stream_blocks/dropcap.html',
                 help_text = "Create a block where special dropcap styling with be applied to the first letter and the first letter only.\n\nThe contents of this block will be enclosed in a <p class=\"drop-cap\">...</p> element, allowing its targetting for styling.\n\nNo RichText allowed."
@@ -1851,6 +1876,18 @@ class StandardArticlePage(ArticlePage):
         ), # Optional Header/Banner Fields
         MultiFieldPanel(
             [
+                FieldPanel("video_header_enabled"),
+                FieldPanel("video_preview_file"),
+                FieldPanel("video_preview_youtube_url"),
+                FieldPanel("video_full_file"),
+                FieldPanel("video_full_youtube_url"),
+            ],
+            heading="Full-bleed video header",
+            help_text="Enable this layout, then provide one preview source and one full-video source. They may be different videos or use different source types.",
+            classname="collapsible",
+        ),
+        MultiFieldPanel(
+            [
                 HelpPanel(
                     content='<h1>Help: Writing Articles</h1><p>The main contents of the article are organized into \"blocks\". Click the + to add a block. Most article text should be written in Rich Text Blocks, but many other features are available!</p><p>Blocks simply represent units of the article you may wish to re-arrange. You do not have to put every individual paragraph in its own block (doing so is probably time consuming!). Many articles that have been imported into our database DO divide every paragraph into its own block, but this is for computer convenience during the import.</p>'
                 ),
@@ -1938,12 +1975,30 @@ class StandardArticlePage(ArticlePage):
     @property
     def redesign_header_layout(self):
         """Map every legacy header choice onto the five redesign layouts."""
+        if self.video_header_enabled:
+            return "full-bleed"
         layout = "bottom-image"
         if self.header:
             first = self.header[0]
             if first.block_type in ("standard_header", "standard_header_with_youtube_video"):
                 layout = first.value.get("layout") or layout
         return self.redesign_layout_for_header(layout)
+
+    @property
+    def video_preview_file_url(self):
+        return self.video_preview_file.file.url if self.video_preview_file_id else ""
+
+    @property
+    def video_preview_embed_url(self):
+        return youtube_embed_url(self.video_preview_youtube_url, preview=True)
+
+    @property
+    def video_full_file_url(self):
+        return self.video_full_file.file.url if self.video_full_file_id else ""
+
+    @property
+    def video_full_embed_url(self):
+        return youtube_embed_url(self.video_full_youtube_url)
 
     @staticmethod
     def redesign_layout_for_header(layout):
@@ -1962,10 +2017,6 @@ class StandardArticlePage(ArticlePage):
             "no-image": "body-width",
             "video-banner": "full-bleed",
         }.get(base, "big-centered")
-
-    @property
-    def story_type_description(self):
-        return self.STORY_TYPE_DEFINITIONS.get(self.story_type or "report", self.STORY_TYPE_DEFINITIONS["report"])
 
     @property
     def primary_author_orderable(self):
@@ -2140,6 +2191,9 @@ class StandardArticlePage(ArticlePage):
         """
 
         context = super().get_context(request, *args, **kwargs)
+
+        from article.scorebug import article_scorebug
+        context["scorebug"] = article_scorebug(self)
 
         user_agent = get_user_agent(request)
         context['is_mobile'] = user_agent.is_mobile

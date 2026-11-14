@@ -36,7 +36,7 @@ const articleStatusStyles = {
   }
 }
 
-export default function ArticleStatus ({status, updateStatus}) {
+export default function ArticleStatus ({status, updateStatus, disabled=false}) {
 
   
   return <Select 
@@ -69,7 +69,7 @@ export default function ArticleStatus ({status, updateStatus}) {
       })
     }}
     onChange={updateStatus}
-    isDisabled= {status==6}
+    isDisabled= {status==6 || disabled}
     components={{
       DropdownIndicator: null, 
       placeholder: "Select status..."}}  
