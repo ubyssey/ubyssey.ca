@@ -138,6 +138,8 @@ urlpatterns += [
 
     path('stove/', include('stove.urls')),
 
+    path("webpush/", include("webpush.urls")),
+
     # Events
     re_path(r'^events/', include(events_urls)),
     re_path(r'^events/ical/$', create_ical, name="events_ical"),
