@@ -379,7 +379,7 @@ NOTIFICATION_CRONJOBS = [
     ('0 10 * * *', 'notifications.views.send_deadline_naggers')
 ]
 
-NOTIFICATION_CRONJOBS += CRONJOBS
+CRONJOBS += NOTIFICATION_CRONJOBS
 
 # Daphne
 ASGI_APPLICATION = "ubyssey.asgi.application"
