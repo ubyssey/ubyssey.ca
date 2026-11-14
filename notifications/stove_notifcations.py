@@ -1,5 +1,3 @@
-#to be moved in the future into the stove folder, I'm just too lazy to do it rn
-
 from webpush import send_user_notification
 from django.contrib.auth import get_user_model
 
