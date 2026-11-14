@@ -136,9 +136,9 @@ urlpatterns += [
     path('admin/story_assignment_api/', story_assignment_api_list),
     path('admin/visual_assignment_api/', visual_assignment_api_list),
 
-    path('stove/', include('stove.urls')),
-
     path("webpush/", include("webpush.urls")),
+
+    path('stove/', include('stove.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),
