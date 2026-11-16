@@ -13,7 +13,6 @@ class GamesHome(Page):
 
     max_count = 1
     parent_page_types = ["home.HomePage"]
-    #subpage_types = ["games.Crossword"]
     subpage_types=["games.GameCategoryPage"]
     show_in_menus_default = True
 
