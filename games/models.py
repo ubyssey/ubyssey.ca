@@ -11,7 +11,6 @@ from django.http import Http404
 class GamesHome(Page):
     template = "games/home.html"
 
-    max_count = 1
     parent_page_types = ["home.HomePage"]
     subpage_types=["games.GameCategoryPage"]
     show_in_menus_default = True
