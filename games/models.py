@@ -67,12 +67,16 @@ class Crossword(Page):
     def get_context(self, request):
         context = super().get_context(request)
 
+        puzz_data = None
         for block in self.puzzle:
             if block.block_type == "puzzle" and block.value:
-                with block.value.file.open('r') as file:
-                    puzzle_json_string = file.read()
-            break
+                with block.value.file.open('rb') as file:
+                    raw = file.read()
+                if isinstance(raw, bytes):
+                    raw = raw.decode('utf-8')
+                puzz_data = raw
+                break
         
-        context["puzzle_data"] = puzzle_json_string
+        context["puzzle_data"] = puzz_data
 
         return context
