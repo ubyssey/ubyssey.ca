@@ -128,6 +128,11 @@ span[data-comment-resolved="true"] {
     background: transparent;
 }
 
+// Remote pending comments are transparent, local are set as active which overrides this
+[data-comment-thread-id][data-comment-pending="true"] {
+    background: transparent;
+}
+
 mark[data-suggestion-thread-id],
 span[data-suggestion-thread-id] {
     background: transparent;

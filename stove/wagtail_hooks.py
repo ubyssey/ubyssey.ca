@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from wagtail import hooks
 
@@ -37,6 +37,8 @@ def require_stove_handoff_before_wagtail_edit(request, page):
         return render(
             request,
             "editors/wagtail_handoff_required.html",
-            {"stove_editor_url": stove_editor_url},
+            {"stove_editor_url": stove_editor_url, "page_id": page.id},
             status=409,
         )
+
+    return redirect(request.get_full_path())

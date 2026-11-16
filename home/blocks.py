@@ -29,6 +29,43 @@ import images.blocks as image_blocks
 SPORT_CHOICES = [("all", "All sports"), *GAME_ANALYSIS_ACTIVE_SPORT_CHOICES]
 
 
+class ScorebugStat(blocks.StructBlock):
+    """One editor-selected comparison shown for both teams in an article score bug."""
+
+    label = blocks.CharBlock(max_length=30, required=False, help_text="Optional label, such as Shots, Rebounds, or Aces.")
+    away_value = blocks.CharBlock(max_length=20, required=False)
+    home_value = blocks.CharBlock(max_length=20, required=False)
+
+    class Meta:
+        label = "Team comparison"
+
+
+class ScorebugGoal(blocks.StructBlock):
+    """A scorer and match minute for one side of a soccer score bug."""
+
+    team = blocks.ChoiceBlock(choices=[("away", "Away team"), ("home", "Home team")])
+    scorer = blocks.CharBlock(max_length=100)
+    minute = blocks.CharBlock(max_length=12, help_text="Enter 23 or 45+2; the minute mark is added on the article.")
+
+    class Meta:
+        label = "Goal"
+
+
+SCOREBUG_GOAL_HELP = (
+    "Soccer only. Add each scorer and minute in match order (for example, 23 or 45+2). "
+    "Goals appear below the corresponding team's score on its Game Analysis article."
+)
+
+
+SCOREBUG_STAT_HELP = (
+    "Optional comparisons. Leave this list empty to show only teams, score and match details. "
+    "Suggestions: soccer—shots, shots on target, corners; "
+    "basketball—rebounds, assists, field goal %; hockey—shots, power plays, saves; "
+    "volleyball—kills, blocks, aces; football—total yards, first downs, turnovers; "
+    "rugby—tries, conversions, penalties. Use the same measure for both teams."
+)
+
+
 class GameAnalysisArticle(blocks.StructBlock):
     article = blocks.PageChooserBlock(page_type="article.ArticlePage")
     sport = blocks.ChoiceBlock(

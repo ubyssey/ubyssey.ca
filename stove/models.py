@@ -10,6 +10,8 @@ class PageCollaboration(models.Model):
         related_name="+",
     )
     document = models.BinaryField(default=bytes, blank=True)
+    revision_pending = models.BooleanField(default=True, db_index=True)
+    last_edited_by = models.ForeignKey("users.User", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     autosave_revision = models.ForeignKey(
         "wagtailcore.Revision",
         null=True,

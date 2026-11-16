@@ -69,6 +69,7 @@ services:
 
     environment:
       SECRET_KEY_FILE: /run/secrets/DJANGO_SECRET_KEY
+      VAPID_PRIVATE_KEY_FILE: /run/secrets/VAPID_PRIVATE_KEY
       SQL_HOST: mysql
       SQL_USER: root
       SQL_PASSWORD_FILE: /run/secrets/SQL_PASSWORD
@@ -81,6 +82,7 @@ services:
 
     secrets:
       - DJANGO_SECRET_KEY
+      - VAPID_PRIVATE_KEY
       - SQL_PASSWORD
       - GS_ACCESS_KEY_ID
       - GS_SECRET_ACCESS_KEY
@@ -299,6 +301,8 @@ secrets:
   GS_ACCESS_KEY_ID:
     external: true
   GS_SECRET_ACCESS_KEY:
+    external: true
+  VAPID_PRIVATE_KEY:
     external: true
   GOOGLE_APPLICATION_CREDENTIALS:
     file: ./service-account.json

@@ -9,7 +9,6 @@ import { createStreamEditor, createStreamBlockDraft, createBlockEditor, createEm
 import { createPagePreview } from "../core/preview/index.jsx";
 import { pageEditorState } from "../core/state.js";
 import { createPageHistory } from "../core/collaboration/history.js";
-import { formDataWithStreamDocuments, snapshotStreamDocuments } from "../core/prosemirror/persistence.js";
 
 function readJsonScript(id) {
   return JSON.parse(document.getElementById(id).textContent);
@@ -30,6 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     presenceUrl: "/stove/page/" + pageId + "/collaboration/presence",
     websocketUrl: protocol + "//" + window.location.host + "/ws/stove/manuscript/" + pageId,
   });
+
+  if (!collaboration) return;
 
   pageEditorState.awareness = collaboration.awareness;
   pageEditorState.history = createPageHistory(collaboration.ydoc, Object.keys(streamEditors));
@@ -57,17 +58,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     async onPreviewRevision(revisionId, isCurrent) {
       const formData = new FormData(form);
       if (!isCurrent) formData.set("revision", revisionId);
-      const html = await fetchPreviewHtml(form.dataset.previewUrl, formData);
+      const { html } = await fetchPreviewHtml(form.dataset.previewUrl, formData);
       if (html) replacePagePreviewHtml(pageRoot, html);
     },
   });
 
   setupManualRevisionSave(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    formDataForSave: () => new FormData(form),
   });
 
   setupWagtailHandoff(form, {
-    formDataForSave: () => formDataWithStreamDocuments(form, snapshotStreamDocuments(pageEditorState.streamEditors)),
+    formDataForSave: () => new FormData(form),
     beforeSave: () => {
       pageEditorState.users.kickOtherUsers();
       return pageEditorState.users.waitForOtherUsersToLeave();

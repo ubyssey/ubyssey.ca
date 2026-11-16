@@ -72,9 +72,11 @@ export function setupRevisionHistory(form, { formDataBeforeRestore, onHistoryMod
     const originalText = restoreButton.textContent;
     restoreButton.disabled = true;
     restoreButton.textContent = "Restoring...";
+
     try {
       const formData = formDataBeforeRestore();
       formData.set("revision", revisionId);
+      
       const payload = await restoreRevision(form.dataset.restoreUrl, formData);
       if (payload.errors) {
         const message = Object.entries(payload.errors)
@@ -112,6 +114,7 @@ export function setupManualRevisionSave(form, { formDataForSave }) {
 
     try {
       const payload = await saveRevision(form.dataset.saveRevisionUrl, formDataForSave());
+
       if (payload.errors) {
         const message = Object.entries(payload.errors)
           .map(([field, messages]) => {

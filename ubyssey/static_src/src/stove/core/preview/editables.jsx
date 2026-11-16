@@ -3,7 +3,9 @@
 import { DOMParser as ProseMirrorDOMParser, DOMSerializer, Fragment } from "prosemirror-model";
 import { EditorState, TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
+import { inputRules, smartQuotes } from "prosemirror-inputrules";
 import { yCursorPlugin, ySyncPlugin, ySyncPluginKey } from "y-prosemirror";
+
 import { ACTIVE_SUGGESTION_THREAD_META, editorPlugins } from "../richtext/plugins.js";
 import { richTextSchema } from "../richtext/schema.js";
 import { markRangeAtCursor } from "../richtext/marks.js";
@@ -123,6 +125,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
         ...(sharedType ? [documentSyncPlugin(sharedType)] : []),
         ...(sharedType && pageEditorState.awareness ? [yCursorPlugin(pageEditorState.awareness)] : []),
         ...editorPlugins(schema, { includeHistory: !sharedType && !pageHistory, allowAnnotations }),
+        inputRules({ rules: [...smartQuotes] }),
       ],
     }),
 
@@ -130,12 +133,15 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       const activeView = this;
       const activeSuggestionThreadId = transaction.getMeta(ACTIVE_SUGGESTION_THREAD_META);
       const startedCommentThreadId = transaction.getMeta(START_COMMENT_THREAD_META);
+      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
+      if (startedCommentThreadId && !isYjsSyncTransaction) {
+        pageEditorState.commentSidebar.registerPendingThread(startedCommentThreadId);
+      }
       const nextState = activeView.state.apply(transaction);
       if (activeView.isDestroyed) return;
       activeView.updateState(nextState);
 
       // Thread selection
-      const isYjsSyncTransaction = Boolean(transaction.getMeta(ySyncPluginKey));
       const activateThread = activeSuggestionThreadId || (
         activeView.hasFocus() && !isYjsSyncTransaction && transaction.selectionSet
           ? annotationThreadAtSelection(nextState)
@@ -170,7 +176,8 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       return handleStreamRichTextKeyDown(activeView, event, streamSource);
     },
   });
-  const unregisterSharedType = sharedType ? streamSource.instance.registerRichTextType(sharedType, {
+
+  const registerSharedType = () => sharedType ? streamSource.instance.registerRichTextType(sharedType, {
     source: streamSource,
     getSelection() {
       if (view.isDestroyed || !view.hasFocus()) return null;
@@ -179,6 +186,7 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
       return { anchor: selection.anchor, head: selection.head };
     },
   }) : null;
+  let unregisterSharedType = registerSharedType();
 
   view.streamSource = streamSource;
   view.annotationsEnabled = allowAnnotations;
@@ -191,6 +199,23 @@ function createPageRichTextEditor(mount, content, className, onContentChanged = 
 
   return {
     view,
+    syncSharedType() {
+      if (!sharedType) return;
+      const nextType = streamSource.instance.fieldType(streamSource.blockId, streamSource.path || []);
+      if (!nextType || nextType === sharedType) return;
+
+      unregisterSharedType();
+      sharedType = nextType;
+      view.updateState(EditorState.create({
+        doc: view.state.doc,
+        selection: view.state.selection,
+        storedMarks: view.state.storedMarks,
+        plugins: view.state.plugins.map((plugin) => (
+          plugin.key === ySyncPluginKey.key ? documentSyncPlugin(sharedType) : plugin
+        )),
+      }));
+      unregisterSharedType = registerSharedType();
+    },
     destroy() {
       unregisterSharedType?.();
       view.dom.removeEventListener("focus", handleFocus, true);
@@ -399,6 +424,13 @@ export function refreshPlainTextEditorsFromStream(instance) {
         editor.element.textContent = nextText;
       }
     });
+}
+
+export function refreshRichTextEditorsFromStream(instance) {
+  [ ...pageEditorState.pageRichTextEditors,
+    ...pageEditorState.pageDirectRichTextEditors,
+  ].filter((editor) => editor.streamSource?.instance === instance)
+    .forEach((editor) => editor.syncSharedType());
 }
 
 // Mounts richtext and plaintext editors on the preview including inline/direct

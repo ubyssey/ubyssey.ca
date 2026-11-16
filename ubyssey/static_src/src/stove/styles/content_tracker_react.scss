@@ -429,6 +429,10 @@ input:checked + .slider:before {
 .slug-link--container:hover {
   background-color: hsl(192, 50%, 85%);
 }
+.slug-link--container-disabled:hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
 
 .slug-cell--story-type {
   display: none;
@@ -1011,4 +1015,14 @@ input.autocomplete-field {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
   color: #ffffff;
+}
+
+// ===========================================
+// ------Notification Button Styling----------
+// ===========================================
+
+.notif-subscribe-button {
+    background-color: #263a7b;
+    color: white;
+    font-family: "meursault-variable", Georgia, 'Times New Roman', Times, serif;
 }

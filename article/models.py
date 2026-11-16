@@ -802,6 +802,12 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         blank=True,
         help_text="Link to the drive folder for storing assignment related materials",
     )
+    limited_access = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="Check this if you want to limit the people who can access this article through the Stove content tracker",
+    )
 
 
     lede = models.TextField(
@@ -1040,6 +1046,7 @@ class ArticlePage(RoutablePageMixin, SectionablePage, UbysseyMenuMixin):
         FieldPanel("assignment_memo", help_text="Guidance from a section editor about how to approach a story"),
         FieldPanel("ethics_notes", help_text="Advice from a section editor about the ethics of a story"),
         FieldPanel("assignment_folder", help_text="Link to the drive folder for storing assignment related materials"),
+        FieldPanel("limited_access"),
     ] # promote_panels
     settings_panels = SectionablePage.settings_panels + [
         MultiFieldPanel(
@@ -2024,6 +2031,10 @@ class StandardArticlePage(ArticlePage):
         """
         authors = list(self.article_authors.filter(author_role="author"))
         return authors or list(self.article_authors.all()[:1])
+    
+    @property
+    def editors(self):
+        return self.article_authors.filter(author_role__in=["backfield_editor", "copy_editor", "photographer", "photo_editor"])
 
     @property
     def story_form_statement(self):
@@ -2180,6 +2191,9 @@ class StandardArticlePage(ArticlePage):
         """
 
         context = super().get_context(request, *args, **kwargs)
+
+        from article.scorebug import article_scorebug
+        context["scorebug"] = article_scorebug(self)
 
         user_agent = get_user_agent(request)
         context['is_mobile'] = user_agent.is_mobile

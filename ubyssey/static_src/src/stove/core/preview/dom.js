@@ -46,28 +46,20 @@ export function previewMatchesYjsSnapshot(pageRoot, html, streamDocs) {
 
   const template = document.createElement("template");
   template.innerHTML = html;
-  const missing = [];
+  const mismatches = [];
 
   for (const [fieldName, doc] of streamDocs) {
-    if (!pageBlocksForStreamField(content, fieldName).length) continue;
-
+    const responseBlocks = pageBlocksForStreamField(template.content, fieldName);
+    if (!pageBlocksForStreamField(content, fieldName).length && !responseBlocks.length) continue;
     const expectedIds = yjsBlockIds(doc);
-    if (!expectedIds.length) continue;
+    const responseIds = responseBlocks.map((block) => String(block.dataset.streamBlockId || ""));
+    if (expectedIds.length !== responseIds.length || expectedIds.some((id, index) => id !== responseIds[index])) mismatches.push({ fieldName, expectedIds, responseIds });
 
-    const responseIds = new Set(
-      pageBlocksForStreamField(template.content, fieldName)
-        .map((block) => String(block.dataset.streamBlockId || "")),
-    );
-    const missingIds = expectedIds.filter((id) => !responseIds.has(id));
-    missing.push(...missingIds.map((id) => ({ fieldName, id })));
   }
 
-  if (!missing.length) return true;
+  if (!mismatches.length) return true;
 
-  console.warn("Missing blocks in preview", {
-    missingBlocks: missing,
-    yjsSnapshot: Array.from(streamDocs, ([fieldName, doc]) => ({ fieldName, blockIds: yjsBlockIds(doc) })),
-  });
+  console.warn("Preview blocks do not match the collaborative document - ", { mismatches });
   return false;
 }
 
@@ -105,6 +97,12 @@ export function replaceUnfocusedPageBlocks(pageRoot, html, streamDocs) {
   const template = document.createElement("template");
   template.innerHTML = html;
   const anchor = previewPositionAnchor(pageRoot);
+  
+  const responseBlocksByField = new Map();
+  for (const [fieldName] of streamDocs) {
+    responseBlocksByField.set(fieldName, pageBlocksForStreamField(template.content, fieldName));
+  }
+
   const currentBlocks = Array.from(content.querySelectorAll(PAGE_BLOCK_SELECTOR))
     .filter((block) => {
       const parentBlock = block.parentElement?.closest(PAGE_BLOCK_SELECTOR);
@@ -127,6 +125,30 @@ export function replaceUnfocusedPageBlocks(pageRoot, html, streamDocs) {
     if (pageEditorState.selectedBlock && sameBlock(descriptor, pageEditorState.selectedBlock)) {
       replacement.classList.add(SELECTED_CLASS);
     }
+  }
+
+  for (const [fieldName, responseBlocks] of responseBlocksByField) {
+    if (!responseBlocks.length) continue;
+    const blocks = pageBlocksForStreamField(content, fieldName);
+    const retainedBlock = blocks.find((block) => block === activeBlock || block.contains(activeBlock)) || blocks[0];
+    const retainedIndex = responseBlocks.findIndex((block) => block.dataset.streamBlockId === retainedBlock?.dataset.streamBlockId);
+    if (retainedIndex < 0 || blocks.some((block) => block.parentNode !== retainedBlock.parentNode)) return false;
+
+    for (const [insertBefore, responses] of [
+      [true, responseBlocks.slice(0, retainedIndex).reverse()],
+      [false, responseBlocks.slice(retainedIndex + 1)],
+    ]) {
+      let neighbor = retainedBlock;
+      for (const response of responses) {
+        const existing = findPageBlock(content, describePageBlock(response));
+        const block = existing || response;
+        if (insertBefore) neighbor.before(block);
+        else neighbor.after(block);
+        if (!existing) setupPagePreviewEditors(pageRoot, streamDocs, block);
+        neighbor = block;
+      }
+    }
+    refreshPreviewBlockIndexes(pageRoot, fieldName);
   }
 
   pageEditorState.users.renderBlockSelection();

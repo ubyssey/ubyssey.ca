@@ -34,6 +34,11 @@ export function setupPageSaveStatus(collaboration, onChange = () => {}) {
     onChange();
   };
 
+  const saveInterruptedHandler = () => {
+    savedStatus.textContent = "Save interrupted. Reconnecting...";
+    onChange();
+  };
+
 
   document.addEventListener("editor-save-failed", saveFailedHandler);
   collaboration.ydoc.on("update", updateSavingStatus);
@@ -42,4 +47,5 @@ export function setupPageSaveStatus(collaboration, onChange = () => {}) {
     saveFailed = false;
     updateSavedStatus();
   });
+  collaboration.provider?.on("persistence-error", saveInterruptedHandler);
 }

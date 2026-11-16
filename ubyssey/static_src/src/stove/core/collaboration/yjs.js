@@ -9,6 +9,7 @@ const WAGTAIL_EDITING_CLOSE_CODE = 4411;
 
 // Sends message that changes were merged in
 const PERSISTENCE_ACK_MESSAGE = 4;
+const PERSISTENCE_ERROR_MESSAGE = 5;
 const PENDING_UPDATES_PERSIST_DELAY = 250;
 
 function pendingUpdatesStorageKey(collaborationId, userId) {
@@ -16,11 +17,9 @@ function pendingUpdatesStorageKey(collaborationId, userId) {
 }
 
 // Stores local updates that haven't been confirmed by server in localstorage
-function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackCollaborationId = null }) {
+function createPendingUpdatesStore({ ydoc, collaborationId, userId }) {
   const key = pendingUpdatesStorageKey(collaborationId, userId);
-  const fallbackKey = fallbackCollaborationId ? pendingUpdatesStorageKey(fallbackCollaborationId, userId) : null;
   let pendingDoc = new Y.Doc();
-  let restoredFallback = false;
   let persistenceTimer = null;
   let hasPendingUpdates = false;
 
@@ -31,15 +30,12 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   }
 
   try {
-    for (const storageKey of [key, fallbackKey]) {
-      if (!storageKey || (storageKey === key && fallbackKey === key)) continue;
-      const stored = window.localStorage.getItem(storageKey);
-      if (!stored) continue;
+    const stored = window.localStorage.getItem(key);
+    if (stored) {
       const update = buffer.fromBase64(stored);
       Y.applyUpdate(ydoc, update);
       Y.applyUpdate(pendingDoc, update);
-      hasPendingUpdates ||= hasUpdate(update);
-      if (storageKey === fallbackKey) restoredFallback = true;
+      hasPendingUpdates = hasUpdate(update);
     }
   } catch (error) {
     console.warn("Unable to restore pending collaborative changes", error);
@@ -77,15 +73,6 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
     }
   };
 
-  if (restoredFallback && fallbackKey && fallbackKey !== key) {
-    persist();
-    try {
-      window.localStorage.removeItem(fallbackKey);
-    } catch (error) {
-      console.warn("Unable to migrate pending collaborative changes", error);
-    }
-  }
-
   return {
     record(update) {
       Y.applyUpdate(pendingDoc, update);
@@ -95,19 +82,21 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
     // Removes server acknowledged updates from pendingDoc
     acknowledge(stateVector) {
       const remainingUpdate = Y.encodeStateAsUpdate(pendingDoc, stateVector);
-      
+      const hadPendingUpdates = hasPendingUpdates;
+
       pendingDoc.destroy();
       pendingDoc = new Y.Doc();
       
       if (!hasUpdate(remainingUpdate)) {
         hasPendingUpdates = false;
         removePersistedUpdates();
-        return;
+        return hadPendingUpdates;
       }
 
       Y.applyUpdate(pendingDoc, remainingUpdate);
       hasPendingUpdates = true;
       schedulePersist();
+      return false;
     },
     // Flush bypasses the debounce and immediately persists
     flush() {
@@ -124,9 +113,9 @@ function createPendingUpdatesStore({ ydoc, collaborationId, userId, fallbackColl
   };
 }
 
-export function collaborationSnapshot(ydoc) {
+export function collaborationSnapshot(ydoc, collaborationId = null) {
   return {
-    stateVector: buffer.toBase64(Y.encodeStateVector(ydoc)),
+    collaborationId,
     update: buffer.toBase64(Y.encodeStateAsUpdate(ydoc)),
   };
 }
@@ -144,40 +133,15 @@ function editorColour(id) {
   return EDITOR_COLOURS[(Number(id) + date) % EDITOR_COLOURS.length];
 }
 
-// Creates Y.doc, and sends initial update (this allows reconnections to work) and handles response (gets new remote changes)
-export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, presenceUrl, websocketUrl }) {
+// Creates the collaboration object
+// - ydoc: the yjs document
+// - provider: the websocket provider
+// - awareness: users/selections
+// - collaborationSnapshot(): the full document as a yjs update and collaboration id which is the primary key for the PageCollaboration model
+export async function connectYjs({ initialUpdate, currentEditor, initializationUrl, websocketUrl, onPageHide }) {
   const ydoc = new Y.Doc();
-  const presenceId = crypto.randomUUID();
-  const fallbackCollaborationId = `uninitialized:${websocketUrl}`;
+  let presenceId = crypto.randomUUID();
   let collaborationId = null;
-
-  const updatePresence = (action) => fetch(presenceUrl, {
-    method: "POST",
-    credentials: "same-origin",
-    keepalive: action === "release",
-    headers: {
-      "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value || "",
-    },
-    body: new URLSearchParams({ action, presence: presenceId }),
-  });
-
-  const startOfflineRecovery = () => {
-    const pendingUpdates = createPendingUpdatesStore({
-      ydoc,
-      collaborationId: fallbackCollaborationId,
-      userId: currentEditor.id,
-    });
-    
-    ydoc.on("update", (update) => pendingUpdates.record(update));
-    window.addEventListener("pagehide", () => pendingUpdates.flush(), { once: true });
-    
-    return {
-      ydoc,
-      awareness: null,
-      provider: null,
-      collaborationSnapshot: () => collaborationSnapshot(ydoc),
-    };
-  };
 
   try {
     const initializationRequestUrl = new URL(initializationUrl, window.location.origin);
@@ -194,23 +158,18 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     });
 
     if (!response.ok) throw new Error(`Collaboration initialization failed (${response.status})`);
-    Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
     collaborationId = response.headers.get("X-Stove-Collaboration-Id");
+    if (!collaborationId) throw new Error("Collaboration initialization did not return a document id");
+    Y.applyUpdate(ydoc, new Uint8Array(await response.arrayBuffer()));
   } catch (error) {
     console.error(error);
-    Y.applyUpdate(ydoc, initialUpdate);
-    return startOfflineRecovery();
-  }
-
-  if (!collaborationId) {
-    console.error("Collaboration initialization did not return a document id");
-    return startOfflineRecovery();
+    ydoc.destroy();
+    return null;
   }
 
   const pendingUpdates = createPendingUpdatesStore({
     ydoc,
     collaborationId,
-    fallbackCollaborationId,
     userId: currentEditor.id,
   });
 
@@ -218,8 +177,13 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     websocketUrl,
     "yjs",
     ydoc,
-    { params: { presence: presenceId } },
+    { connect: false, params: { presence: presenceId, collaboration: collaborationId } },
   );
+
+  // Broadcast channel is used for tabs on same device
+  // Needs to check collaboration ID to prevent duplication
+  provider.bcChannel += `/collaboration/${collaborationId}`;
+  provider.connect();
 
   provider.messageHandlers[PERSISTENCE_ACK_MESSAGE] = (_encoder, decoder) => {
     // Ignore old server style acks
@@ -227,6 +191,10 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
     const stateVector = decoding.readTailAsUint8Array(decoder);
     pendingUpdates.acknowledge(stateVector);
     provider.emit("persistence-ack", []);
+  };
+
+  provider.messageHandlers[PERSISTENCE_ERROR_MESSAGE] = () => {
+    provider.emit("persistence-error", []);
   };
 
   ydoc.on("update", (update, origin) => {
@@ -244,20 +212,28 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
   // Restores currently reload for everyone so potentially pretty dangerous (not sure how else to implement)
   provider.on("connection-close", (event) => {
     if (event?.code === RESTORE_CLOSE_CODE) {
+      provider.shouldConnect = false;
       pendingUpdates.clear();
       window.location.reload();
+      return;
     }
     if (event?.code === WAGTAIL_EDITING_CLOSE_CODE) {
+      provider.shouldConnect = false;
       pendingUpdates.clear();
       const form = document.querySelector("[data-page-form]");
       if (form.dataset.wagtailHandoffPending) return;
       window.location.assign(form.dataset.stoveHomeUrl || "/stove/");
+      return;
+    }
+    if (event) {
+      presenceId = crypto.randomUUID();
+      provider.params.presence = presenceId;
     }
   });
 
   window.addEventListener("pagehide", (event) => {
+    onPageHide?.();
     pendingUpdates.flush();
-    updatePresence("release").catch(() => {});
     provider.awareness.setLocalState(null);
     if (event.persisted) provider.disconnect();
     else provider.destroy();
@@ -265,18 +241,12 @@ export async function connectYjs({ initialUpdate, currentEditor, initializationU
 
   window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
-    updatePresence("claim")
-      .then((response) => {
-        if (!response.ok) throw new Error("Unable to resume Stove editor");
-        provider.connect();
-        provider.awareness.setLocalStateField("user", user);
-      })
-      .catch((error) => console.warn(error));
+    window.location.reload();
   });
   return {
     ydoc,
     awareness: provider.awareness,
     provider,
-    collaborationSnapshot: () => collaborationSnapshot(ydoc),
+    collaborationSnapshot: () => collaborationSnapshot(ydoc, collaborationId),
   };
 }

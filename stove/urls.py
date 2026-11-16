@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.urls import re_path
 
 from . import views
@@ -34,10 +34,13 @@ urlpatterns = [
     path("page/<int:page_id>/page-options", views.manuscript_page_options, name="manuscript_page_options"),
     path("page/<int:page_id>/collaboration", views.page_collaboration, name="page_collaboration"),
     path("page/<int:page_id>/collaboration/presence", views.page_collaboration_presence, name="page_collaboration_presence"),
+    path("page/<int:page_id>/wagtail-handoff", views.force_wagtail_handoff, name="force_wagtail_handoff"),
 
     path("author/<int:page_id>", views.author_editor, name="author_editor"),
     path("homepage", views.homepage_editor, name="homepage_editor"),
     path("section/<int:page_id>", views.section_editor, name="section_editor"),
     path("liveblog/<int:page_id>", views.liveblog_editor, name="liveblog_editor"),
     path("api/v2/", api_router.urls),
+    
+    path("notifications/", include("notifications.urls")),
 ]

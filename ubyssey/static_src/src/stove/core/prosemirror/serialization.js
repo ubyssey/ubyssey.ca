@@ -1,6 +1,6 @@
-// Converts between editor data, ProseMirror docs, and Wagtail StreamField JSON
+// Builds ProseMirror nodes for document initialization and editing
 
-import { DOMParser, DOMSerializer, Fragment } from "prosemirror-model";
+import { DOMParser } from "prosemirror-model";
 import { v4 as uuidv4 } from "uuid";
 
 import { richTextSchema } from "../richtext/schema.js";
@@ -66,10 +66,6 @@ export function createStreamBlockNodeFromRegistry(blockTypes, blockType) {
     value: clone(blockDefinition.defaultValue),
     field: clone(blockDefinition.defaultField),
   }));
-}
-
-export function pmDocToStreamValue(pmDoc) {
-  return (pmDoc.content || []).filter((node) => node.type === "stream_block").map(pmStreamBlockToWagtailBlock);
 }
 
 export function streamBlockToPmNode(block) {
@@ -206,156 +202,4 @@ export function createStreamItemNodeFromRegistry(blockTypes, blockType) {
 
 export function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
-}
-
-export function pmStreamBlockToWagtailBlock(node) {
-  const attrs = node.attrs || {};
-  const block = {
-    type: attrs.blockType || "unknown",
-    value: clone(attrs.originalValue),
-  };
-
-  if (attrs.id) block.id = attrs.id;
-
-  const blockComments = (Array.isArray(attrs.blockComments) ? attrs.blockComments : [])
-    .filter((thread) => !thread.pending && Array.isArray(thread.comments) && thread.comments.length);
-  if (blockComments.length) block.comments = clone(blockComments);
-
-  for (const field of node.content || []) {
-    const path = field.attrs?.path || [];
-    const value = fieldValue(field, getValueAtPath(block.value, path));
-    block.value = path.length ? setFieldValue(block.value, path, value) : value;
-  }
-
-  return block;
-}
-
-function fieldValue(node, originalValue) {
-  const attrs = node.attrs || {};
-
-  if (node.type === "editable_field") {
-    return editableFieldValue(node, attrs.mode);
-  }
-  if (node.type === "control_field") {
-    return controlFieldValue(attrs, originalValue);
-  }
-  if (node.type === "struct_field") {
-    return structFieldValue(node);
-  }
-  if (node.type === "list_field") {
-    return listFieldValue(node);
-  }
-  if (node.type === "stream_field") {
-    return streamFieldValue(node);
-  }
-
-  return originalValue;
-}
-
-function structFieldValue(node) {
-  let value = clone(node.attrs?.originalValue);
-
-  for (const child of node.content || []) {
-    const path = child.attrs?.path || [];
-    const originalValue = getValueAtPath(value, path);
-    value = setFieldValue(value, path, fieldValue(child, originalValue));
-  }
-
-  return value;
-}
-
-function listFieldValue(node) {
-  return (node.content || [])
-    .filter((item) => item.type === "list_item")
-    .map((item) => {
-      let value = clone(item.attrs?.originalValue);
-      for (const field of item.content) {
-        const path = field.attrs.path;
-        const fieldContent = fieldValue(field, getValueAtPath(value, path));
-        value = path.length ? setFieldValue(value, path, fieldContent) : fieldContent;
-      }
-      return value;
-    });
-}
-
-function streamFieldValue(node) {
-  return (node.content || [])
-    .filter((item) => item.type === "stream_item")
-    .map((item) => {
-      const attrs = item.attrs || {};
-      let value = clone(attrs.originalValue);
-
-      for (const field of item.content || []) {
-        const path = field.attrs?.path || [];
-        const originalValue = getValueAtPath(value, path);
-        const fieldValueResult = fieldValue(field, originalValue);
-        value = path.length ? setFieldValue(value, path, fieldValueResult) : fieldValueResult;
-      }
-
-      const streamItem = {
-        type: attrs.blockType || "unknown",
-        value,
-      };
-      if (attrs.id) streamItem.id = attrs.id;
-      return streamItem;
-    });
-}
-
-function editableFieldValue(node, mode = "richtext") {
-  if (mode === "plain_text") {
-    return (node.content || [])
-      .map((pmBlock) => streamSchema.nodeFromJSON(pmBlock).textContent)
-      .join("\n\n");
-  }
-
-  const richTextNodes = (node.content || [])
-    .map((block) => richTextSchema.nodeFromJSON(block));
-
-  // Checks if content is empty and doesn't serialize
-  const hasContent = richTextNodes.some((richTextNode) => (
-    richTextNode.textContent.trim() !== ""
-  ));
-  if(!hasContent) return "";
-
-  const domFragment = DOMSerializer
-    .fromSchema(richTextSchema)
-    .serializeFragment(Fragment.fromArray(richTextNodes));
-  const wrapper = document.createElement("div");
-  wrapper.appendChild(domFragment);
-  return wrapper.innerHTML;
-}
-
-function controlFieldValue(fieldAttrs, originalValue) {
-  let value = fieldAttrs.value;
-  const controlType = fieldAttrs.controlType || "text";
-  
-  if (controlType === "boolean") value = Boolean(value);
-  if (["image", "document", "page"].includes(controlType) && value === "") value = null;
-  if (controlType === "number") {
-    value = value === "" || value == null ? null : Number(value);
-  }
-
-  return Array.isArray(originalValue) ? [value] : value;
-}
-
-function setFieldValue(root, path, value) {
-  if (path.length === 0) return value;
-
-  const nextRoot = root !== null && typeof root === "object" ? root : {};
-  let current = nextRoot;
-  for (const key of path.slice(0, -1)) {
-    if (current[key] === null || typeof current[key] !== "object") current[key] = {};
-    current = current[key];
-  }
-  current[path[path.length - 1]] = value;
-  return nextRoot;
-}
-
-function getValueAtPath(root, path) {
-  let current = root;
-  for (const key of path) {
-    if (current === null || typeof current !== "object") return undefined;
-    current = current[key];
-  }
-  return current;
 }

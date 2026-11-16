@@ -1,6 +1,7 @@
 .bc-election-banner,
 .bc-election-home,
-.bc-election-page {
+.bc-election-page,
+.soccer-champ-panel {
   --bc-ink: #101827;
   --bc-muted: #4a5361;
   --bc-rule: #c9ced5;
@@ -14,7 +15,8 @@
 [color-css-theme="dark"] {
   .bc-election-banner,
   .bc-election-home,
-  .bc-election-page {
+  .bc-election-page,
+  .soccer-champ-panel {
     --bc-ink: #f5f6f7;
     --bc-muted: #c4cad4;
     --bc-rule: #526074;
