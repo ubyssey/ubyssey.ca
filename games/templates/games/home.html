@@ -1,0 +1,15 @@
+{% extends "games_base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Games</h2>
+<ul>
+    {% for puzzle in crossword_puzzles %}
+        <li>
+            <a href="{{ puzzle.url }}">{{ puzzle.title }}</a>
+        </li>
+    {% empty %}
+        <li>No puzzles found!</li>
+    {% endfor %}
+</ul>
+{% endblock %}

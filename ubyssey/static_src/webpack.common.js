@@ -33,6 +33,8 @@ module.exports = {
     initializeDarkmode: './src/js/initializeDarkmode.js',
     'events': './src/js/events.jsx',
 
+    'crossword-renderer': './src/js/crossword-renderer.jsx',
+
     'queer-substance-abuse': './src/js/queer-substance-abuse.js',
     'nocturne-window-watching': './src/js/nocturne-window-watching.js',
     'widgets/tags-panel': './src/js/widgets/tags-panel.js',

@@ -166,6 +166,7 @@ class HomePage(Page):
         'specialfeaturelanding.RedesignAuxiliaryPage',
         'home.BCLocalElectionsPage',
         'home.BCProvincialElectionsPage',
+        'games.GamesHome',
         'home.WomensSoccerChampionshipPage',
     ]
 

@@ -148,6 +148,7 @@ INSTALLED_APPS = [
     'wagtailcache',
     'wagtail_color_panel',
 
+    'games',
     'webpush',
 ]
 
