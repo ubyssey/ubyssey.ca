@@ -8,7 +8,6 @@ export {
   acceptSuggestion,
   rejectSuggestion,
   removeAnnotationThread,
-  migrateLegacySuggestionMarksInDoc,
   startCommentCommand,
   startCommentOnSelection,
   TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META,
@@ -18,4 +17,4 @@ export {
   setupFootnoteSidebar,
   startFootnoteCommand,
 } from "./footnotes.jsx";
-export { markRangeAtCursor } from "../marks.js";
+export { markRangeAtCursor, marksAtCursor } from "../marks.js";
