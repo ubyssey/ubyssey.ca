@@ -3,5 +3,3 @@ from .models import MagazineIssue, MagazineSection
 
 # Register your models here.
 
-admin.site.register(MagazineIssue)
-admin.site.register(MagazineSection)
