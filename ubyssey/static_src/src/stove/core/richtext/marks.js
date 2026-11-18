@@ -53,6 +53,33 @@ export function markRangeAtCursor(state, markType, attrs = null) {
   return { from: parentStart + fromOffset, to: parentStart + toOffset, attrs: match.attrs };
 }
 
+// Returns all marks at cursor
+export function marksAtCursor(state, markType, attrs = null) {
+  if (!state.selection.empty) return [];
+
+  const { $from } = state.selection;
+  const parent = $from.parent;
+  const offset = $from.parentOffset;
+  const matches = [];
+  let pos = 0;
+
+  for (let index = 0; index < parent.childCount; index += 1) {
+    const child = parent.child(index);
+    const start = pos;
+    const end = start + child.nodeSize;
+
+    if (start <= offset && offset <= end) {
+      for (const mark of child.marks) {
+        if (mark.type !== markType || (attrs && !sameMarkAttrs(mark.attrs, attrs))) continue;
+        if (!matches.some((match) => match.eq(mark))) matches.push(mark);
+      }
+    }
+    pos = end;
+  }
+
+  return matches;
+}
+
 function sameMarkAttrs(left, right) {
   return JSON.stringify(left || {}) === JSON.stringify(right || {});
 }

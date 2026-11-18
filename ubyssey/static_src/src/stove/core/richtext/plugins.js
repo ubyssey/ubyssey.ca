@@ -764,9 +764,7 @@ function activeCommentPlugin(schema) {
         const decorations = [];
         transaction.doc.descendants((node, position) => {
           if (!node.isText) return true;
-          const mark = [commentMark, suggestionMark]
-            .map((markType) => markType?.isInSet(node.marks))
-            .find((item) => item?.attrs.threadId === threadId);
+          const mark = node.marks.find((item) => ((item.type === commentMark || item.type === suggestionMark) && item.attrs.threadId === threadId));
           if (mark && !mark.attrs.resolved) {
             decorations.push(Decoration.inline(position, position + node.nodeSize, {
               "data-comment-active": "true",
