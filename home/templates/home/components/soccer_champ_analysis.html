@@ -1,0 +1,7 @@
+{% load wagtailimages_tags articletags %}
+<article class="soccer-champ-analysis">
+  <div class="soccer-champ-analysis__meta"><span>{{ item.match.get_slot_display }}</span></div>
+  <div class="soccer-champ-analysis__copy"><h3><a href="{{ item.article.url }}">{{ item.article.title|safe_headline_markup }}</a></h3>{% if item.article.lede %}<p>{{ item.article.lede|striptags|truncatewords:28 }}</p>{% endif %}<div class="bc-election-byline"><span class="bc-election-byline__prefix">By</span> {{ item.article|redesign_card_byline|normalize_redesign_byline|safe }}</div></div>
+  {% if item.article.preview_image %}<a class="soccer-champ-analysis__image" href="{{ item.article.url }}"><img src="{{ item.article.preview_image }}" alt="{{ item.article.image_alt|default:'' }}" loading="lazy"></a>
+  {% else %}{% with featured=item.article.featured_media.first %}{% if featured.image %}<a class="soccer-champ-analysis__image" href="{{ item.article.url }}">{% image featured.image fill-600x400-c100 loading="lazy" alt=featured.alt_text %}</a>{% endif %}{% endwith %}{% endif %}
+</article>

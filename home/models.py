@@ -4,6 +4,7 @@ from article.models import ArticlePage
 from section.models import SectionPage
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import RegexValidator
 from django.utils import timezone
 
 from ads.models import AdSlot
@@ -22,6 +23,8 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from django.conf import settings
+from django.http import Http404
+from django.shortcuts import redirect, render
 from wagtail.snippets.models import register_snippet
 
 # Create your models here.
@@ -93,11 +96,32 @@ class ThunderbirdFixture(models.Model):
     home_logo = models.CharField(max_length=180, blank=True, editable=False)
     away_score = models.PositiveSmallIntegerField(null=True, blank=True)
     home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    away_scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional six-digit hex colour for the away team's score bug panel, such as #002145.",
+    )
+    home_scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional six-digit hex colour for the home team's score bug panel.",
+    )
+    scorebug_stats = StreamField(
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
+    )
+    scorebug_goals = StreamField(
+        blocks.StreamBlock([("goal", homeblocks.ScorebugGoal())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_GOAL_HELP,
+    )
 
     panels = [
         FieldPanel("sport"), FieldPanel("starts_at"), FieldPanel("venue"),
         FieldPanel("away_name"), FieldPanel("home_name"),
         MultiFieldPanel([FieldPanel("away_score"), FieldPanel("home_score")], heading="Result (enter after the game)"),
+        MultiFieldPanel(
+            [FieldPanel("away_scorebug_color"), FieldPanel("home_scorebug_color"),
+             FieldPanel("scorebug_stats"), FieldPanel("scorebug_goals")],
+            heading="Article score bug (optional)",
+        ),
     ]
 
     class Meta:
@@ -142,6 +166,7 @@ class HomePage(Page):
         'specialfeaturelanding.RedesignAuxiliaryPage',
         'home.BCLocalElectionsPage',
         'home.BCProvincialElectionsPage',
+        'home.WomensSoccerChampionshipPage',
     ]
 
     tagline = models.CharField(
@@ -308,6 +333,24 @@ class HomePage(Page):
     bc_provincial_show_featured = models.BooleanField(default=True)
     bc_provincial_show_parties = models.BooleanField(default=True)
     bc_provincial_show_about = models.BooleanField(default=True)
+
+    soccer_championship_page = models.ForeignKey(
+        "home.WomensSoccerChampionshipPage", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+        help_text="Published championship hub supplying the homepage feature.",
+    )
+    soccer_championship_banner_enabled = models.BooleanField(default=False)
+    soccer_championship_banner_text = models.CharField(
+        max_length=150, default="2026 U SPORTS WOMEN'S SOCCER CHAMPIONSHIP",
+    )
+    soccer_championship_panel_enabled = models.BooleanField(default=False)
+    soccer_championship_panel_heading = models.CharField(
+        max_length=150, default="2026 U SPORTS Women's Soccer Championship",
+    )
+    soccer_championship_panel_description = models.TextField(blank=True, default="")
+    soccer_championship_show_featured = models.BooleanField(default=True)
+    soccer_championship_show_explainers = models.BooleanField(default=True)
+    soccer_championship_show_results = models.BooleanField(default=True)
 
     newsletter_action_url = models.URLField(
         blank=True,
@@ -490,6 +533,21 @@ class HomePage(Page):
         ),
         MultiFieldPanel(
             [
+                FieldPanel("soccer_championship_page"),
+                FieldPanel("soccer_championship_banner_enabled"),
+                FieldPanel("soccer_championship_banner_text"),
+                FieldPanel("soccer_championship_panel_enabled"),
+                FieldPanel("soccer_championship_panel_heading"),
+                FieldPanel("soccer_championship_panel_description"),
+                FieldPanel("soccer_championship_show_featured"),
+                FieldPanel("soccer_championship_show_explainers"),
+                FieldPanel("soccer_championship_show_results"),
+            ],
+            heading="2026 women's soccer championship: homepage banner and panel",
+            help_text="Create and publish the championship page and its Teams and Matches child pages first. The banner and panel are independently off by default.",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("redesign_hero_top_left"),
                 FieldPanel("redesign_hero_bottom_left"),
                 FieldPanel("redesign_hero_centre"),
@@ -544,6 +602,8 @@ class HomePage(Page):
             raise ValidationError("Choose the BC local elections page before enabling its homepage banner or panel.")
         if (self.bc_provincial_banner_enabled or self.bc_provincial_panel_enabled) and not self.bc_provincial_elections_page_id:
             raise ValidationError("Choose the BC provincial elections page before enabling its homepage banner or panel.")
+        if (self.soccer_championship_banner_enabled or self.soccer_championship_panel_enabled) and not self.soccer_championship_page_id:
+            raise ValidationError("Choose the women's soccer championship page before enabling its homepage banner or panel.")
         hero_fields = (
             "redesign_hero_top_left",
             "redesign_hero_bottom_left",
@@ -569,6 +629,8 @@ class HomePage(Page):
         context["bc_elections_content"] = None
         context["bc_provincial_page"] = None
         context["bc_provincial_content"] = None
+        context["soccer_championship_page"] = None
+        context["soccer_championship_content"] = None
         election_panel_story_ids = set()
         if self.bc_elections_page_id and (
             self.bc_elections_banner_enabled or self.bc_elections_panel_enabled
@@ -618,6 +680,24 @@ class HomePage(Page):
                         )
                     if provincial_content["featured_article"]:
                         election_panel_story_ids.add(provincial_content["featured_article"].pk)
+
+        if self.soccer_championship_page_id and (
+            self.soccer_championship_banner_enabled or self.soccer_championship_panel_enabled
+        ):
+            championship = WomensSoccerChampionshipPage.objects.live().public().filter(
+                pk=self.soccer_championship_page_id,
+            ).first()
+            if championship:
+                context["soccer_championship_page"] = championship
+                if self.soccer_championship_panel_enabled:
+                    championship_content = championship.get_championship_content()
+                    context["soccer_championship_content"] = championship_content
+                    if self.soccer_championship_show_featured and championship_content["featured_article"]:
+                        election_panel_story_ids.add(championship_content["featured_article"].pk)
+                    if self.soccer_championship_show_explainers:
+                        election_panel_story_ids.update(
+                            item.article.pk for item in championship_content["explainers"]
+                        )
 
         context["ams_election_stories"] = []
         if (self.ams_election_enabled and self.ams_election_story_left_id
@@ -870,6 +950,7 @@ class BCLocalElectionsPage(Page):
             story.pk: story for story in ArticlePage.objects.live().public()
             .filter(pk__in=story_ids).specific()
         } if story_ids else {}
+
         content = {
             name: [
                 SimpleNamespace(
@@ -1021,3 +1102,327 @@ class BCProvincialPartyExplainer(BCElectionStorySlot):
 
 class BCProvincialAboutExplainer(BCElectionStorySlot):
     page = ParentalKey("home.BCProvincialElectionsPage", on_delete=models.CASCADE, related_name="about_explainers")
+
+
+class WomensSoccerChampionshipPage(Page):
+    """Public hub; its two child pages hold the shared manual results data."""
+
+    template = "home/womens_soccer_championship_page.html"
+    parent_page_types = ["home.HomePage"]
+    subpage_types = ["home.WomensSoccerTeamsPage", "home.WomensSoccerMatchesPage"]
+    show_in_menus_default = False
+
+    intro_kicker = models.CharField(max_length=100, default="The Ubyssey · Championship coverage")
+    summary = models.TextField(blank=True, default="")
+    featured_article = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="+", help_text="Optional gold medal match story above the sections.",
+    )
+    featured_label = models.CharField(max_length=100, default="Gold medal match")
+    about_heading = models.CharField(max_length=100, default="About the Championship")
+    results_heading = models.CharField(max_length=100, default="Bracket & Table")
+    championship_path_heading = models.CharField(max_length=100, default="Championship Path")
+    consolation_path_heading = models.CharField(max_length=100, default="Consolation Path")
+    team_statistics_heading = models.CharField(max_length=100, default="Team Statistics")
+    analyses_heading = models.CharField(max_length=100, default="Match Analyses")
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [FieldPanel("intro_kicker"), FieldPanel("summary"),
+             FieldPanel("featured_article"), FieldPanel("featured_label")],
+            heading="Introduction and optional gold medal story",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("about_heading"), InlinePanel("explainers", max_num=4, label="Explainer")],
+            heading="About the Championship: up to four stories",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("results_heading"), FieldPanel("championship_path_heading"),
+             FieldPanel("consolation_path_heading"), FieldPanel("team_statistics_heading"),
+             FieldPanel("analyses_heading")],
+            heading="Bracket, table and match analyses headings",
+            help_text="Add the Teams and Matches child pages beneath this page to fill the bracket and table.",
+        ),
+    ]
+
+    def clean(self):
+        super().clean()
+        if self.slug != "2026-usports-womens-soccer-championship":
+            raise ValidationError({"slug": "Use 2026-usports-womens-soccer-championship for the public URL."})
+
+    def get_championship_content(self):
+        teams_page = WomensSoccerTeamsPage.objects.live().public().child_of(self).first() if self.pk else None
+        matches_page = WomensSoccerMatchesPage.objects.live().public().child_of(self).first() if self.pk else None
+        teams = list(teams_page.teams.select_related("logo").order_by("seed")) if teams_page else []
+        matches = list(matches_page.matches.select_related(
+            "home_team", "home_team__logo", "away_team", "away_team__logo", "winner", "analysis",
+        )) if matches_page else []
+        by_slot = {match.slot: match for match in matches}
+
+        story_ids = {row.article_id for row in self.explainers.all() if row.article_id}
+        if self.featured_article_id:
+            story_ids.add(self.featured_article_id)
+        story_ids.update(match.analysis_id for match in matches if match.analysis_id)
+        stories = {
+            story.pk: story for story in ArticlePage.objects.live().public()
+            .filter(pk__in=story_ids).specific()
+        } if story_ids else {}
+
+        for match in matches:
+            match.visible_analysis = stories.get(match.analysis_id)
+
+        medals = {}
+        gold, bronze = by_slot.get("gold"), by_slot.get("bronze")
+        if gold and bronze and gold.is_final and bronze.is_final and gold.winner_id and bronze.winner_id:
+            gold_loser = gold.losing_team
+            if gold_loser:
+                medals = {gold.winner_id: "gold", gold_loser.pk: "silver", bronze.winner_id: "bronze"}
+        for team in teams:
+            team.medal = medals.get(team.pk, "")
+        for match in matches:
+            for team in (match.home_team, match.away_team):
+                if team:
+                    team.medal = medals.get(team.pk, "")
+
+        analyses = []
+        for slot, _ in WomensSoccerMatch.SLOT_CHOICES:
+            match = by_slot.get(slot)
+            if match and slot != "gold" and match.analysis_id in stories:
+                analyses.append(SimpleNamespace(match=match, article=stories[match.analysis_id]))
+
+        slot_labels = dict(WomensSoccerMatch.SLOT_CHOICES)
+
+        def match_slot(slot):
+            if slot in by_slot:
+                return by_slot[slot]
+            return SimpleNamespace(
+                slot=slot, short_label=WomensSoccerMatch.SHORT_LABELS[slot],
+                get_slot_display=slot_labels[slot], starts_at=None,
+                home_team=None, away_team=None, has_score=False,
+                is_final=False, visible_analysis=None, result_note="",
+            )
+
+        def round_date(*slots):
+            return next((starts_at for slot in slots
+                         if slot in by_slot
+                         if (starts_at := getattr(by_slot[slot], "starts_at", None))), None)
+
+        return {
+            "featured_article": stories.get(self.featured_article_id),
+            "explainers": [
+                SimpleNamespace(article=stories[row.article_id], label=row.display_label, special=False)
+                for row in self.explainers.all() if row.article_id in stories
+            ],
+            "teams": teams,
+            "quarterfinal_date": round_date("qf1", "qf2", "qf3", "qf4"),
+            "championship_semifinal_date": round_date("sf1", "sf2"),
+            "consolation_semifinal_date": round_date("csf1", "csf2"),
+            "placement_date": round_date("gold", "bronze", "fifth"),
+            "quarterfinals": [match_slot(s) for s in ("qf1", "qf2", "qf3", "qf4")],
+            "championship_semifinals": [match_slot(s) for s in ("sf1", "sf2")],
+            "consolation_semifinals": [match_slot(s) for s in ("csf1", "csf2")],
+            "finals": [match_slot(s) for s in ("gold", "bronze", "fifth")],
+            "analyses": analyses,
+            "medals": medals,
+        }
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["championship_content"] = self.get_championship_content()
+        return context
+
+
+class WomensSoccerExplainer(BCElectionStorySlot):
+    page = ParentalKey(
+        "home.WomensSoccerChampionshipPage", on_delete=models.CASCADE, related_name="explainers",
+    )
+
+
+class WomensSoccerTeamsPage(Page):
+    """CMS child page for the eight seeded teams and editor-entered statistics."""
+
+    parent_page_types = ["home.WomensSoccerChampionshipPage"]
+    subpage_types = []
+    max_count_per_parent = 1
+    show_in_menus_default = False
+    content_panels = Page.content_panels + [
+        InlinePanel("teams", max_num=8, label="Team"),
+    ]
+
+    def serve(self, request, *args, **kwargs):
+        parent_url = self.get_parent().get_url(request)
+        if not parent_url:
+            raise Http404
+        return redirect(parent_url)
+
+    def serve_preview(self, request, mode_name):
+        return render(request, "home/womens_soccer_data_preview.html", {
+            "page": self,
+            "data_kind": "teams",
+            "items": self.teams.all(),
+            "parent_url": self.get_parent().get_url(request),
+        })
+
+
+class WomensSoccerTeam(Orderable):
+    page = ParentalKey("home.WomensSoccerTeamsPage", on_delete=models.CASCADE, related_name="teams")
+    seed = models.PositiveSmallIntegerField(help_text="Original tournament seed, 1–8; shown in the bracket and table.")
+    name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=30, help_text="Compact name for the narrow table column.")
+    logo = models.ForeignKey(
+        "images.UbysseyImage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    scorebug_color = models.CharField(
+        max_length=7, blank=True, validators=[RegexValidator(r"^#[0-9a-fA-F]{6}$")],
+        help_text="Optional team-colour hex code for match analysis score bugs, such as #002145.",
+    )
+    games_played = models.PositiveSmallIntegerField(default=0)
+    shots = models.PositiveIntegerField(default=0)
+    goals = models.PositiveIntegerField(default=0)
+    assists = models.PositiveIntegerField(default=0)
+    points = models.PositiveIntegerField(default=0)
+
+    panels = [
+        FieldPanel("seed"), FieldPanel("name"), FieldPanel("short_name"), FieldPanel("logo"),
+        FieldPanel("scorebug_color"),
+        MultiFieldPanel(
+            [FieldPanel("games_played"), FieldPanel("shots"), FieldPanel("goals"),
+             FieldPanel("assists"), FieldPanel("points")],
+            heading="Manually entered championship statistics",
+        ),
+    ]
+
+    class Meta:
+        ordering = ("seed",)
+        constraints = [models.UniqueConstraint(fields=("page", "seed"), name="unique_soccer_champ_seed")]
+
+    def __str__(self):
+        return f"({self.seed}) {self.name}"
+
+    def clean(self):
+        super().clean()
+        if self.seed and not 1 <= self.seed <= 8:
+            raise ValidationError({"seed": "Enter a seed between 1 and 8."})
+
+
+class WomensSoccerMatchesPage(Page):
+    """CMS child page for the eleven scheduled fixtures, results and story links."""
+
+    parent_page_types = ["home.WomensSoccerChampionshipPage"]
+    subpage_types = []
+    max_count_per_parent = 1
+    show_in_menus_default = False
+    content_panels = Page.content_panels + [
+        InlinePanel("matches", max_num=11, label="Match"),
+    ]
+
+    def serve(self, request, *args, **kwargs):
+        parent_url = self.get_parent().get_url(request)
+        if not parent_url:
+            raise Http404
+        return redirect(parent_url)
+
+    def serve_preview(self, request, mode_name):
+        return render(request, "home/womens_soccer_data_preview.html", {
+            "page": self,
+            "data_kind": "matches",
+            "items": self.matches.all(),
+            "parent_url": self.get_parent().get_url(request),
+        })
+
+
+class WomensSoccerMatch(Orderable):
+    SLOT_CHOICES = (
+        ("qf1", "Quarterfinal 1"), ("qf2", "Quarterfinal 2"),
+        ("qf3", "Quarterfinal 3"), ("qf4", "Quarterfinal 4"),
+        ("sf1", "Championship semifinal 1"), ("sf2", "Championship semifinal 2"),
+        ("csf1", "Consolation semifinal 1"), ("csf2", "Consolation semifinal 2"),
+        ("fifth", "Fifth-place match"), ("bronze", "Bronze medal match"),
+        ("gold", "Gold medal match"),
+    )
+    SHORT_LABELS = {
+        "qf1": "QF 1", "qf2": "QF 2", "qf3": "QF 3", "qf4": "QF 4",
+        "sf1": "SF 1", "sf2": "SF 2", "csf1": "Consolation SF 1", "csf2": "Consolation SF 2",
+        "fifth": "5th place", "bronze": "Bronze", "gold": "Gold",
+    }
+
+    page = ParentalKey("home.WomensSoccerMatchesPage", on_delete=models.CASCADE, related_name="matches")
+    slot = models.CharField(max_length=8, choices=SLOT_CHOICES)
+    starts_at = models.DateTimeField(null=True, blank=True, help_text="Local match time; the site displays Pacific time.")
+    home_team = models.ForeignKey(
+        "home.WomensSoccerTeam", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    away_team = models.ForeignKey(
+        "home.WomensSoccerTeam", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    away_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    scorebug_stats = StreamField(
+        blocks.StreamBlock([("comparison", homeblocks.ScorebugStat())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_STAT_HELP,
+    )
+    scorebug_goals = StreamField(
+        blocks.StreamBlock([("goal", homeblocks.ScorebugGoal())]),
+        blank=True, default=list, use_json_field=True, help_text=homeblocks.SCOREBUG_GOAL_HELP,
+    )
+    result_note = models.CharField(
+        max_length=100, blank=True, default="", help_text="Optional result detail, such as penalties.",
+    )
+    is_final = models.BooleanField(default=False)
+    winner = models.ForeignKey(
+        "home.WomensSoccerTeam", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+        help_text="Select the winner after the match, including matches decided on penalties.",
+    )
+    analysis = models.ForeignKey(
+        "article.ArticlePage", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+        help_text="Published Game Analysis story; its link appears beside this match and in the analyses section.",
+    )
+    panels = [
+        FieldPanel("slot"), FieldPanel("starts_at"), FieldPanel("home_team"), FieldPanel("away_team"),
+        MultiFieldPanel(
+            [FieldPanel("is_final"), FieldPanel("home_score"), FieldPanel("away_score"),
+             FieldPanel("winner"), FieldPanel("result_note")],
+            heading="Result",
+        ),
+        FieldPanel("analysis"),
+        FieldPanel("scorebug_stats"),
+        FieldPanel("scorebug_goals"),
+    ]
+
+    class Meta:
+        ordering = ("sort_order",)
+        constraints = [models.UniqueConstraint(fields=("page", "slot"), name="unique_soccer_champ_match_slot")]
+
+    def __str__(self):
+        return self.get_slot_display()
+
+    @property
+    def short_label(self):
+        return self.SHORT_LABELS.get(self.slot, self.get_slot_display())
+
+    @property
+    def has_score(self):
+        return self.home_score is not None and self.away_score is not None
+
+    @property
+    def losing_team(self):
+        if not self.winner_id:
+            return None
+        if self.home_team_id == self.winner_id:
+            return self.away_team
+        if self.away_team_id == self.winner_id:
+            return self.home_team
+        return None
+
+    def clean(self):
+        super().clean()
+        if self.home_team_id and self.home_team_id == self.away_team_id:
+            raise ValidationError("Choose two different teams for a match.")
+        if self.winner_id and self.winner_id not in (self.home_team_id, self.away_team_id):
+            raise ValidationError({"winner": "The winner must be one of the two teams in this match."})
+        if self.is_final and (self.home_score is None or self.away_score is None):
+            raise ValidationError("Enter both scores before marking a match final.")
+        if self.winner_id and self.has_score and self.home_score != self.away_score:
+            leading_team_id = self.home_team_id if self.home_score > self.away_score else self.away_team_id
+            if self.winner_id != leading_team_id:
+                raise ValidationError({"winner": "The winner must match the score unless the game is tied and decided on penalties."})

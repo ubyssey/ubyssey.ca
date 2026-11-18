@@ -20,9 +20,7 @@ function ArticleRow({page, updatePage, scheduled = false, scheduledPublish}) {
 
     return <><tr key={page.pk} className={selectedClass}>
             <td className="slug-cell" data-tooltip-id={`headline-copy-${page.pk}`}>
-              <a className="slug-link" href={articleUrl.replace("1918", page.pk)}>
               {page["title"]}
-              </a>
               </td>
             <td className="authors-cell cell-interactible-ignore-children" onClick={() => copyToClipboard(authorString(page.article_authors), "Authors")}><AuthorsSelect 
               disabled = {true}

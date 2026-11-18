@@ -32,6 +32,8 @@
     
     {% autoescape off %}
     let allSections = {{ sections }}
+    const userGroups = {{user_groups}}
+
     
     {% for a in authors %}
     authors.push({ value: {{a.id}}, label: `{{a.full_name}}`, role: `{{a.ubyssey_role}}` })

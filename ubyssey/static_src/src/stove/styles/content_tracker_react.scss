@@ -429,6 +429,10 @@ input:checked + .slider:before {
 .slug-link--container:hover {
   background-color: hsl(192, 50%, 85%);
 }
+.slug-link--container-disabled:hover {
+  background-color: var(--invalid-hover-color);
+  cursor: not-allowed;
+}
 
 .slug-cell--story-type {
   display: none;

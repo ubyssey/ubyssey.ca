@@ -1,0 +1,6 @@
+{% load wagtailimages_tags %}
+<tr{% if team.medal %} class="is-{{ team.medal }}"{% endif %}>
+  <td>{{ team.seed }}</td>
+  <th scope="row"><span class="soccer-champ-table__team">{% if team.logo %}{% image team.logo max-40x40 alt="" loading="lazy" %}{% endif %}<span title="{{ team.name }}">{{ team.short_name }}{% if team.medal %}<em class="soccer-medal soccer-medal--{{ team.medal }}">{{ team.medal }}</em>{% endif %}</span></span></th>
+  <td>{{ team.games_played }}</td><td>{{ team.shots }}</td><td>{{ team.goals }}</td><td>{{ team.assists }}</td><td>{{ team.points }}</td>
+</tr>

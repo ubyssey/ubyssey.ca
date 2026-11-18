@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} — Championship data preview</title>
+  <style>
+    body { max-width: 900px; margin: 2rem auto; padding: 0 1rem; font: 16px/1.5 system-ui, sans-serif; color: #111827; }
+    h1 { line-height: 1.15; }
+    .note { padding: 1rem; background: #edf2fa; border-left: 4px solid #223377; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    th, td { padding: .65rem; border-bottom: 1px solid #cbd5e1; text-align: left; }
+    th { white-space: nowrap; }
+    @media (max-width: 600px) { table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>{{ page.title }}</h1>
+    <p class="note">This page stores championship data. Readers see it in the bracket and table on the championship page, homepage panel and Sports page.</p>
+    {% if parent_url %}<p><a href="{{ parent_url }}">Open championship page</a></p>{% endif %}
+    {% if data_kind == "teams" %}
+      <table>
+        <thead><tr><th>Seed</th><th>Team</th><th>Played</th><th>Shots</th><th>Goals</th><th>Assists</th><th>Points</th></tr></thead>
+        <tbody>
+        {% for team in items %}<tr><td>{{ team.seed }}</td><td>{{ team.name }}</td><td>{{ team.games_played }}</td><td>{{ team.shots }}</td><td>{{ team.goals }}</td><td>{{ team.assists }}</td><td>{{ team.points }}</td></tr>{% empty %}<tr><td colspan="7">No teams have been added yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <table>
+        <thead><tr><th>Match</th><th>Time</th><th>Away</th><th>Home</th><th>Result</th></tr></thead>
+        <tbody>
+        {% for match in items %}<tr><td>{{ match.get_slot_display }}</td><td>{{ match.starts_at|date:'M j, Y g:i a'|default:'—' }}</td><td>{{ match.away_team.name|default:'TBD' }}</td><td>{{ match.home_team.name|default:'TBD' }}</td><td>{% if match.has_score %}{{ match.away_score }}–{{ match.home_score }}{% else %}—{% endif %}{% if match.is_final %} · Final{% endif %}</td></tr>{% empty %}<tr><td colspan="5">No matches have been added yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </main>
+</body>
+</html>
