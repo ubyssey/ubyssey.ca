@@ -4,7 +4,6 @@ import { Fragment } from "prosemirror-model";
 import { prosemirrorToYXmlFragment, yXmlFragmentToProseMirrorRootNode } from "y-prosemirror";
 import { samePath } from "./fields.js";
 import { streamSchema } from "./stream_schema.js";
-import { migrateLegacySuggestionMarksInDoc } from "../richtext/annotations/comment_model.js";
 
 const fieldNodeTypes = {
   struct: "struct_field",
@@ -19,8 +18,7 @@ export function normalizeSharedStreamDocuments(ydoc, streamEditors) {
   const repairs = Object.entries(streamEditors).flatMap(([fieldName, streamEditor]) => {
     const fragment = ydoc.getXmlFragment(fieldName);
     const doc = yXmlFragmentToProseMirrorRootNode(fragment, streamSchema);
-    const migrated = migrateLegacySuggestionMarksInDoc(doc);
-    const normalized = normalizeStreamDocument(migrated, streamEditor.blockTypes);
+    const normalized = normalizeStreamDocument(doc, streamEditor.blockTypes);
     return normalized.eq(doc) ? [] : [{ fragment, doc: normalized }];
   });
   if (!repairs.length) return false;
