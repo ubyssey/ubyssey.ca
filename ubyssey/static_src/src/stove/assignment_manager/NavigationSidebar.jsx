@@ -5,7 +5,7 @@ import sidebarSections from './SidebarSections.json'
 export default function NavigationSidebar() {
   function SectionGroup({groupName, sections}) {
     const sectionItems = sections.map(section => 
-        <li className={`section-navigation-item ${section.disabled ? 'section-navigation-item-disabled' : ''}`}><a href={section.path}>{section.name}</a></li>
+        <li className={`section-navigation-item ${section.disabled ? 'section-navigation-item-disabled' : ''}`} id={`${section.extraTags ? section.extraTags : ''}`}><a href={section.path}>{section.name}</a></li>
     )
     return <ul className="section-navigation-grouping">
       <span className="section-navigation-title">{groupName}</span>
@@ -23,6 +23,6 @@ export default function NavigationSidebar() {
 
   return <div class="navigation-panel">
             <div className="stove-logo-container"><a href="/stove"><SvgStoveNameplateBlue className="stove-logo"/></a></div>
-          {sectionGroups}
-  </div>
+            {sectionGroups}
+        </div>
 }
