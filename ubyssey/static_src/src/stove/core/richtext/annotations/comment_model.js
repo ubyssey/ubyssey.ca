@@ -1,7 +1,6 @@
 // Comment Model including Prosemirror Spec, UI is in comments.jsx
 
 import { v4 as uuidv4 } from "uuid";
-import { EditorState } from "prosemirror-state";
 
 export const START_COMMENT_THREAD_META = "startCommentThread";
 export const TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META = "hideTextSelectionCommentBubble";
@@ -35,6 +34,7 @@ export function createSuggestionMark(suggestionMark, suggestion, text, threadId 
 
 export const commentMarkSpec = {
   inclusive: false,
+  excludes: "",
   attrs: {
     threadId: { default: null },
     comments: { default: [] },
@@ -119,25 +119,6 @@ function parseCommentPayload(value) {
   }
 }
 
-export function migrateLegacySuggestionMarksInDoc(doc) {
-  const commentMark = doc.type.schema.marks.comment;
-  const suggestionMark = doc.type.schema.marks.suggestion;
-
-  let tr = EditorState.create({ doc }).tr;
-  doc.descendants((node, position) => {
-    if (!node.isText) return true;
-    const mark = commentMark.isInSet(node.marks);
-    const suggestion = suggestionMark.isInSet(node.marks);
-    if (!mark || !commentSuggestion(mark.attrs.comments)) return true;
-
-    tr = tr.removeMark(position, position + node.nodeSize, commentMark);
-    if (!suggestion) tr = tr.addMark(position, position + node.nodeSize, suggestionMark.create(mark.attrs));
-    return true;
-  });
-
-  return tr.docChanged ? tr.doc : doc;
-}
-
 export function startCommentCommand(commentMark) {
   return (state, dispatch) => {
     const { from, to, empty } = state.selection;
@@ -146,7 +127,6 @@ export function startCommentCommand(commentMark) {
 
     const threadId = uuidv4();
     dispatch(state.tr
-      .removeMark(from, to, commentMark)
       .addMark(from, to, commentMark.create({ threadId, comments: [], pending: true, resolved: false }))
       .setMeta("skipPreview", true)
       .setMeta(START_COMMENT_THREAD_META, threadId)
@@ -167,25 +147,26 @@ export function collectAnnotationThreads(views) {
       const markType = view.state.schema.marks[kind];
       view.state.doc.descendants((node) => {
         if (!node.isText) return true;
-        const mark = markType.isInSet(node.marks);
-        if (!mark?.attrs.threadId) return true;
+        for (const mark of node.marks) {
+          if (mark.type !== markType || !mark.attrs.threadId) continue;
 
-        const key = `${kind}:${mark.attrs.threadId}`;
-        const thread = threads.get(key);
-        if (thread) {
-          if (!thread.views.includes(view)) thread.views.push(view);
-          return true;
+          const key = `${kind}:${mark.attrs.threadId}`;
+          const thread = threads.get(key);
+          if (thread) {
+            if (!thread.views.includes(view)) thread.views.push(view);
+            continue;
+          }
+
+          threads.set(key, {
+            kind,
+            threadId: mark.attrs.threadId,
+            comments: Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [],
+            pending: Boolean(mark.attrs.pending),
+            resolved: Boolean(mark.attrs.resolved),
+            view,
+            views: [view],
+          });
         }
-
-        threads.set(key, {
-          kind,
-          threadId: mark.attrs.threadId,
-          comments: Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [],
-          pending: Boolean(mark.attrs.pending),
-          resolved: Boolean(mark.attrs.resolved),
-          view,
-          views: [view],
-        });
         return true;
       });
     }
@@ -201,17 +182,19 @@ function findAnnotationThread(view, kind, threadId) {
   const thread = { markType, ranges: [], comments: [], pending: false, resolved: false };
   view.state.doc.descendants((node, position) => {
     if (!node.isText) return true;
-    const mark = markType.isInSet(node.marks);
-    if (!mark || mark.attrs.threadId !== threadId) return true;
+    for (const mark of node.marks) {
+      if (mark.type !== markType || mark.attrs.threadId !== threadId) continue;
 
-    thread.ranges.push({
-      from: position,
-      to: position + node.nodeSize,
-      suggestionPart: mark.attrs.suggestionPart,
-    });
-    thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
-    thread.pending = Boolean(mark.attrs.pending);
-    thread.resolved = Boolean(mark.attrs.resolved);
+      thread.ranges.push({
+        from: position,
+        to: position + node.nodeSize,
+        mark,
+        suggestionPart: mark.attrs.suggestionPart,
+      });
+      thread.comments = Array.isArray(mark.attrs.comments) ? mark.attrs.comments : [];
+      thread.pending = Boolean(mark.attrs.pending);
+      thread.resolved = Boolean(mark.attrs.resolved);
+    }
     return true;
   });
 
@@ -235,7 +218,7 @@ function replaceAnnotationThread(thread, attrs) {
     };
     for (const range of fragment.ranges) {
       tr = tr
-        .removeMark(range.from, range.to, fragment.markType)
+        .removeMark(range.from, range.to, range.mark)
         .addMark(range.from, range.to, fragment.markType.create({
           ...nextAttrs,
           suggestionPart: range.suggestionPart,
@@ -268,7 +251,7 @@ export function removeAnnotationThread(thread) {
     if (!fragment) continue;
 
     let tr = view.state.tr;
-    for (const range of fragment.ranges) tr = tr.removeMark(range.from, range.to, fragment.markType);
+    for (const range of fragment.ranges) tr = tr.removeMark(range.from, range.to, range.mark);
     view.dispatch(tr
       .setMeta("skipPreview", true)
       .setMeta(TEXT_SELECTION_COMMENT_BUBBLE_HIDE_META, true));
@@ -289,7 +272,7 @@ export function acceptSuggestion(thread, suggestion) {
       const part = range.suggestionPart || suggestion;
       tr = part === "delete"
         ? tr.delete(range.from, range.to)
-        : tr.removeMark(range.from, range.to, fragment.markType);
+        : tr.removeMark(range.from, range.to, range.mark);
     }
     view.dispatch(tr.scrollIntoView());
     changed = true;
@@ -309,7 +292,7 @@ export function rejectSuggestion(thread, suggestion) {
       const part = range.suggestionPart || suggestion;
       tr = part === "add"
         ? tr.delete(range.from, range.to)
-        : tr.removeMark(range.from, range.to, fragment.markType);
+        : tr.removeMark(range.from, range.to, range.mark);
     }
     view.dispatch(tr.scrollIntoView());
     changed = true;

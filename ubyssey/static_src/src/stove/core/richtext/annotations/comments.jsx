@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { selectPageBlockElement } from "../../preview/selection.js";
-import { markRangeAtCursor } from "../marks.js";
+import { marksAtCursor } from "../marks.js";
 
 import {
   acceptSuggestion,
@@ -164,12 +164,18 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const threadIdsAtSelection = (view, includeResolved) => {
     if (!view?.state.selection.empty) return [];
 
-    return [...new Set(["comment", "suggestion"].flatMap((kind) => {
+    const selectedThreadIds = new Set();
+    for (const kind of ["comment", "suggestion"]) {
       const markType = view.state.schema.marks[kind];
-      const range = markType && markRangeAtCursor(view.state, markType);
-      const threadId = range?.attrs?.threadId;
-      return threadId && (includeResolved || !range.attrs.resolved) ? [threadId] : [];
-    }))];
+      if (!markType) continue;
+
+      for (const mark of marksAtCursor(view.state, markType)) {
+        if (!includeResolved && mark.attrs.resolved) continue;
+        if (mark.attrs.threadId) selectedThreadIds.add(mark.attrs.threadId);
+      }
+    }
+
+    return [...selectedThreadIds];
   };
 
   const nearbyCommentMarks = (event) => {

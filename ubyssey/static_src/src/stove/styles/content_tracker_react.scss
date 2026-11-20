@@ -58,7 +58,7 @@ table, th, td {
 }
 
 .navigation-panel {
-  width: 12em;
+  width: 13em;
   background-color: var(--ubyssey-blue);
   height: 100%;
   color: white;
@@ -70,7 +70,7 @@ table, th, td {
 
 .section-navigation-grouping {
   list-style-type: none;
-  padding-bottom: 0.5em;
+  padding-bottom: 0.17em;
 }
 
 .section-navigation-title {
@@ -78,11 +78,11 @@ table, th, td {
   font-stretch: normal !important;
   font-variation-settings: "wdth" 75,"wght" 600 !important;
   letter-spacing: 2 !important;
-  padding-bottom: 0.25em;
+  padding-bottom: 0.5em;
 }
 
 .section-navigation-item {
-  padding-bottom: 0.25em;
+  padding-bottom: 0.15em;
 }
 
 .section-navigation-item > a {

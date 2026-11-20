@@ -1731,6 +1731,7 @@ class StandardArticlePage(ArticlePage):
         editable=False,
         help_text="Contains editor version of page with footnotes and comments",
     )
+    editor_article_version.wagtail_reference_index_ignore = True
 
     # template #TODO
 
