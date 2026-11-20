@@ -35,12 +35,5 @@
             {"name": "Homepage", "path": "/stove/homepage" },
             {"name": "Margins", "path": "/stove/stories/margins" }
         ]   
-    }, 
-    {
-        "name": "NOTIFICATIONS",
-        "sections": [
-            {"name": "Subscribe", "path": "", "extraTags": "webpush-subscribe-button"},
-            {"name": "Preferences", "path": "/stove/notification-preferences", "disabled": true}
-        ]
     }
 ]
