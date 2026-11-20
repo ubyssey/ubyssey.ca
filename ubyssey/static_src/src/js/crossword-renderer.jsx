@@ -28,6 +28,12 @@ function ButtonsBar({ crosswordRef }) {
             <button onClick={() => {
                 const across = selectedDirection === 'across';
                 if (!clue) return;
+
+                const {row, col} = clue;
+
+                selectedPosition.col = col;
+                selectedPosition.row = row;
+                
                 for (let i = 0; i < clue.answer.length; i++) {
 
                     const row = selectedPosition.row + (across ? 0 : i);
@@ -40,8 +46,6 @@ function ButtonsBar({ crosswordRef }) {
             }}}>Check Word</button>
 
             <button onClick={() => {
-                let i = 0;
-                let j = 0;
                 gridData.forEach((row) => {
                     
                     row.forEach((cell) => {
@@ -58,6 +62,12 @@ function ButtonsBar({ crosswordRef }) {
             <button onClick={() => {
                 const across = selectedDirection === 'across';
                 if (!clue) return;
+
+                const {row, col} = clue;
+
+                selectedPosition.col = col;
+                selectedPosition.row = row;
+
                 for (let i = 0; i < clue.answer.length; i++) {
 
                     const row = selectedPosition.row + (across ? 0 : i);
