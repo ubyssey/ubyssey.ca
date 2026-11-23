@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviews · The Ubyssey</title>
+    <style>
+        :root {
+            --ink: #222222;
+            --muted: #555555;
+            --line: #dddddd;
+            --panel: #fafafa;
+            --chip: #e6e6e6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #ffffff;
+            color: var(--ink);
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        a { color: #333333; }
+        a:hover { color: #111111; }
+
+        .layout { display: flex; flex-wrap: wrap; min-height: 100vh; }
+
+        .sidebar {
+            flex: 0 0 240px;
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-right: 1px solid #cccccc;
+            background: var(--panel);
+        }
+        .tool-name { font-weight: 700; font-size: 18px; padding: 0 10px; }
+        .upload-button {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 44px; border-radius: 8px;
+            background: var(--ink); color: #ffffff;
+            text-decoration: none; font-weight: 600;
+        }
+        .upload-button:hover { color: #ffffff; background: #000000; }
+        .nav { display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+        .nav a {
+            display: flex; align-items: center; justify-content: space-between;
+            min-height: 40px; padding: 0 10px; border-radius: 6px;
+            text-decoration: none;
+        }
+        .nav a.active { background: var(--chip); font-weight: 600; }
+        .nav-heading {
+            font-size: 12px; font-weight: 700; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.04em; padding: 0 10px 6px;
+        }
+        .hint { font-size: 12px; color: var(--muted); font-weight: 400; }
+        .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .account { display: flex; align-items: center; gap: 10px; padding: 10px; border-top: 1px solid var(--line); }
+        .avatar {
+            width: 32px; height: 32px; border-radius: 999px; background: #cccccc;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px;
+        }
+        .account-name { font-weight: 600; }
+
+        .main {
+            flex: 999 1 560px; min-width: 0;
+            padding: 24px 32px;
+            display: flex; flex-direction: column; gap: 18px;
+        }
+        .search { display: flex; flex-direction: column; gap: 6px; max-width: 720px; }
+        .search label { font-size: 13px; color: var(--muted); }
+        .search input {
+            min-height: 44px; padding: 0 14px; font-size: 15px;
+            border: 1px solid #999999; border-radius: 8px;
+        }
+        .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+        .toolbar h1 { margin: 0; font-size: 26px; }
+        .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .chip {
+            min-height: 36px; padding: 0 14px; font-size: 14px;
+            border: 1px solid #999999; border-radius: 999px; background: #ffffff; color: var(--ink);
+        }
+        .chip.active { background: var(--ink); border-color: var(--ink); color: #ffffff; }
+        .filters select { min-height: 36px; border-radius: 6px; }
+        .visually-hidden { position: absolute; left: -9999px; }
+
+        .recordings { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+        .recording {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+            padding: 16px 4px; border-bottom: 1px solid var(--line);
+        }
+        .recording-icon {
+            flex: none; width: 40px; height: 40px; border-radius: 999px; background: var(--chip);
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .recording-main { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .recording-title { display: flex; align-items: center; gap: 8px; }
+        .recording-title a { font-weight: 600; font-size: 16px; text-decoration: none; }
+        .snippet { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .col-section { flex: 0 0 110px; font-size: 14px; }
+        .col-uploader { flex: 0 0 130px; font-size: 14px; color: #444444; }
+        .col-date { flex: 0 0 100px; font-size: 14px; color: #444444; }
+        .col-length { flex: 0 0 70px; font-size: 14px; font-variant-numeric: tabular-nums; }
+        .col-status { flex: 0 0 130px; }
+
+        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; }
+        .pill-ready { background: var(--chip); }
+        .pill-processing, .pill-uploading { border: 1px dashed #666666; }
+        .pill-failed { background: var(--ink); color: #ffffff; }
+
+        .note { font-size: 13px; color: var(--muted); }
+
+        @media (max-width: 720px) {
+            .sidebar { flex-basis: 100%; border-right: none; border-bottom: 1px solid #cccccc; }
+            .sidebar-footer { margin-top: 0; }
+            .main { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="tool-name">Interviews</div>
+        <a class="upload-button" href="#">+ Upload recording</a>
+
+        <nav class="nav" aria-label="Library">
+            <a class="active" href="{% url 'interviews:library' %}">All recordings</a>
+            <a href="#">My uploads</a>
+            <a href="#">Shared with me</a>
+            <a href="#">Restricted <span class="hint">masthead</span></a>
+        </nav>
+
+        <div class="nav">
+            <div class="nav-heading">Sections</div>
+            {% for section in sections %}
+                <a href="#">{{ section }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="nav">
+                <a href="#">Trash <span class="hint">masthead</span></a>
+            </div>
+            <div class="account">
+                <span class="avatar" aria-hidden="true">{{ request.user.get_username|slice:":2"|upper }}</span>
+                <span>
+                    <span class="account-name">{{ request.user.get_full_name|default:request.user.get_username }}</span><br>
+                    <span class="hint">Ubyssey account</span>
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="search">
+            <label for="q">Search titles, people and transcript text</label>
+            <input id="q" type="search" placeholder="e.g. tuition, Board of Governors, a speaker's name">
+        </div>
+
+        <div class="toolbar">
+            <h1>All recordings</h1>
+            <div class="filters">
+                <button type="button" class="chip active">All types</button>
+                {% for recording_type in recording_types %}
+                    <button type="button" class="chip">{{ recording_type }}</button>
+                {% endfor %}
+                <label for="sort" class="visually-hidden">Sort</label>
+                <select id="sort">
+                    <option>Newest first</option>
+                    <option>Oldest first</option>
+                    <option>Title A–Z</option>
+                </select>
+            </div>
+        </div>
+
+        <ul class="recordings">
+            {% for recording in recordings %}
+                <li class="recording">
+                    <span class="recording-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+                    </span>
+                    <div class="recording-main">
+                        <div class="recording-title">
+                            {% if recording.restricted %}
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" role="img" aria-label="Restricted"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                            {% endif %}
+                            <a href="#">{{ recording.title }}</a>
+                        </div>
+                        <div class="snippet">{{ recording.snippet }}</div>
+                    </div>
+                    <div class="col-section">{{ recording.section }}</div>
+                    <div class="col-uploader">{{ recording.uploader }}</div>
+                    <div class="col-date">{{ recording.date }}</div>
+                    <div class="col-length">{{ recording.length }}</div>
+                    <div class="col-status"><span class="pill pill-{{ recording.status }}">{{ recording.status_label }}</span></div>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="note">Mock data. Second line = first words of the transcript (no AI summary).</p>
+    </main>
+</div>
+</body>
+</html>

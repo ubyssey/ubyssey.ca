@@ -139,6 +139,7 @@ urlpatterns += [
     path("webpush/", include("webpush.urls")),
 
     path('stove/', include('stove.urls')),
+    path('interviews/', include('interviews.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),

@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     'magazine.apps.MagazineConfig',
 
     'stove',
+    'interviews',
     'wagtail.api.v2',
 
     'wagtail.contrib.forms',
