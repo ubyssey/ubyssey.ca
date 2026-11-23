@@ -3,7 +3,7 @@ setuptools>=69.0.0
 wagtail==7.4.1
 git+https://github.com/ubyssey/django-google-storage.git@v0.5.4#egg=django-google-storage-updated
 django-storages[google]==1.14.2
-django-canonical-domain==0.3.0
+django-canonical-domain==0.11.0
 django-taggit==6.0.0
 django-crontab==0.7.1
 channels==4.3.2
