@@ -135,6 +135,7 @@ urlpatterns += [
     path('admin/visual_assignment_api/', visual_assignment_api_list),
 
     path('stove/', include('stove.urls')),
+    path('interviews/', include('interviews.urls')),
 
     # Events
     re_path(r'^events/', include(events_urls)),
