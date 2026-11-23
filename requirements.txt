@@ -50,7 +50,7 @@ hiredis==2.2.3
 appengine-python-standard>=1.0.0
 icalendar===6.3.1
 selenium===4.23.1
-aiohttp===3.10.3
+aiohttp===3.14.5
 python-json-logger==2.0.7
 
 django-db-connection-pool==1.2.6
