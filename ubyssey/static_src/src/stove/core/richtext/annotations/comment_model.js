@@ -89,7 +89,7 @@ export const suggestionMarkSpec = {
   },
 };
 
-function readSuggestionAttrs(dom) {
+export function readSuggestionAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-suggestion-thread-id"),
     comments: parseCommentPayload(dom.getAttribute("data-suggestion-comments")),
@@ -99,7 +99,7 @@ function readSuggestionAttrs(dom) {
   };
 }
 
-function readCommentAttrs(dom) {
+export function readCommentAttrs(dom) {
   return {
     threadId: dom.getAttribute("data-comment-thread-id"),
     comments: parseCommentPayload(dom.getAttribute("data-comment-comments")),

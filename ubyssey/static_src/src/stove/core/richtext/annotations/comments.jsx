@@ -25,6 +25,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   const pageShadow = document.querySelector("[data-page-shadow]");
   const reactRoot = createRoot(root);
   let activeThreadId = null;
+  let historyThreads = null;
   let focusActiveReply = false;
   let positionFrame = null;
   let scrollActiveThread = null;
@@ -39,7 +40,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   // Pending threads are sharedm but only creator can edit/delete
   const localPendingThreadIds = new Set();
 
-  const currentThreads = () => [
+  const currentThreads = () => historyThreads || [
     ...collectAnnotationThreads(getViews()),
     ...getThreads(),
   ].filter((thread) => !thread.resolved && (!thread.pending || localPendingThreadIds.has(thread.threadId)));
@@ -128,7 +129,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   const update = () => {
     const threads = currentThreads();
-    if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId && !thread.resolved)) activeThreadId = null;
+    if (activeThreadId && !threads.some((thread) => thread.threadId === activeThreadId)) activeThreadId = null;
     flushSync(() => {
       reactRoot.render(
         <CommentSidebar
@@ -140,11 +141,12 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
           setActiveThread={setActiveThread}
           cancelActiveThread={cancelActiveThread}
           commentDrafts={commentDrafts}
+          readOnly={historyThreads !== null}
         />,
       );
     });
     scheduleCommentPositions();
-    updateActiveCommentMarks(activeThreadId, threads, getViews());
+    updateActiveCommentMarks(activeThreadId, threads, historyThreads === null ? getViews() : [], historyThreads !== null);
   };
 
   const eventPath = (event) => event.composedPath?.() || [];
@@ -217,6 +219,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   };
 
   const selectCommentBlock = (event) => {
+    if (document.querySelector(".page-editor--history")) return;
     if (!eventCommentThreadIds(event).length) return;
 
     const block = eventPath(event).find((element) => element?.matches?.("[data-article-block]"))
@@ -227,7 +230,7 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
   // switches selected overlapping suggestion/comment on second click
   const onCommentMarkClick = (event) => {
     const visibleThreadIds = new Set(currentThreads().map((thread) => thread.threadId));
-    const threadIds = eventCommentThreadIds(event).filter((threadId) => visibleThreadIds.has(threadId));
+    const threadIds = eventCommentThreadIds(event, historyThreads !== null).filter((threadId) => visibleThreadIds.has(threadId));
     if (!threadIds.length) return;
 
     if (threadIds.join(":") === clickedThreadIds.join(":")) {
@@ -309,9 +312,18 @@ export function setupCommentSidebar(root, { getViews, getThreads }) {
 
   return {
     update,
+    setHistoryThreads(threads) {
+      historyThreads = threads;
+      activeThreadId = null;
+      clickedThreadIds = [];
+      clickedAnnotationThreadId = null;
+      commentOffset = 0;
+      update();
+    },
     discardPendingThreads,
     registerPendingThread(threadId) { localPendingThreadIds.add(threadId); },
     activateThread(threadId, { focusReply = false } = {}) {
+      if (historyThreads !== null) return;
       if (clickedAnnotationThreadId && threadId !== clickedAnnotationThreadId) return;
       if (!threadId && clickedAnnotationThreadId) return;
       setActiveThread(threadId, "center", focusReply);
@@ -392,7 +404,7 @@ function positionCommentThreads(root, threads, offset) {
   layout.list.style.minHeight = layout.minHeight;
 }
 
-function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
+function updateActiveCommentMarks(activeThreadId, threads = [], views = [], readOnly = false) {
   const shadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   if (!shadowRoot) return;
 
@@ -406,6 +418,16 @@ function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
     view.dispatch(view.state.tr.setMeta("activeCommentThread", activeThreadId));
   });
 
+  if (readOnly) {
+    shadowRoot.querySelectorAll(COMMENT_MARK_SELECTOR).forEach((mark) => {
+      if (activeThreadId && (mark.dataset.commentThreadId === activeThreadId || mark.dataset.suggestionThreadId === activeThreadId)) {
+        mark.dataset.commentActive = "true";
+      } else {
+        delete mark.dataset.commentActive;
+      }
+    });
+  }
+
   if (!activeThreadId) return;
 
   const activeThread = threads.find((thread) => thread.threadId === activeThreadId);
@@ -413,7 +435,7 @@ function updateActiveCommentMarks(activeThreadId, threads = [], views = []) {
   block?.classList?.add("pm-page-block--comment-active");
 }
 
-function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiveReply, setActiveThread, cancelActiveThread, commentDrafts }) {
+function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiveReply, setActiveThread, cancelActiveThread, commentDrafts, readOnly }) {
   if (!threads.length) return null;
 
   return (
@@ -429,20 +451,21 @@ function CommentSidebar({ threads, username, refresh, activeThreadId, focusActiv
           setActiveThread={setActiveThread}
           cancelActiveThread={cancelActiveThread}
           commentDrafts={commentDrafts}
+          readOnly={readOnly}
         />
       ))}
     </div>
   );
 }
 
-function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, cancelActiveThread, commentDrafts }) {
+function CommentThread({ thread, username, refresh, active, focusReply, setActiveThread, cancelActiveThread, commentDrafts, readOnly }) {
   const suggestion = thread.kind === "suggestion";
   const suggestionType = commentSuggestion(thread.comments);
   const refocusEditor = () => window.requestAnimationFrame(() => thread.view?.focus());
   const className = active ? "pm-comment-thread pm-comment-thread--active" : "pm-comment-thread";
 
   const resolveLabel = suggestion ? "Accept suggestion" : "Resolve comment";
-  const resolveButton = !thread.pending && (
+  const resolveButton = !readOnly && !thread.pending && (
     <button
       type="button"
       className="pm-comment-thread__collapse"
@@ -468,7 +491,7 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
       ✓
     </button>
   );
-  const rejectButton = suggestion && (
+  const rejectButton = !readOnly && suggestion && (
     <button
       type="button"
       className="pm-comment-thread__collapse"
@@ -511,7 +534,7 @@ function CommentThread({ thread, username, refresh, active, focusReply, setActiv
           ))}
         </div>
       )}
-      {active && (
+      {active && !readOnly && (
         <CommentReplyForm
           thread={thread}
           username={username}

@@ -112,6 +112,8 @@ function findBlock(root, descriptor, blockSelector) {
 // Arrow key navigation
 export function setupPageBlockKeyboard(pageRoot) {
   const handleKeyDown = (event) => {
+    if (document.querySelector(".page-editor--history")) return;
+
     const direction = BLOCK_KEY_DIRECTIONS[event.key];
     const isEditing = (event.composedPath?.() || []).some((element) => (
       ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(element?.nodeName) ||

@@ -23,6 +23,7 @@ export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
   const pageShadowRoot = document.querySelector("[data-page-shadow]")?.shadowRoot;
   const reactRoot = createRoot(root);
   let renderedFootnotes = null;
+  let historyFootnotes = null;
 
   const focusFootnote = (footnoteId) => {
     const input = root.querySelector(`[data-footnote-id="${cssEscape(footnoteId)}"]`);
@@ -46,7 +47,7 @@ export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
   });
 
   const update = () => {
-    const footnotes = getViews().flatMap((view) => collectFootnotes(view));
+    const footnotes = historyFootnotes ?? getViews().flatMap((view) => collectFootnotes(view));
     if (sameFootnoteStructure(footnotes, renderedFootnotes)) return;
     renderedFootnotes = footnotes;
 
@@ -55,13 +56,24 @@ export function setupFootnoteSidebar(root, { getViews, footnoteTexts }) {
         footnotes={footnotes}
         footnoteTexts={footnoteTexts}
         getViews={getViews}
+        readOnly={historyFootnotes !== null}
       />,
     );
   };
 
   footnoteTexts?.observe(update);
   update();
-  return { update };
+  return {
+    update,
+    // Switches between current and historical footnotes for the view
+    setHistoryFootnotes(footnotes) {
+      const details = root.closest('details[data-sidebar-accordion-key="footnotes"]');
+      if (historyFootnotes === null && footnotes !== null && details) details.open = true;
+      historyFootnotes = footnotes;
+      renderedFootnotes = null;
+      update();
+    },
+  };
 }
 
 function sameFootnoteStructure(footnotes, renderedFootnotes) {
@@ -74,7 +86,7 @@ function sameFootnoteStructure(footnotes, renderedFootnotes) {
 }
 
 // Footnote UI on left sidebar
-function FootnotePanel({ footnotes, footnoteTexts, getViews }) {
+function FootnotePanel({ footnotes, footnoteTexts, getViews, readOnly }) {
   if (!footnotes.length) return null;
 
   return (
@@ -90,7 +102,10 @@ function FootnotePanel({ footnotes, footnoteTexts, getViews }) {
           >
             {index + 1}
           </button>
-          <FootnoteText footnote={footnote} footnoteTexts={footnoteTexts} getViews={getViews} />
+          {readOnly ? (
+            <div className="pm-footnote-editor"><div className="ProseMirror" data-footnote-id={footnote.footnoteId} tabIndex={-1}>{footnote.text}</div></div>) : (
+            <FootnoteText footnote={footnote} footnoteTexts={footnoteTexts} getViews={getViews} />
+          )}
         </div>
       ))}
     </section>
@@ -240,6 +255,14 @@ function focusPreviewFootnote(footnoteId) {
   footnote.focus({ preventScroll: true });
 }
 
+export function readFootnoteAttrs(dom) {
+  return {
+    footnoteId: dom.getAttribute("data-footnote-id"),
+    text: dom.getAttribute("data-footnote-text") || "",
+    anchor: dom.getAttribute("data-footnote-anchor") === "true",
+  };
+}
+
 export const footnoteMarkSpec = {
   inclusive: false,
   attrs: {
@@ -249,13 +272,7 @@ export const footnoteMarkSpec = {
   },
   parseDOM: [{
     tag: "span[data-footnote-id]",
-    getAttrs(dom) {
-      return {
-        footnoteId: dom.getAttribute("data-footnote-id"),
-        text: dom.getAttribute("data-footnote-text") || "",
-        anchor: dom.getAttribute("data-footnote-anchor") === "true",
-      };
-    },
+    getAttrs: readFootnoteAttrs,
   }],
   toDOM(mark) {
     const attrs = mark.attrs;
