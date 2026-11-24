@@ -17,7 +17,7 @@ function handleWebpushClick() {
 function runWebpush() {
   subBtn = document.getElementById('webpush-subscribe-button');
 
-  subBtn.textContent = gettext('Subscribe to Push Messaging');
+  subBtn.textContent = gettext('Enable Notifications');
 
   // Do everything if the Browser Supports Service Worker
   if ('serviceWorker' in navigator) {
@@ -69,7 +69,7 @@ function runWebpush() {
               // Check the information is saved successfully into server
               if (response.status === 201) {
                 // Show unsubscribe button instead
-                subBtn.textContent = gettext('Unsubscribe from Push Messaging');
+                subBtn.textContent = gettext('Disable notifications');
                 subBtn.disabled = false;
                 isPushEnabled = true;
                 showMessage(gettext('Successfully subscribed to push notifications.'));
@@ -115,7 +115,7 @@ function subscribe(reg) {
                 // Check the information is saved successfully into server
                 if (response.status === 201) {
                   // Show unsubscribe button instead
-                  subBtn.textContent = gettext('Unsubscribe');
+                  subBtn.textContent = gettext('Disable Notifications');
                   subBtn.disabled = false;
                   isPushEnabled = true;
                   showMessage(gettext('Successfully subscribed to push notifications.'));
@@ -169,7 +169,7 @@ function unsubscribe(reg) {
                 .then(
                   function(successful) {
                     console.log("sending result")
-                    subBtn.textContent = gettext('Subscribe');
+                    subBtn.textContent = gettext('Enable Notifications');
                     showMessage(gettext('Successfully unsubscribed from push notifications.'));
                     isPushEnabled = false;
                     subBtn.disabled = false;
@@ -177,7 +177,7 @@ function unsubscribe(reg) {
                 )
                 .catch(
                   function(error) {
-                    subBtn.textContent = gettext('Unsubscribe');
+                    subBtn.textContent = gettext('Disable Notifications');
                     showMessage(gettext('Error while unsubscribing from push notifications.'));
                     subBtn.disabled = false;
                   }
@@ -241,7 +241,7 @@ export default function WebPushButton() {
 
     return (
         <li className={`section-navigation-item`} id={`webpush-subscribe-button`} data-url="/webpush/save_information" data-group="default" onClick={handleWebpushClick}>
-            <a>Subscribe</a>
+            <a>Enable Notifications</a>
         </li>
     )
 }
