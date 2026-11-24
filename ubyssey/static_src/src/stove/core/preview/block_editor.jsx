@@ -266,6 +266,8 @@ export function setupBlockEditorActions(root, { blockTypeLabel, createBlockEdito
   };
 
   const selectClickedBlock = (event) => {
+    if (document.querySelector(".page-editor--history")) return;
+
     let blockElement = event.composedPath().map((target) => target.closest?.(PAGE_BLOCK_SELECTOR)).find(Boolean);
     if (!blockElement) return;
 

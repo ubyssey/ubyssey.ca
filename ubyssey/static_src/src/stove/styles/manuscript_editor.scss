@@ -33,17 +33,25 @@ body {
     background: #f5f6f6;
 }
 
-.page-editor--history {
-    grid-template-columns: minmax(0, 1fr);
-}
-
 .page-editor--history .metadata-editor,
 .page-editor--history .page-editor-topbar__actions > :not([data-history-control]) {
     display: none;
 }
 
-.page-editor--history .manuscript {
-    grid-column: 1;
+.page-editor--history .metadata-editor--left {
+    display: flex;
+}
+
+.page-editor--history .metadata-editor--right {
+    display: block;
+}
+
+.page-editor--history .pm-sidebar-accordion__item:not(.pm-sidebar-accordion__item--footnotes) {
+    display: none;
+}
+
+.page-editor--history .pm-footnote-editor .ProseMirror {
+    min-height: 24px;
 }
 
 .manuscript {
