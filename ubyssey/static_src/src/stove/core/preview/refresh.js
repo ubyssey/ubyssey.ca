@@ -9,6 +9,7 @@ import { syncPageEditorsFromMetadata } from "./editables.jsx";
 import { setupRevisionHistory } from "../revisions/revision_history.js";
 import { focusedPageBlock, previewMatchesYjsSnapshot, replacePagePreviewHtml, replaceSelectedBlockPreviewHtml, replaceUnfocusedPageBlocks, restoreCurrentPageControls } from "./dom.js";
 import { fetchPreviewHtml } from "./requests.js";
+import { showHistoryAnnotations } from "../richtext/annotations/history.jsx";
 
 // Handles preview refreshes
 export const MODAL_PREVIEW_DEBOUNCE_MS = 250;
@@ -239,8 +240,11 @@ export function setupHistoryPreviewButtons(pageRoot, cancelPreview) {
         ) return;
 
         if (isCurrent) {
+          pageEditorState.commentSidebar?.setHistoryThreads(null);
+          pageEditorState.footnoteSidebar?.setHistoryFootnotes(null);
           restoreCurrentPageControls(pageRoot, currentStreamDocs);
         } else {
+          showHistoryAnnotations(pageRoot);
           pageEditorState.selectedBlock = null;
           syncSelectedPageBlockEditor(null);
         }
