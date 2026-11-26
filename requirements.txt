@@ -46,7 +46,7 @@ pylint-django==2.5.3
 ipython
 django-redis==5.4.0
 redis==5.0.1
-hiredis==2.2.3
+hiredis==3.5.0
 appengine-python-standard>=1.0.0
 icalendar===6.3.1
 selenium===4.23.1
