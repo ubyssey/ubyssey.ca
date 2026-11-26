@@ -14,7 +14,7 @@ pycrdt-websocket==0.16.1
 prosemirror==0.6.1
 pymemcache==4.0.0
 mysqlclient==2.2.6
-beautifulsoup4==4.13.3
+beautifulsoup4==4.15.0
 html5lib==1.1
 feedparser==6.0.10
 pyyaml==6.0.1
