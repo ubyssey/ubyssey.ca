@@ -71,6 +71,17 @@ UBYSSEY_TIP_EMAIL = 'news@ubyssey.ca'
 FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.MemoryFileUploadHandler',]
 FILE_UPLOAD_MAX_MEMORY_SIZE = 25621440
 
+# Load the enviroment variables as a prefix so a cronjob process has access
+# A better practice would be manually injecting these into the cronjob process 
+CRONTAB_COMMAND_PREFIX = (
+    f"VAPID_PRIVATE_KEY={env('VAPID_PRIVATE_KEY', default='') or read_file(env('VAPID_PRIVATE_KEY_FILE', default=''))} "
+    f"SQL_HOST={env('SQL_HOST')} "
+    f"SQL_DATABASE={env('SQL_DATABASE')} "
+    f"SQL_USER={env('SQL_USER')} "
+    f"SQL_PASSWORD={env('SQL_PASSWORD') or read_file(env('SQL_PASSWORD_FILE'))} "
+    f"SECRET_KEY={env('SECRET_KEY') or read_file(env('SECRET_KEY_FILE')) or 'thisisakey'} "
+)
+
 ADMINS = [
 	('Webmaster', 'webmaster@ubyssey.ca'),
 ]
